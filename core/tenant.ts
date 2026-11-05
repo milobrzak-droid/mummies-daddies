@@ -9,6 +9,7 @@
 
 import type { InquiryAgentConfig } from './agents/inquiryAgentConfig'
 import type { FollowUpCadenceConfig } from './followUpCadence'
+import type { OutboundAgentConfig } from './outbound/config'
 
 /** Šablona pracovního případu: předvyplní kroky a otevřená rozhodnutí. */
 export interface CaseTemplate<N extends string = string> {
@@ -458,6 +459,8 @@ export interface CompanyConfig<N extends string = string, P extends string = str
     inquiryAgent?: InquiryAgentConfig<N> | null
     /** Volitelné (kontrakt P4): follow-up neodpovězených nabídek. */
     followUpCadence?: FollowUpCadenceConfig<N> | null
+    /** Volitelné (balík P7): outbound agent — signály, leady a legální oslovení. */
+    outboundAgent?: OutboundAgentConfig<N> | null
   }
 
   // --- Kontrakt pro paralelní balíky ------------------------------------------

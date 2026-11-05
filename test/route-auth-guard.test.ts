@@ -38,6 +38,7 @@ const CRON: Guard = {
 const MS_WEBHOOK: Guard = { name: 'ověření clientState', test: (s) => /(assessMailWebhook|clientState)/.test(s) }
 const WEB_FORM: Guard = { name: 'ověření Turnstile (formulář veřejného webu)', test: (s) => /turnstile/i.test(s) }
 const SESSION: Guard = { name: 'tryRequireUser({ aal2: true })', test: (s) => /(tryRequireUser|requireUser)\(\{\s*aal2:\s*true\s*\}\)/.test(s) }
+const UNSUBSCRIBE_TOKEN: Guard = { name: 'podepsaný token odhlášení (verifyUnsubscribeToken)', test: (s) => /\bverifyUnsubscribeToken\(/.test(s) }
 // Veřejné záměrně (bez cookie i bez klíče); důvod je u každé položky.
 const OPEN = (why: string): Guard => ({ name: `záměrně veřejné: ${why}`, test: () => true })
 
@@ -46,6 +47,10 @@ const OPEN = (why: string): Guard => ({ name: `záměrně veřejné: ${why}`, te
 const CLASSES: { match: (route: string) => boolean; label: string; guard: Guard; publicInProxy: boolean }[] = [
   { label: '/api/v1', match: (r) => r.startsWith('app/api/v1/'), guard: API_KEY, publicInProxy: true },
   { label: '/api/mcp', match: (r) => r.startsWith('app/api/mcp/'), guard: API_KEY, publicInProxy: true },
+  // Odhlášení z obchodních sdělení (P7): odkaz z e-mailu a One-Click POST
+  // (RFC 8058) — Turnstile tu být nemůže, bránou je podepsaný HMAC token.
+  // (V proxy ji pouští prefix /api/web, vlastní výjimku nemá — proto publicInProxy: false.)
+  { label: '/api/web/odhlaseni', match: (r) => r === 'app/api/web/odhlaseni/route.ts', guard: UNSUBSCRIBE_TOKEN, publicInProxy: false },
   // Veřejná API webu (formuláře, balík P6): každá routa ověřuje Turnstile.
   { label: '/api/web', match: (r) => r.startsWith('app/api/web/'), guard: WEB_FORM, publicInProxy: true },
   { label: '/api/cron', match: (r) => r.startsWith('app/api/cron/'), guard: CRON, publicInProxy: true },

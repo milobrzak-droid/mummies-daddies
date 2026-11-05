@@ -309,6 +309,72 @@ export const MUMMIES_DADDIES = {
         },
       },
     },
+
+    // Balík P7: outbound agent. Všechno za OUTBOUND_AGENT_ENABLED (výchozí vypnuto),
+    // samostatné odeslání navíc za OUTBOUND_AUTOSEND_ENABLED. OVĚŘIT celé s CEO/CSO.
+    outboundAgent: {
+      reviewNode: 'obchod',
+      icp: {
+        segment: 'b2b',
+        pillar: 'b2b_akce', // SQL kopie: outbound_create_lead_internal v 0107
+        regions: ['Praha', 'Hlavní město Praha', 'Středočeský kraj'],
+        minEmployees: 20, // OVĚŘIT: od jaké velikosti firmy má smysl firemní catering
+        excludedNacePrefixes: ['5621', '5629'], // konkurence: catering a ostatní stravování
+        excludedIcos: [], // OVĚŘIT: firmy, které se neoslovují (dohoda, spor, partneři)
+        excludedNameKeywords: ['catering', 'gastro'],
+      },
+      scoring: { leadThreshold: 70, reviewThreshold: 40 },
+      maxSignalsPerRun: 50,
+      sources: {
+        vvz: {
+          keywords: ['catering', 'cateringu', 'cateringove', 'obcerstveni', 'raut', 'coffee break', 'stravovani ucastniku', 'banket'],
+          cpvPrefixes: ['55520', '55320', '55321', '55322', '55300'],
+        },
+        feeds: [], // OVĚŘIT: veřejné RSS/iCal kalendáře akcí (kongresová centra, komory, coworkingy)
+        feedKeywords: ['konference', 'veletrh', 'firemni akce', 'teambuilding', 'gala', 'networking', 'slavnostni otevreni', 'vernisaz', 'workshop'],
+        jobs: [], // OVĚŘIT: veřejný RSS/JSON výpis inzerátů (bez přihlášení)
+        jobKeywords: ['office manager', 'office manazer', 'office manazerka', 'event manager', 'event koordinator', 'koordinator akci', 'hr generalist', 'personalista', 'recepcni'],
+        crm: {
+          anniversaryLeadDays: 45,
+          anniversaryTemplate: 'vyroci_klient',
+          seasons: [
+            { key: 'vanoce', label: 'Vánoční večírky', promptFrom: '09-01', promptTo: '10-31', template: 'vanoce_klient' },
+            { key: 'leto', label: 'Letní party', promptFrom: '04-01', promptTo: '05-31', template: 'leto_klient' },
+          ],
+        },
+      },
+      outreach: {
+        // Oddělená odesílací schránka na subdoméně (reputace hlavní domény). OVĚŘIT a založit v Google Workspace.
+        senderMailboxEmail: 'nabidky@info.mummiesdaddies.com',
+        dailyLimit: 15,
+        sendWindow: { days: [2, 3, 4], fromHour: 9, toHour: 16 },
+        vipAccountIds: [], // OVĚŘIT: VIP a citlivé klienty doplní CSO
+        cooldownDays: 90,
+        unsubscribeUrl: 'https://www.mummiesdaddies.com/api/web/odhlaseni',
+        // OVĚŘIT: doplnit IČO a sídlo podle obchodního rejstříku.
+        footer: 'Mummies and Daddies s.r.o. · catering, eventy a cheesecaky · www.mummiesdaddies.com\nTento e-mail je obchodní sdělení pro naše stávající zákazníky a kontakty, které s ním souhlasily.',
+        templates: {
+          vyroci_klient: {
+            segment: 'b2b',
+            audience: 'existing_customer',
+            subject: 'Rok od vaší akce s námi',
+            body: 'Dobrý den,\n\nje to skoro rok, co jsme pro {firma} připravovali akci ({posledni_akce_datum}). Pokud letos chystáte něco podobného, rádi vám pošleme nezávaznou kalkulaci — stačí odpovědět na tento e-mail.\n\nS pozdravem\nMummies and Daddies',
+          },
+          vanoce_klient: {
+            segment: 'b2b',
+            audience: 'existing_customer',
+            subject: 'Vánoční večírek s Mummies and Daddies',
+            body: 'Dobrý den,\n\nprosincové termíny se rychle plní. Pokud pro {firma} chystáte vánoční večírek, rádi vám připravíme nezávaznou kalkulaci rautu, koktejlu nebo servírovaného menu.\n\nS pozdravem\nMummies and Daddies',
+          },
+          leto_klient: {
+            segment: 'b2b',
+            audience: 'existing_customer',
+            subject: 'Letní party pro váš tým',
+            body: 'Dobrý den,\n\nblíží se léto a s ním firemní grilování a party. Pokud pro {firma} něco chystáte, rádi vám pošleme nezávaznou kalkulaci BBQ nebo rautu.\n\nS pozdravem\nMummies and Daddies',
+          },
+        },
+      },
+    },
   },
 
   modules: {

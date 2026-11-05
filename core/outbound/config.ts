@@ -56,6 +56,8 @@ export interface OutreachTemplate {
 export interface OutboundIcp {
   /** Segment mapy, do kterého lead patří (outbound míří jen na firmy). */
   segment: string
+  /** Pilíř firemních akcí (deal.pillar) — signály z CRM jen z obchodů tohoto pilíře. */
+  pillar: string
   /**
    * Region: obec nebo kraj sídla z ARESu (porovnání bez diakritiky,
    * „začíná na"). Firma mimo region jde na review, ne pryč (pobočky).
@@ -115,6 +117,8 @@ export interface OutboundAgentConfig<N extends string = string> {
     /** Nejvýš tolik automatických oslovení za pražský den. */
     dailyLimit: number
     sendWindow: PragueWindow
+    /** Klienti (account.id), jejichž oslovení jde vždy přes schválení člověkem (VIP, citlivé). */
+    vipAccountIds: readonly number[]
     /** Kolik dní po posledním oslovení stejné firmy se nesmí oslovit znovu. */
     cooldownDays: number
     /** Veřejná adresa odhlášení (…/api/web/odhlaseni). Token se připojí jako ?t=. */
