@@ -1,4 +1,5 @@
 'use client'
+import { LostReasonSelect, lostReasonComplete } from '@/components/LostReasonSelect'
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -461,7 +462,7 @@ function BoardDialog({
   reasonLabel?: string
 }) {
   const ref = useRef<HTMLDivElement>(null)
-  const reasonRef = useRef<HTMLTextAreaElement>(null)
+  const reasonRef = useRef<HTMLSelectElement & HTMLInputElement>(null)
   const submitRef = useRef<HTMLButtonElement>(null)
   const [reason, setReason] = useState('')
   useModal(true, ref, onClose, reasonLabel ? reasonRef : submitRef)
@@ -474,7 +475,7 @@ function BoardDialog({
         <form
           onSubmit={(event) => {
             event.preventDefault()
-            if (reasonLabel && !reason.trim()) return
+            if (reasonLabel && !lostReasonComplete(reason)) return
             onSubmit(reason.trim())
           }}
         >
@@ -487,16 +488,9 @@ function BoardDialog({
           </div>
           <p className="m-0 text-callout text-muted">{children}</p>
           {reasonLabel && (
-            <textarea
-              ref={reasonRef}
-              aria-label={reasonLabel}
-              value={reason}
-              onChange={(event) => setReason(event.target.value)}
-              rows={3}
-              placeholder="Např. rozpočet přesunut na Q1, vyhrál interní tým…"
-              required
-              className="mt-3"
-            />
+            <div className="mt-3">
+              <LostReasonSelect value={reason} onChange={setReason} selectRef={reasonRef} label={reasonLabel} />
+            </div>
           )}
           <div className="mt-4 flex justify-end gap-2">
             <button type="button" onClick={onClose} className={buttonClass('quiet')}>Zrušit</button>

@@ -21,7 +21,8 @@ describe('buildOpsReport: sekce, pořadí a nadpis', () => {
   test('sedm sekcí ve stálém pořadí zadání (obchody → neověřené)', () => {
     expect(r.sections.map((s) => s.key)).toEqual(['obchody', 'dodavky', 'na-nas', 'na-klienta', 'ke-schvaleni', 'riziko', 'neovereno'])
     // Sekce „Rozdíly v financích“ (iDoklad) se ukáže jen s napojením — viz test/idoklad-ops.test.ts.
-    expect(r.sections.map((s) => s.title)).toEqual(OPS_SECTIONS.filter((s) => s.key !== 'finance-rozdily').map((s) => s.title))
+    // Sekce „Agent na poptávky“ jen se zapnutým modulem agenta — viz test/ops-report-agent.test.ts.
+    expect(r.sections.map((s) => s.title)).toEqual(OPS_SECTIONS.filter((s) => s.key !== 'finance-rozdily' && s.key !== 'agent').map((s) => s.title))
   })
 
   test('nadpis od toho, co hoří; dodávky (stav) v něm nejsou', () => {

@@ -25,6 +25,10 @@ import { getDeliveryPortfolio, type PortfolioResult } from '@/domain/delivery/qu
 import { getWaitingItems } from '@/domain/delivery/queries/waiting'
 import { listOverdueInvoices } from '@/domain/finance/queries/overdue'
 import { idokladSyncEnabledFromEnv } from '@/connectors/idoklad'
+import { COMPANY } from '@/config'
+import { isModuleOn } from '@/core/modules'
+import { loadAgentOpsSummary } from '@/domain/crm/agentKpiQueries'
+import { addDaysToPragueDay } from '@/lib/pragueDate'
 
 type Db = Awaited<ReturnType<typeof createClient>>
 
@@ -68,7 +72,12 @@ export async function loadOpsReport(ctx: OpsReportContext): Promise<OpsReport> {
   // Rozdíly z iDokladu jen se zapnutým čtením a jen obchodním rolím (tabulka je sales_only).
   const financeOn = ctx.canSeeSales && idokladSyncEnabledFromEnv(process.env)
 
-  const [changes, portfolio, waiting, capacity, inbox, pendingProposals, unmatchedNotes, overdueInvoices, financeDiffs] = await Promise.all([
+  // Agent na poptávky (P5): jen se zapnutým modulem a jen obchodní role (tabulky jsou can_see_sales).
+  const agentOn = ctx.canSeeSales && isModuleOn(COMPANY.modules, 'agent')
+  const weekStart = pragueDayOf(window.since)
+  const weekEnd = addDaysToPragueDay(pragueDayOf(window.until), -1)
+
+  const [changes, portfolio, waiting, capacity, inbox, pendingProposals, unmatchedNotes, overdueInvoices, financeDiffs, agent] = await Promise.all([
     ctx.changes !== undefined
       ? Promise.resolve(ctx.changes)
       : settle<ChangesResult | null>('changes', () => loadChanges({
@@ -101,6 +110,9 @@ export async function loadOpsReport(ctx: OpsReportContext): Promise<OpsReport> {
     financeOn
       ? settle<OpsReportInput['financeDiffs']>('financeDiffs', () => loadFinanceDiffs(s), { state: 'error' })
       : Promise.resolve(undefined),
+    agentOn
+      ? settle<OpsReportInput['agent']>('agent', async () => (await loadAgentOpsSummary({ db: s, from: weekStart, to: weekEnd })) ?? { state: 'off' }, null)
+      : Promise.resolve(undefined),
   ])
 
   return buildOpsReport({
@@ -118,6 +130,7 @@ export async function loadOpsReport(ctx: OpsReportContext): Promise<OpsReport> {
     unmatchedNotes,
     overdueInvoices,
     financeDiffs,
+    agent,
     digest: ctx.digest,
   })
 }

@@ -1,4 +1,5 @@
 'use client'
+import { LostReasonSelect } from '@/components/LostReasonSelect'
 import { useActionState, useEffect, useState } from 'react'
 import { FormField } from '@/components/FormField'
 import { SubmitButton } from '@/components/SubmitButton'
@@ -116,13 +117,11 @@ export function DealForm({ action, partners, members, contacts, initial }:
       {stage === 'prohráno' && (
         <div className="mt-1">
           <FormField label="Důvod prohry" error={fe.lost_reason}>
-            <input
+            <LostReasonSelect
               name="lost_reason"
               value={lostReason}
-              onChange={(e) => setLostReason(e.target.value)}
-              placeholder="Co se tým může z tohoto obchodu naučit?"
-              aria-invalid={issueFields.has('lost_reason') || undefined}
-              required
+              onChange={setLostReason}
+              invalid={issueFields.has('lost_reason')}
             />
           </FormField>
         </div>

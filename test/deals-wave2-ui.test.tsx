@@ -55,7 +55,7 @@ describe('Obchody – filtry v jednom řádku', () => {
 
 describe('Obchody – záložky', () => {
   test('Reporty jsou vlastní záložka; Tabule na reportech aktivní není', () => {
-    expect(DEALS_SECTION_TABS.map((t) => t.label)).toEqual(['Tabule', 'Reporty', 'Seznamy k oslovení', 'Oslovování'])
+    expect(DEALS_SECTION_TABS.map((t) => t.label)).toEqual(['Tabule', 'Reporty', 'Agent', 'Seznamy k oslovení', 'Oslovování'])
     expect(isDealsTabActive('/cockpit/pipeline', '/cockpit/pipeline')).toBe(true)
     expect(isDealsTabActive('/cockpit/pipeline/new', '/cockpit/pipeline')).toBe(true)
     expect(isDealsTabActive('/cockpit/pipeline/reporty', '/cockpit/pipeline')).toBe(false)
