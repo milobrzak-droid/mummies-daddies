@@ -17,6 +17,7 @@ import {
   statsSignals,
 } from '@/domain/ops/opsHealth'
 import { alarmWebhookUrl, decideAlarm, postAlarm, repeatMinutesFromEnv } from '@/domain/ops/opsAlarm'
+import { HEALTH_CACHE_MS, HEALTH_RATE_LIMIT, resetHealthEndpoint } from '@/domain/ops/healthEndpoint'
 
 const NOW = new Date('2026-11-05T10:00:00Z')
 const ago = (min: number) => new Date(NOW.getTime() - min * 60_000).toISOString()
@@ -213,7 +214,11 @@ describe('loadStuckQueues', () => {
 })
 
 describe('/api/health', () => {
-  afterEach(() => vi.unstubAllEnvs())
+  beforeEach(() => {
+    resetHealthEndpoint()
+    vi.mocked(createAdminClient).mockReset()
+  })
+  afterEach(() => { vi.unstubAllEnvs(); vi.useRealTimers() })
   const call = async (url = 'https://x/api/health', headers: Record<string, string> = {}) => {
     const { GET } = await import('@/app/api/health/route')
     const res = await GET(new Request(url, { headers }))
@@ -236,9 +241,54 @@ describe('/api/health', () => {
     expect((await call()).body.status).toBe('degraded')
     expect((await call()).status).toBe(200)
     expect((await call('https://x/api/health?strict=1')).status).toBe(503)
+    resetHealthEndpoint()
     vi.mocked(createAdminClient).mockReturnValue(fakeDb({ job_run: { data: null, error: { code: '08006' } } }) as never)
     const down = await call()
     expect(down).toMatchObject({ status: 503, body: { status: 'down' } })
+  })
+
+  it('výsledek kontroly se 30 s drží v paměti: opakované volání nesahá do DB', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(NOW)
+    const db = fakeDb({})
+    const from = vi.spyOn(db, 'from')
+    vi.mocked(createAdminClient).mockReturnValue(db as never)
+    const first = await call()
+    const reads = from.mock.calls.length
+    expect(reads).toBeGreaterThan(0)
+    vi.setSystemTime(new Date(NOW.getTime() + HEALTH_CACHE_MS - 1000))
+    const second = await call()
+    expect(from.mock.calls.length).toBe(reads)
+    expect(second.body).toEqual(first.body)
+    // Po vypršení cache nová kontrola.
+    vi.setSystemTime(new Date(NOW.getTime() + HEALTH_CACHE_MS + 1))
+    const third = await call()
+    expect(from.mock.calls.length).toBe(reads * 2)
+    expect(third.body.checkedAt).not.toBe(first.body.checkedAt)
+  })
+
+  it('výpadek DB se také krátce cachuje (výpadek nezhorší zahlcení)', async () => {
+    vi.mocked(createAdminClient).mockImplementation(() => { throw new Error('chybí SUPABASE_SERVICE_ROLE_KEY') })
+    expect((await call()).status).toBe(503)
+    expect((await call()).status).toBe(503)
+    expect(createAdminClient).toHaveBeenCalledTimes(1)
+  })
+
+  it('limit na IP adresu: nad limitem 429 bez dotazu do DB; jiná adresa a HEALTH_TOKEN projdou', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(NOW)
+    vi.mocked(createAdminClient).mockReturnValue(fakeDb({}) as never)
+    vi.stubEnv('HEALTH_TOKEN', 'h-token')
+    const ip = { 'x-forwarded-for': '203.0.113.7' }
+    for (let i = 0; i < HEALTH_RATE_LIMIT; i++) expect((await call('https://x/api/health', ip)).status).toBe(200)
+    const calls = vi.mocked(createAdminClient).mock.calls.length
+    // Cache vypršela (31 s), okno limitu (60 s) ne: odmítnutí nesmí sáhnout do DB.
+    vi.setSystemTime(new Date(NOW.getTime() + HEALTH_CACHE_MS + 1000))
+    const limited = await call('https://x/api/health', ip)
+    expect(limited).toMatchObject({ status: 429, body: { status: 'rate_limited' }, cache: 'no-store' })
+    expect(vi.mocked(createAdminClient).mock.calls.length).toBe(calls)
+    expect((await call('https://x/api/health', { 'x-forwarded-for': '198.51.100.2' })).status).toBe(200)
+    expect((await call('https://x/api/health', { ...ip, authorization: 'Bearer h-token' })).status).toBe(200)
   })
 })
 

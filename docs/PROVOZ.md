@@ -144,7 +144,11 @@ Tři vrstvy, každá nezávislá na té předchozí:
 **`/api/health`** — veřejná odpověď je jen `{"status":"ok"|"degraded"|"down","checkedAt":…}`,
 bez jakýchkoli dat. `down` (DB neodpovídá) = HTTP 503 vždy; `degraded` = 503
 jen s `?strict=1`. Seznam signálů (kódy, názvy úloh / front) vrátí jen
-s `Authorization: Bearer $HEALTH_TOKEN`. Necachuje se.
+s `Authorization: Bearer $HEALTH_TOKEN`. HTTP odpověď se necachuje (`no-store`),
+ale výsledek kontroly drží instance 30 s v paměti (veřejné volání nespouští
+dotazy do DB při každém požadavku; `checkedAt` = čas skutečné kontroly) a na
+IP adresu platí limit 30 požadavků za minutu (nad ním 429, s `HEALTH_TOKEN`
+bez limitu; `domain/ops/healthEndpoint.ts`).
 
 **Signály** (`domain/ops/opsHealth.ts`):
 
