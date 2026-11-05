@@ -5,7 +5,8 @@ import { splitInternalLinks } from './parse'
 
 /**
  * Text z copy.json: zástupce [DOPLNÍ KLIENT] zvýrazní (PlaceholderText) a interní
- * cesty v textu („Více na /catering/teambuilding.“) udělá odkazem. Text se nemění.
+ * odkazy („[Více o teambuildingu](/catering/teambuilding)“ i holou cestu) udělá
+ * odkazem (splitInternalLinks). Jinak se text nemění.
  */
 export function RichText({ text }: { text: string | null | undefined }) {
   if (!text) return null

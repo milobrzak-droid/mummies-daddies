@@ -42,7 +42,11 @@ function pieces(t: string): string[] {
   return [f.price, f.guests, f.rest].filter((x): x is string => !!x).map(norm)
 }
 
-function expectVerbatim(text: string, t: string) {
+/** Jak text z copy čte návštěvník: zápis odkazu „[text](/cesta)“ se ukáže jen jako text odkazu. */
+const readable = (t: string) => splitInternalLinks(t).map((p) => p.text).join('')
+
+function expectVerbatim(text: string, raw: string) {
+  const t = readable(raw)
   if (text.includes(norm(t))) return
   for (const part of pieces(t)) expect(text).toContain(part)
 }
@@ -84,11 +88,19 @@ describe('catering: pomocné funkce', () => {
     ])
     expect(splitCtas('Objednat oběd → /poptavka?typ=obed')).toHaveLength(1)
     expect(splitStepNumber('3. Včas')).toEqual({ n: 3, title: 'Včas' })
+    expect(splitInternalLinks('Drinky a koktejly. [Více o teambuildingu](/catering/teambuilding).')).toEqual([
+      { text: 'Drinky a koktejly. ', href: null },
+      { text: 'Více o teambuildingu', href: '/catering/teambuilding' },
+      { text: '.', href: null },
+    ])
+    // Holá cesta v textu zůstává odkazem (starší zápis copy).
     expect(splitInternalLinks('Více na /catering/teambuilding.')).toEqual([
       { text: 'Více na ', href: null },
       { text: '/catering/teambuilding', href: '/catering/teambuilding' },
       { text: '.', href: null },
     ])
+    // Zástupce ani externí adresa v hranatých závorkách odkazem nejsou.
+    expect(splitInternalLinks('Od [DOPLNÍ KLIENT] Kč · [web](https://x.cz)')).toEqual([{ text: 'Od [DOPLNÍ KLIENT] Kč · [web](https://x.cz)', href: null }])
     expect(splitInternalLinks('od 300 Kč/os.')).toEqual([{ text: 'od 300 Kč/os.', href: null }])
   })
 })
@@ -222,6 +234,18 @@ const PAGE_MODULES: Record<string, () => Promise<{ metadata: import('next').Meta
   '/catering/svatby': () => import('@/app/(web)/catering/svatby/page'),
   '/catering/oslavy-a-piknik': () => import('@/app/(web)/catering/oslavy-a-piknik/page'),
 }
+
+describe('balíčky pro firmy: čitelný odkaz na teambuilding', () => {
+  it('copy nese „Více o teambuildingu“ jako odkaz na /catering/teambuilding, ne holou cestu', () => {
+    const { doc, text } = render(<CateringTypePage slug="firemni" />)
+    const a = [...doc.querySelectorAll('a[href="/catering/teambuilding"]')].map((x) => norm(x.textContent ?? ''))
+    expect(a).toContain('Více o teambuildingu')
+    expect(text).toContain('drinky a koktejly. Více o teambuildingu.')
+    expect(text).not.toContain('Více na /catering')
+    expect(text).not.toContain('](')
+    expect(JSON.stringify(getPage('/catering/firemni'))).not.toContain('Více na /catering')
+  })
+})
 
 describe('metadata stránek cateringu', () => {
   it('title a description doslova z copy, canonical', async () => {

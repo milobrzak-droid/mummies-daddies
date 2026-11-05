@@ -62,17 +62,26 @@ export function splitCtas(raw: string | undefined): string[] {
   return raw.split(/\s+·\s+(?=[^·]*→)/).map((s) => s.trim()).filter(Boolean)
 }
 
-/** Části textu: obyčejný text a interní cesty („Více na /catering/teambuilding.“). */
+/**
+ * Části textu: obyčejný text a interní odkazy.
+ *   - čitelný odkaz „[Více o teambuildingu](/catering/teambuilding)“ → text odkazu
+ *     „Více o teambuildingu“ s cílem /catering/teambuilding (přednostní zápis v copy),
+ *   - holá interní cesta („Více na /catering/teambuilding.“) → odkaz s cestou jako textem.
+ * Cíl odkazu musí být interní cesta (/…); jiný zápis v hranatých závorkách
+ * (zástupce [DOPLNÍ KLIENT]) zůstává textem.
+ */
 export function splitInternalLinks(text: string): { text: string; href: string | null }[] {
   const out: { text: string; href: string | null }[] = []
-  const re = /(^|\s)(\/[a-z0-9-]+(?:\/[a-z0-9-]+)*)(?=[.,;:!?)]?(?:\s|$))/g
+  const re = /\[([^[\]()]{1,80})\]\((\/[a-z0-9-]+(?:\/[a-z0-9-]+)*)\)|(^|\s)(\/[a-z0-9-]+(?:\/[a-z0-9-]+)*)(?=[.,;:!?)]?(?:\s|$))/g
   let last = 0
   let m: RegExpExecArray | null
   while ((m = re.exec(text))) {
-    const start = m.index + m[1].length
+    const named = m[1] !== undefined
+    const start = named ? m.index : m.index + m[3].length
+    const end = named ? m.index + m[0].length : start + m[4].length
     if (start > last) out.push({ text: text.slice(last, start), href: null })
-    out.push({ text: m[2], href: m[2] })
-    last = start + m[2].length
+    out.push(named ? { text: m[1].trim(), href: m[2] } : { text: m[4], href: m[4] })
+    last = end
   }
   if (last < text.length) out.push({ text: text.slice(last), href: null })
   return out
