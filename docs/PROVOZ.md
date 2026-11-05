@@ -89,7 +89,12 @@ svátky, okno odesílání, denní limit, co po vyčerpání. Připomínka jde j
 fronty `agent_outbox` (RPC `agent_outbox_enqueue`); dokud fronta není,
 zůstane pokus `planned` v `follow_up_attempt`. Cadence se zastaví na odpovědi
 zákazníka, ruční aktivitě u obchodu, nesouhlasu s oslovením, uzavření obchodu
-nebo proběhlé akci. Druhý denní běh cronu (08:05 UTC) je v okně odesílání.
+nebo proběhlé akci. Odpověď zákazníka se pozná z pošty v Gmailu (migrace 0108):
+zpráva ve frontě agenta poptávek navázaná na obchod, nebo zpráva ve vlákně,
+kterým odešla nabídka či připomínka (i když ji agent nevyhodnotil jako
+poptávku); u Outlooku navíc z `mail_event`. Datum akce do textu připomínky
+bere cadence z webové poptávky, u e-mailu z vytěžení agentem. Druhý denní běh
+cronu (08:05 UTC) je v okně odesílání.
 
 ## 4. Import zakázek
 

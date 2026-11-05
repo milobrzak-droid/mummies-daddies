@@ -410,7 +410,9 @@ async function processEmail(ctx: Ctx, row: RunRow, opts: { modelAllowed: boolean
   }))
   verdict = applyFoundResult(verdict, found)
 
-  const base = { run_id: row.id, segment, model_called: true, scope_version_id: found.scope_version_id, ...verdictFields(verdict) }
+  // Datum akce u řádku fronty: z něj follow-up cadence (P4) vyplní šablonu
+  // připomínky a pozná, že akce už proběhla (follow_up_facts, 0108).
+  const base = { run_id: row.id, segment, event_date: facts.eventDate, model_called: true, scope_version_id: found.scope_version_id, ...verdictFields(verdict) }
   if (verdict.kind === 'escalate' || !found.deal_id) {
     if (verdict.kind !== 'escalate') verdict = escalateVerdict(verdict, 'ambiguous_account')
     await store.propose(escalationProposal({

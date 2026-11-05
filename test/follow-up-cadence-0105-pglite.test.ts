@@ -145,7 +145,8 @@ describe.skipIf(!PGliteCtor)('0105 follow-up cadence (PGlite, celý řetěz migr
     // Aktivita agenta (bez autora) se nepočítá, ruční ano.
     await db.query(`INSERT INTO sales_activity (deal_id, account_id, kind, subject, occurred_at, source) VALUES ($1, 1, 'email', 'Připomínka', '2026-11-05T09:00:00Z', 'agent:follow_up')`, [dealId])
     const w = (await svc<{ r: { web_inquiry_id: number } }>(`SELECT web_inquiry_submit($1::jsonb) AS r`, [JSON.stringify(webInquiryPayload(inquiry()))]))[0].r
-    await db.query(`UPDATE web_inquiry SET deal_id = $2 WHERE id = $1`, [w.web_inquiry_id, dealId])
+    // Poptávka, ze které obchod vznikl (přišla před nabídkou; pozdější by byla odpověď zákazníka, 0108).
+    await db.query(`UPDATE web_inquiry SET deal_id = $2, received_at = '2026-10-29T08:00:00Z' WHERE id = $1`, [w.web_inquiry_id, dealId])
 
     const f = await facts()
     expect(new Date(f.last_inbound_at as string).toISOString()).toBe('2026-11-03T08:00:00.000Z')
