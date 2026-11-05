@@ -98,7 +98,7 @@ export default function CheesecakesPage() {
             <div className="relative min-h-[18rem] md:order-2">
               <PhotoFrame photo={d.naAkci.photo} aspect="fill" rounded={false} tone="vanilla" sizes="(min-width: 768px) 50vw, 100vw" />
             </div>
-            <div className="flex flex-col justify-center px-gutter py-section-sm md:py-section">
+            <div className="flex flex-col justify-center px-gutter py-section-sm md:py-section md:pl-[max(theme(spacing.gutter),calc((min(100vw,theme(maxWidth.web-wide))-theme(maxWidth.web))/2+theme(spacing.gutter)))] md:pr-12">
               <h2 id="na-akci-title" className="md-caps text-h2 text-cocoa">
                 {d.naAkci.section.heading}
               </h2>

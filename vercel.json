@@ -7,6 +7,7 @@
     { "path": "/api/cron/ares-enrich", "schedule": "0 4 * * *" },
     { "path": "/api/cron/follow-ups", "schedule": "0 6 * * *" },
     { "path": "/api/cron/inquiry-agent", "schedule": "15 4 * * *" },
-    { "path": "/api/cron/agent-outbox", "schedule": "30 6 * * *" }
+    { "path": "/api/cron/agent-outbox", "schedule": "30 6 * * *" },
+    { "path": "/api/cron/web-retention", "schedule": "45 2 * * *" }
   ]
 }

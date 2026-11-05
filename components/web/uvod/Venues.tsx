@@ -50,7 +50,7 @@ export function Venues({
           {venues.map((v, i) => (
             <li key={v.name}>
               <figure>
-                <PhotoFrame photo={v.photo} aspect="tall" sizes="(min-width: 1024px) 260px, (min-width: 640px) 31vw, 92vw" tone={(['sage', 'blush', 'vanilla'] as const)[i % 3]} />
+                <PhotoFrame photo={v.photo} aspect="tall" className="max-sm:aspect-[3/2]" sizes="(min-width: 1024px) 260px, (min-width: 640px) 31vw, 92vw" tone={(['sage', 'blush', 'vanilla'] as const)[i % 3]} />
                 <figcaption className="mt-3 font-copy text-small font-semibold text-cocoa">{v.name}</figcaption>
               </figure>
             </li>

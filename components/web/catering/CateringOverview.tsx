@@ -61,6 +61,7 @@ export function CateringOverview() {
                   description={description}
                   href={t.path}
                   photo={photoOf(t.card)}
+                  photoClassName="max-sm:aspect-[3/2]"
                   tone={toneAt(i)}
                   sizes="(min-width: 1440px) 440px, (min-width: 1024px) 31vw, (min-width: 640px) 48vw, 100vw"
                   meta={<FactsRow price={facts.price} guests={facts.guests} />}

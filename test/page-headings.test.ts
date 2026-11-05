@@ -9,11 +9,16 @@ import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
+// Veřejný web (app/(web), components/web, balík P6) skládá hlavičku
+// z vlastních komponent (Hero, CateringHero…); jeden h1 na stránku tam
+// hlídají vykreslovací testy test/web/*.test.tsx.
+const WEB_DIRS = new Set(['(web)', 'web'])
+
 function walk(dir: string, match: (f: string) => boolean, out: string[] = []): string[] {
   for (const name of readdirSync(dir)) {
     const p = join(dir, name)
     if (statSync(p).isDirectory()) {
-      if (name === 'api' || name === 'node_modules') continue
+      if (name === 'api' || name === 'node_modules' || WEB_DIRS.has(name)) continue
       walk(p, match, out)
     } else if (match(name)) out.push(p)
   }

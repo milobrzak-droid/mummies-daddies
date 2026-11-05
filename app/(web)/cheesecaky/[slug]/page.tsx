@@ -114,18 +114,20 @@ export default async function CheesecakePage({ params }: { params: Promise<{ slu
 
       {d.related.section && d.related.items.length ? (
         <Section tone="paper" labelledBy="souvisejici-title">
-          <SectionHeading id="souvisejici-title" title={d.related.section.heading} />
-          <ul role="list" className="grid gap-5 sm:grid-cols-2 lg:max-w-4xl">
-            {d.related.items.map((r) => (
-              <li key={r.key}>
-                {r.product ? (
-                  <ProductCard product={r.product} sizes="(min-width: 1024px) 440px, (min-width: 640px) 46vw, 92vw" />
-                ) : (
-                  <PastelCard title={r.title} href={r.href} tone="vanilla" className="min-h-[12rem]" />
-                )}
-              </li>
-            ))}
-          </ul>
+          <div className={d.related.items.length < 3 ? 'grid gap-y-2 lg:grid-cols-3 lg:gap-x-6' : undefined}>
+            <SectionHeading id="souvisejici-title" title={d.related.section.heading} />
+            <ul role="list" className={d.related.items.length < 3 ? 'grid gap-5 sm:grid-cols-2 lg:col-span-2' : 'grid gap-5 sm:grid-cols-2 lg:grid-cols-3'}>
+              {d.related.items.map((r) => (
+                <li key={r.key}>
+                  {r.product ? (
+                    <ProductCard product={r.product} sizes="(min-width: 1024px) 440px, (min-width: 640px) 46vw, 92vw" />
+                  ) : (
+                    <PastelCard title={r.title} href={r.href} tone="vanilla" className="min-h-[12rem]" />
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
         </Section>
       ) : null}
 

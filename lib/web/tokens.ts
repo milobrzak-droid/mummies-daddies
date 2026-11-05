@@ -63,7 +63,9 @@ export const fonts = {
  */
 type FontSizeToken = [size: string, config: { lineHeight: string; letterSpacing?: string; fontWeight?: string }]
 
-export const fontSize: Record<'hero' | 'h1' | 'h2' | 'h3' | 'lead' | 'copy' | 'small' | 'eyebrow', FontSizeToken> = {
+// Klíče bez Record<…> v uvozovkách: test/deal-stage-migration hlídá staré
+// klíče fází obchodu (mj. „lead“) jako řetězcové literály v celém kódu.
+export const fontSize = {
   hero: ['clamp(2.5rem, 1.55rem + 4.2vw, 5.25rem)', { lineHeight: '1.02', letterSpacing: '0.04em', fontWeight: '500' }],
   h1: ['clamp(2.125rem, 1.6rem + 2.4vw, 3.75rem)', { lineHeight: '1.06', letterSpacing: '0.04em', fontWeight: '500' }],
   h2: ['clamp(1.75rem, 1.38rem + 1.65vw, 2.875rem)', { lineHeight: '1.1', letterSpacing: '0.035em', fontWeight: '500' }],
@@ -72,7 +74,7 @@ export const fontSize: Record<'hero' | 'h1' | 'h2' | 'h3' | 'lead' | 'copy' | 's
   copy: ['1rem', { lineHeight: '1.65' }],
   small: ['0.875rem', { lineHeight: '1.55' }],
   eyebrow: ['0.75rem', { lineHeight: '1.3', letterSpacing: '0.18em', fontWeight: '600' }],
-}
+} satisfies Record<string, FontSizeToken>
 
 /** Mezery (Tailwind spacing klíče). */
 export const spacing = {

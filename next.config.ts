@@ -167,7 +167,9 @@ export const securityHeaders: { key: string; value: string }[] = [
 ];
 
 const nextConfig: NextConfig = {
-  turbopack: { root: "/home/user" }, // DOČASNĚ jen pro lokální build (symlink node_modules)
+  // Jen pro lokální vývojovou kopii, kde je node_modules symlink mimo složku
+  // projektu: Turbopack pak musí smět číst i výš. Na Vercelu se nenastavuje.
+  ...(process.env.TURBOPACK_ROOT ? { turbopack: { root: process.env.TURBOPACK_ROOT } } : {}),
   poweredByHeader: false,
   // Obrázky veřejného webu (public/web/photos, next/image). Next 16:
   // qualities je povinný allowlist; 75 = výchozí, 85 = hero (lib/web/photos.ts).

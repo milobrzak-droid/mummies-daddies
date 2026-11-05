@@ -64,6 +64,7 @@ export function CheesecakeTeaser({
                 photo={p.photo}
                 tone={toneAt(i, ['blush', 'sage', 'pistachio'])}
                 aspect="square"
+                photoClassName="max-sm:aspect-[3/2]"
                 sizes="(min-width: 1280px) 260px, (min-width: 640px) 30vw, 92vw"
                 meta={p.price ? <PriceTag text={p.price} size="md" /> : null}
               />

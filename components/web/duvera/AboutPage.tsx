@@ -13,7 +13,7 @@ import { PlaceholderPanel } from './PlaceholderPanel'
 import { SplitHero } from './SplitHero'
 
 const P = '/o-nas'
-const VALUE_TONES: readonly SurfaceTone[] = ['blush', 'sage', 'pistachio', 'paper']
+const VALUE_TONES: readonly SurfaceTone[] = ['blush', 'sage', 'pistachio', 'blush']
 
 /** Fotky lidí podle začátku jména v copy (sloty z výběru fotek). */
 const PERSON_PHOTO: readonly [string, string][] = [

@@ -215,7 +215,7 @@ REVOKE ALL ON FUNCTION shop_order_submit(jsonb) FROM PUBLIC, anon, authenticated
 -- 4) Změna stavu objednávky z Cockpitu
 -- ===========================================================================
 --
--- Přechody (domain/web/shopOrderStatus.ts#SHOP_ORDER_TRANSITIONS musí sedět):
+-- Přechody (domain/web/shopOrders.ts#SHOP_ORDER_TRANSITIONS musí sedět):
 --   new       → confirmed | cancelled
 --   confirmed → ready | cancelled | new        (vrácení omylem potvrzené)
 --   ready     → handed_over | cancelled | confirmed
