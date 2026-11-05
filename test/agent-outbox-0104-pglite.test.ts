@@ -442,4 +442,86 @@ describe.skipIf(!PGliteCtor)('odchozí fronta agenta 0104 (PGlite)', () => {
     expect(await row(offerId)).toMatchObject({ status: 'sent', autonomous: false })
     expect(await one(`SELECT status FROM deal_scope_version WHERE id = $1`, [v])).toEqual({ status: 'sent' })
   })
+
+  // --- 0109: shoda ceny nabídky při odeslání --------------------------------------
+
+  test('0109: změna částky verze po zařazení → claim zprávu zablokuje (needs_attention + úkol), nic neodejde', async () => {
+    expect((await one<{ n: number }>(`SELECT count(*)::int AS n FROM schema_migration WHERE version = '0109'`))!.n).toBe(1)
+    const deal = await newDeal()
+    const v = await newDraft(deal, 30000)
+    const { outbox_id: id } = await enqueue(offer(deal, v))
+    const r0 = await row(id)
+    expect(Number(r0!.quote_total)).toBe(30000)
+    expect(r0!.quote_fingerprint).toMatch(/^[0-9a-f]{64}$/)
+
+    // Člověk po zařazení upraví částku konceptu; žádost o schválení (a schválení) kryje už novou částku.
+    await svc(`UPDATE deal_scope_version SET amount_one_time = 36000 WHERE id = $1`, [v])
+    const req = (await svc<{ r: { approval_request_id: number } }>(`SELECT agent_outbox_request_offer_approval($1) AS r`, [id]))[0].r
+    await as(user(SALES), `SELECT decide_approval($1, true, NULL)`, [req.approval_request_id])
+    expect(await row(id)).toMatchObject({ status: 'queued' })
+    expect(await one(`SELECT send_approved_at IS NOT NULL AS ok FROM deal_scope_version WHERE id = $1`, [v])).toEqual({ ok: true })
+
+    // Odeslání po schválení: stará cena v textu → zablokováno.
+    expect(await claim(id, 'q1@cena.example', { autonomous: false })).toEqual({ ok: false, reason: 'quote_mismatch' })
+    const r1 = await row(id)
+    expect(r1).toMatchObject({ status: 'needs_attention', stop_reason: 'quote_mismatch', rfc_message_id: null, prague_day: null })
+    const task = await one<{ title: string; description: string; assignee_id: string }>(`SELECT title, description, assignee_id FROM task WHERE id = $1`, [r1!.task_id])
+    expect(task!.title).toMatch(/Přegenerovat nabídku: změnila se cena/)
+    expect(task!.description).toMatch(/30000\.00 CZK.*36000\.00 CZK/)
+    expect(task!.description).toMatch(/přegenerovat/)
+    expect(task!.assignee_id).toBe(SALES)
+    const ev = await one<{ after: Row }>(`SELECT after FROM audit_event WHERE entity_table = 'agent_outbox' AND entity_id = $1 AND action = 'offer.quote_mismatch'`, [String(id)])
+    expect(ev!.after).toMatchObject({ price_changed: true, scope_version_id: v })
+    // Fronta ji sama nepošle: claim ani potvrzení bez rezervace neprojde, verze zůstává koncept.
+    expect(await claim(id, 'q1@cena.example', { autonomous: false })).toEqual({ ok: false, reason: 'not_queued' })
+    await expect(confirm(id)).rejects.toThrow(/AO012/)
+    expect(await one(`SELECT status FROM deal_scope_version WHERE id = $1`, [v])).toEqual({ status: 'draft' })
+  })
+
+  test('0109: změna rozsahu při stejné částce i samostatné odeslání (L4) se zablokuje; beze změny projde', async () => {
+    await setPolicy('send_standard_offer', 'L4')
+    try {
+      const deal = await newDeal()
+      const v = await newDraft(deal, 20000)
+      const { outbox_id: id } = await enqueue(offer(deal, v))
+      await svc(`UPDATE deal_scope_version SET scope = 'Nabídka z mapy + obsluha navíc' WHERE id = $1`, [v])
+      expect(await claim(id, 'q2@cena.example')).toEqual({ ok: false, reason: 'quote_mismatch' })
+      const r = await row(id)
+      expect(r).toMatchObject({ status: 'needs_attention', stop_reason: 'quote_mismatch' })
+      expect((await one<{ title: string }>(`SELECT title FROM task WHERE id = $1`, [r!.task_id]))!.title).toMatch(/změnil se rozsah/)
+
+      // Kontrola: stejná verze beze změny jde odeslat.
+      const deal2 = await newDeal()
+      const v2 = await newDraft(deal2, 20000)
+      const { outbox_id: ok } = await enqueue(offer(deal2, v2))
+      expect(await claim(ok, 'q3@cena.example')).toMatchObject({ ok: true })
+
+      // Starší řádek bez otisku (před 0109): porovná se aspoň částka.
+      const deal3 = await newDeal()
+      const v3 = await newDraft(deal3, 20000)
+      const { outbox_id: old } = await enqueue(offer(deal3, v3))
+      await db.query(`UPDATE agent_outbox SET quote_fingerprint = NULL WHERE id = $1`, [old])
+      await svc(`UPDATE deal_scope_version SET expected_mrr = 100 WHERE id = $1`, [v3])
+      expect(await claim(old, 'q4@cena.example')).toEqual({ ok: false, reason: 'quote_mismatch' })
+    } finally {
+      await setPolicy('send_standard_offer', 'L2')
+    }
+  })
+
+  test('0109: úloha fronty při neshodě ceny nic nepošle a zprávu nechá člověku', async () => {
+    await setPolicy('send_standard_offer', 'L4')
+    try {
+      const deal = await newDeal()
+      const v = await newDraft(deal, 20000)
+      const { outbox_id: id } = await enqueue(offer(deal, v, { priceMapVersion: '2027-01' }))
+      await svc(`UPDATE deal_scope_version SET amount_one_time = 15000 WHERE id = $1`, [v])
+      const mail = fakeMail([], false)
+      const st = await runAgentOutbox({ store: sqlStore(deal), mail, config: RUN_CONFIG, now: () => new Date() })
+      expect(mail.sends).toBe(0)
+      expect(st.reasons.quote_mismatch).toBe(1)
+      expect(await row(id)).toMatchObject({ status: 'needs_attention', stop_reason: 'quote_mismatch' })
+    } finally {
+      await setPolicy('send_standard_offer', 'L2')
+    }
+  })
 })

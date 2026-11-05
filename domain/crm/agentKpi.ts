@@ -510,6 +510,7 @@ const EXTRA_STOP_LABELS: Readonly<Record<string, string>> = {
   approval_rejected: 'schválení bylo zamítnuto',
   approval_expired: 'žádost o schválení vypršela',
   stale_claim: 'odesílání se nedokončilo — ověřit v Odeslané poště',
+  quote_mismatch: 'cena nebo rozsah nabídky se po přípravě textu změnily — koncept přegenerovat',
   throttled: 'Gmail dočasně omezil odesílání',
   gdpr_erased: 'údaje smazány na žádost (GDPR)',
   missing_unsubscribe: 'oslovení bez odkazu na odhlášení',

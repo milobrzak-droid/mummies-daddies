@@ -400,6 +400,15 @@ async function processRow(
     if (claimed.reason === 'not_authorized' || claimed.reason === 'not_approved') {
       return requestApproval(row, 'authority_not_l4', deps, stats, log)
     }
+    if (claimed.reason === 'quote_mismatch') {
+      // 0109: částka nebo rozsah verze nabídky se po přípravě textu změnily.
+      // Claim zprávu už přepnul na needs_attention a založil úkol (přegenerovat
+      // koncept); stará cena zákazníkovi neodejde.
+      stats.blocked++
+      bump(stats, 'quote_mismatch')
+      log('outbox.quote_mismatch', { id: row.id, kind: row.kind })
+      return
+    }
     bump(stats, `claim_${claimed.reason}`)
     return
   }
