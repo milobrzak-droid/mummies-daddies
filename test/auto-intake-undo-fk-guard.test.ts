@@ -45,7 +45,8 @@ describe('auto_intake_undo: cizí klíče, které funkce neumí posoudit', () =>
       // auto_intake: samotný ledger. engagement_milestone: termín převzatý ze schůzky (ON DELETE SET NULL).
       sales_activity: ['auto_intake', 'engagement_milestone', 'meeting_note_intake'],
       // engagement_document_finding: nález dokumentu ukazuje na úkol (ON DELETE SET NULL).
-      task: ['auto_intake', 'engagement_document_finding'],
+      // agent_outbox (0104): úkol k zablokované zprávě fronty (ON DELETE SET NULL).
+      task: ['agent_outbox', 'auto_intake', 'engagement_document_finding'],
       company_alias: ['auto_intake'],
     })
   })

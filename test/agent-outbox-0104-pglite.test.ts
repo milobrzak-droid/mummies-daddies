@@ -5,6 +5,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { outboxEnqueuePayload, type OutboxEnqueue } from '@/core/agents/outboxPort'
+import { OUTBOX_COLUMNS, runAgentOutbox, type OutboxMail, type OutboxRow, type OutboxRunConfig, type OutboxStore, type SendOutcome } from '@/domain/crm/agentOutbox'
 
 type Row = Record<string, unknown>
 type Db = {
@@ -341,5 +342,103 @@ describe.skipIf(!PGliteCtor)('odchozí fronta agenta 0104 (PGlite)', () => {
     await db.query(`UPDATE agent_outbox SET updated_at = now() - interval '400 days' WHERE status = 'sent'`)
     await svc(`SELECT agent_outbox_purge_text(365)`)
     expect((await one<{ n: number }>(`SELECT count(*)::int AS n FROM agent_outbox WHERE status = 'sent' AND body IS NOT NULL AND coalesce(sent_at, updated_at) < now() - interval '365 days'`))!.n).toBe(0)
+  })
+
+  // --- Úloha (domain/crm/agentOutbox.ts) nad skutečnými RPC 0104 ------------------
+
+  function sqlStore(dealId: number): OutboxStore {
+    const rpc = async <T>(sql: string, params: unknown[]) => (await svc<{ r: T }>(sql, params))[0].r
+    return {
+      markStale: (m) => rpc<number[]>(`SELECT agent_outbox_mark_stale($1) AS r`, [m]).then((x) => x.map(Number)),
+      syncApprovals: () => rpc<number>(`SELECT agent_outbox_sync_approvals() AS r`, []),
+      listQueued: async (n) => svc<OutboxRow>(`SELECT ${OUTBOX_COLUMNS} FROM agent_outbox WHERE status = 'queued' AND deal_id = $1 ORDER BY id LIMIT $2`, [dealId, n]),
+      listUncertain: async (n) => svc<OutboxRow>(
+        `SELECT ${OUTBOX_COLUMNS} FROM agent_outbox WHERE status = 'needs_attention' AND stop_reason IN ('stale_claim','uncertain') AND rfc_message_id IS NOT NULL AND deal_id = $1 ORDER BY id LIMIT $2`, [dealId, n]),
+      autonomyGranted: (k) => rpc<boolean>(`SELECT agent_outbox_autonomy_granted($1) AS r`, [k]),
+      async dealFacts(row) {
+        const v = row.scope_version_id ? await one<{ status: string; send_approved_at: string | null }>(`SELECT status, send_approved_at FROM deal_scope_version WHERE id = $1`, [row.scope_version_id]) : null
+        return {
+          dealClosed: false, snoozed: false, doNotContact: false, versionStatus: v?.status ?? null, versionSendApproved: v?.send_approved_at != null,
+          mailbox: { email: 'obchod@test.example', active: true }, humanActivity: false,
+        }
+      },
+      claim: (x) => rpc(`SELECT agent_outbox_claim($1, $2, $3, $4, $5, $6::text[], $7) AS r`,
+        [x.id, x.recipient, x.rfcMessageId, x.autonomous, x.dailyLimit, x.limitKinds, x.perRecipientDailyLimit]),
+      confirm: async (id, mid, tid, sha) => { await rpc(`SELECT agent_outbox_confirm($1, $2, $3, $4) AS r`, [id, mid, tid, sha]) },
+      finish: async (id, status, reason, code, task) =>
+        (await rpc<{ ok: boolean }>(`SELECT agent_outbox_finish($1, $2, $3, $4, $5, $6) AS r`, [id, status, reason, code ?? null, task?.title ?? null, task?.text ?? null])).ok,
+      requestOfferApproval: (id) => rpc(`SELECT agent_outbox_request_offer_approval($1) AS r`, [id]),
+      purgeText: (d) => rpc<number>(`SELECT agent_outbox_purge_text($1) AS r`, [d]),
+    }
+  }
+
+  function fakeMail(outcomes: SendOutcome[], found: boolean): OutboxMail & { sends: number } {
+    const m = {
+      sends: 0,
+      async token() { return { ok: true as const, accessToken: 't' } },
+      async original() {
+        return { ok: true as const, message: { threadId: 'thr1', from: 'Karel <karel@alfa.example>', replyTo: null, messageId: '<o@alfa.example>', references: null,
+          authResults: ['mx.google.com; dmarc=pass header.from=alfa.example'] } }
+      },
+      async customerRepliedInThread() { return false },
+      async send() { m.sends++; return outcomes.shift() ?? { kind: 'accepted' as const, id: `gm${seq++}`, threadId: 'thr1' } },
+      async findSent() { return { ok: true as const, found: found ? { id: `gmf${seq++}`, threadId: 'thr1' } : null } },
+    }
+    return m
+  }
+
+  const RUN_CONFIG: OutboxRunConfig = {
+    outbox: { fromName: 'Test', messageIdDomain: 'cockpit.test', footer: '—\nFirma, IČO 00000000', offerTerms: 'Kalkulace je nezávazná.', ownDomains: ['test.example'],
+      vipAddresses: [], maxQueueAgeHours: 72, staleClaimMinutes: 30, retentionDays: 365, maxPerRun: 20, trustedAuthServId: 'mx.google.com' },
+    autoSendEnabled: true, companyMapVersion: '2027-01', autoSendMaxTotal: 50_000, autoSendKinds: ['offer', 'info_request', 'follow_up'],
+    inquiryLimits: { dailyAutoSendLimit: 1000, perRecipientDailyLimit: 100 }, followUpLimits: { dailyLimit: 1000 }, followUpWindowOpen: true, wonPhases: ['potvrzeno', 'realizovano'],
+  }
+
+  test('úloha nad RPC: bez L4 žádost/blok, s L4 odeslání, nejisté odeslání se dohledá a znovu nepošle', async () => {
+    const deal = await newDeal()
+    const v = await newDraft(deal, 20000)
+    const { outbox_id: offerId } = await enqueue(offer(deal, v, { priceMapVersion: '2027-01' }))
+    const { outbox_id: infoId } = await enqueue({ kind: 'info_request', sourceRef: `web:${seq++}`, dealId: deal, mailboxMemberId: SALES, mode: { to: 'h@run.example' }, subject: 'Doplnění', text: 'Text' })
+    const store = sqlStore(deal)
+    const mail1 = fakeMail([], false)
+    const s1 = await runAgentOutbox({ store, mail: mail1, config: RUN_CONFIG, now: () => new Date() })
+    expect(mail1.sends).toBe(0)
+    expect(s1.approvalRequested).toBe(2)
+    expect(await row(offerId)).toMatchObject({ status: 'blocked', stop_reason: 'approval_required' })
+    expect((await row(offerId))!.approval_request_id).not.toBeNull()
+    expect(await row(infoId)).toMatchObject({ status: 'blocked', stop_reason: 'approval_required' })
+    expect((await row(infoId))!.task_id).not.toBeNull()
+
+    await setPolicy('send_info_request', 'L4')
+    try {
+      const { outbox_id: a } = await enqueue({ kind: 'info_request', sourceRef: `web:${seq++}`, dealId: deal, mailboxMemberId: SALES, mode: { to: 'i@run.example' }, subject: 'Doplnění', text: 'Text' })
+      const { outbox_id: b } = await enqueue({ kind: 'info_request', sourceRef: `web:${seq++}`, dealId: deal, mailboxMemberId: SALES, mode: { to: 'j@run.example' }, subject: 'Doplnění', text: 'Text' })
+      const mail2 = fakeMail([{ kind: 'accepted', id: 'gmA', threadId: 'thrA' }, { kind: 'uncertain', reason: 'backendError' }], false)
+      const s2 = await runAgentOutbox({ store, mail: mail2, config: RUN_CONFIG, now: () => new Date() })
+      expect(s2).toMatchObject({ sent: 1, sentAutonomous: 1, uncertain: 1 })
+      expect(await row(a)).toMatchObject({ status: 'sent', sent_message_id: 'gmA', autonomous: true })
+      expect((await row(a))!.sent_body_sha256).toMatch(/^[0-9a-f]{64}$/)
+      expect(await row(b)).toMatchObject({ status: 'needs_attention', stop_reason: 'uncertain', error_code: 'backenderror' })
+      const ev = await one<{ action: string }>(`SELECT action FROM audit_event WHERE entity_table = 'agent_outbox' AND entity_id = $1 AND action LIKE '%sent' ORDER BY id DESC LIMIT 1`, [String(a)])
+      expect(ev!.action).toBe('info_request.auto_sent')
+
+      // Další běh: nejistá zpráva se dohledá v Odeslané poště a potvrdí; nic se neposílá.
+      const mail3 = fakeMail([], true)
+      const s3 = await runAgentOutbox({ store, mail: mail3, config: RUN_CONFIG, now: () => new Date() })
+      expect(mail3.sends).toBe(0)
+      expect(s3.reconciled).toBe(1)
+      expect((await row(b))!.status).toBe('sent')
+    } finally {
+      await setPolicy('send_info_request', 'L2')
+    }
+
+    // Schválení nabídky člověkem → fronta ji odešle (bez autonomie), verze → odesláno.
+    const reqId = (await row(offerId))!.approval_request_id as number
+    await as(user(SALES), `SELECT decide_approval($1, true, NULL)`, [reqId])
+    const mail4 = fakeMail([], false)
+    const s4 = await runAgentOutbox({ store, mail: mail4, config: { ...RUN_CONFIG, autoSendEnabled: false }, now: () => new Date() })
+    expect(s4).toMatchObject({ sent: 1, sentAutonomous: 0 })
+    expect(await row(offerId)).toMatchObject({ status: 'sent', autonomous: false })
+    expect(await one(`SELECT status FROM deal_scope_version WHERE id = $1`, [v])).toEqual({ status: 'sent' })
   })
 })

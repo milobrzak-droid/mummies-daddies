@@ -367,6 +367,17 @@ const formatCzkDec = (n: number) => `${czkDec.format(Math.round(n * 100) / 100)}
 const pct = (rate: number) => `${czk.format(Math.round(rate * 1000) / 10)} %`
 
 /**
+ * Oslovení zákazníka: jméno z e-mailu nebo formuláře je nedůvěryhodný vstup.
+ * Projde jen písmena (i s diakritikou), mezera, tečka, pomlčka a apostrof,
+ * nejvýš 60 znaků a aspoň jedno písmeno; jinak neutrální „Dobrý den,".
+ */
+export function greetingLine(customerName: string | null | undefined): string {
+  const name = (customerName ?? '').normalize('NFC').replace(/\s+/g, ' ').trim()
+  const safe = name.length > 0 && name.length <= 60 && /^[\p{L}][\p{L}\p{M} .'’-]*$/u.test(name)
+  return safe ? `Dobrý den, ${name},` : 'Dobrý den,'
+}
+
+/**
  * Text e-mailu se standardní nabídkou. Neobsahuje nic, co nespočítal kód.
  * Nabídka je NEZÁVAZNÁ kalkulace: smlouva vzniká až písemným potvrzením
  * firmy (patičku s údaji firmy, obchodními a storno podmínkami připojí
@@ -376,7 +387,7 @@ export function renderOfferEmail(
   quote: OfferQuote,
   ctx: { companyName: string; signature: string; customerName?: string | null },
 ): { subject: string; body: string } {
-  const greeting = ctx.customerName ? `Dobrý den, ${ctx.customerName},` : 'Dobrý den,'
+  const greeting = greetingLine(ctx.customerName)
   const gross = quote.pricesIncludeVat
   const rows = quote.lines.map((l) => {
     const k = gross ? 1 + l.vatRate : 1
@@ -421,7 +432,7 @@ const QUESTIONS: Record<MissingField, string> = {
 
 /** E-mail s doptáním chybějících údajů. Nic nenabízí ani neslibuje. */
 export function renderInfoRequest(missing: readonly MissingField[], ctx: { signature: string; customerName?: string | null }): string {
-  const greeting = ctx.customerName ? `Dobrý den, ${ctx.customerName},` : 'Dobrý den,'
+  const greeting = greetingLine(ctx.customerName)
   return [
     greeting,
     '',

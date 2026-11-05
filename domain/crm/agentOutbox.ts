@@ -164,7 +164,7 @@ const bump = (s: OutboxRunStats, reason: string) => {
 
 // --- Pomocné ---------------------------------------------------------------------
 
-const KIND_LABEL: Record<OutboxKind, string> = { offer: 'nabídka', info_request: 'doptání údajů', follow_up: 'připomínka nabídky' }
+const KIND_LABEL: Record<OutboxKind, string> = { offer: 'cenová nabídka', info_request: 'doptání údajů', follow_up: 'připomínka nabídky' }
 
 /** Vlastní Message-ID (podle něj se zpráva dohledá v Odeslané poště). */
 export function newRfcMessageId(id: number, domain: string, rand: () => string = () => randomBytes(9).toString('hex')): string {
