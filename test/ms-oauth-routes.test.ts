@@ -53,6 +53,7 @@ function expectBothCookiesCleared(res: { cookies: { get(name: string): { value: 
 
 beforeEach(() => {
   vi.clearAllMocks()
+  vi.stubEnv('MS_GRAPH_ENABLED', 'true')
   vi.stubEnv('MS_CLIENT_ID', 'client-id-123')
   vi.stubEnv('MS_CLIENT_SECRET', 'client-secret')
   vi.stubEnv('MS_REDIRECT_URI', undefined)
@@ -272,5 +273,15 @@ describe('GET /api/ms/callback', () => {
     const loc = locationOf(res)
     expect(loc.pathname + loc.search).toBe('/cockpit/nastaveni?err=oauth')
     expectBothCookiesCleared(res)
+  })
+})
+
+// Pošta firmy je Google Workspace: Outlook je vypnutý, dokud ho výslovně nezapne MS_GRAPH_ENABLED.
+describe('Outlook vypnutý (bez MS_GRAPH_ENABLED)', () => {
+  test('/api/ms/connect i /api/ms/callback vrací 404 a nesahají na session', async () => {
+    vi.stubEnv('MS_GRAPH_ENABLED', '')
+    expect((await connect(new NextRequest('https://cockpit.example/api/ms/connect'))).status).toBe(404)
+    expect((await callback(new NextRequest('https://cockpit.example/api/ms/callback?code=c&state=s'))).status).toBe(404)
+    expect(tryRequireUser).not.toHaveBeenCalled()
   })
 })

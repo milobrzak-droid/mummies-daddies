@@ -27,6 +27,7 @@ const SUB = '11111111-2222-3333-4444-555555555555'
 const URL_ = 'https://cockpit.example.cz/api/ms/notifications'
 
 function enable() {
+  vi.stubEnv('MS_GRAPH_ENABLED', 'true')
   vi.stubEnv('OUTLOOK_MAIL_SYNC_ENABLED', 'true')
   vi.stubEnv('OUTLOOK_MAIL_WEBHOOK_ENABLED', 'true')
   vi.stubEnv('CRON_SECRET', SECRET)

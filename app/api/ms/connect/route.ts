@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server'
+import { msGraphEnabled } from '@/lib/msGraph'
 import { tryRequireUser } from '@/lib/auth/requireUser'
 import {
   getAuthUrl,
@@ -22,6 +23,8 @@ import {
 // Mail.Send). Callback pak řádek calendar_token přepíše (upsert) — odpojovat
 // předem není potřeba. Jiné hodnoty se ignorují (žádný průchod parametru).
 export async function GET(request: NextRequest) {
+  // Pošta firmy je Google Workspace; Outlook jen s MS_GRAPH_ENABLED (lib/msGraph.ts).
+  if (!msGraphEnabled()) return new NextResponse(null, { status: 404 })
   const user = await tryRequireUser({ aal2: true })
   if (!user) return NextResponse.redirect(new URL('/login', request.url))
 

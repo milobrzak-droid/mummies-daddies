@@ -21,6 +21,7 @@
 // last_notification_at) — data do mail_event jdou vždy z Graph delta dotazu.
 
 import { after } from 'next/server'
+import { msGraphEnabled } from '@/lib/msGraph'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { logError, logWarn } from '@/lib/log'
 import { runJob } from '@/worker'
@@ -91,7 +92,8 @@ function schedule(work: NotificationWork, secret: string, memberId: string): voi
 }
 
 export async function POST(request: Request) {
-  const enabled = mailWebhookEnabledFromEnv(process.env)
+  // Pošta firmy je Google Workspace; Outlook jen s MS_GRAPH_ENABLED (lib/msGraph.ts).
+  const enabled = msGraphEnabled() && mailWebhookEnabledFromEnv(process.env)
   if (!enabled) return notificationResponse({ kind: 'disabled' })
 
   const validationToken = new URL(request.url).searchParams.get('validationToken')

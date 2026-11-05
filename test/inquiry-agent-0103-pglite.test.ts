@@ -5,6 +5,8 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { webInquiryPayload, webInquirySchema } from '@/core/webInquiry'
+import { inquiryFoundPayload, leadCompany, leadLine, parseFoundResult, type AgentVerdict } from '@/domain/crm/inquiryAgent'
+import { COMPANY } from '@/config'
 
 type Row = Record<string, unknown>
 type Db = {
@@ -237,6 +239,26 @@ describe.skipIf(!PGliteCtor)('0103: fronta agenta poptávek a zápis leadu (PGli
     expect(await one(`SELECT status, decision_kind, reason_codes, deal_id = $2 AS linked FROM web_inquiry WHERE id = $1`, [id, r.deal_id]))
       .toEqual({ status: 'decided', decision_kind: 'ask_info', reason_codes: ['distanceKm'], linked: true })
     expect(await one(`SELECT source FROM deal WHERE id = $1`, [r.deal_id])).toEqual({ source: 'web' })
+  })
+
+  test('payload z domény (inquiryFoundPayload) projde SQL: eskalace B2C se svatbou → svatební hostina, úkol, bez konceptu', async () => {
+    const { run_id } = await enqueue('<svatba-1@mail.example>', 'g9')
+    const verdict: AgentVerdict = { kind: 'escalate', reasonCodes: ['special_request', 'sender_unverified'], missing: [], quote: null, reply: null }
+    const line = leadLine(COMPANY.capabilities.inquiryAgent.leadMapping, 'b2c', 'svatba')
+    const p = inquiryFoundPayload({
+      source: 'email', sourceKey: '<svatba-1@mail.example>', runId: run_id, occurredAt: '2026-11-05T08:00:00Z', ownerId: SALES, dedupDays: 14,
+      email: 'nevesta@mail.example', personName: 'Petra Nevěstová',
+      company: leadCompany({ segment: 'b2c', email: 'nevesta@mail.example', companyName: null }),
+      verdict, facts: { segment: 'b2c', eventType: 'svatba', eventTypeLabel: 'Svatební hostina', eventDate: '2027-06-12', guests: 80 },
+      line: { ...line, revenueCategory: 'one_time' }, today: '2026-11-05',
+    })
+    const r = parseFoundResult(await rpc('inquiry_agent_found', p))
+    expect(r?.status).toBe('created')
+    const deal = await one(`SELECT revenue_line::text AS line, pillar, next_step_due::text AS due, title,
+        (SELECT count(*)::int FROM task WHERE deal_id = d.id) AS tasks,
+        (SELECT count(*)::int FROM deal_scope_version WHERE deal_id = d.id) AS scopes
+      FROM deal d WHERE d.id = $1`, [r!.deal_id])
+    expect(deal).toEqual({ line: 'svatebni_hostina', pillar: 'b2c_oslavy', due: '2026-11-06', title: 'Svatební hostina — Petra Nevěstová, 12. 6. 2027', tasks: 1, scopes: 0 })
   })
 
   test('RPC smí jen service_role; tým s obchodní rolí frontu čte, projektak ne', async () => {

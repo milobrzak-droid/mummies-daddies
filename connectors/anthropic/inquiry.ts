@@ -78,7 +78,10 @@ export function parseInquiryResponse(data: unknown): unknown {
 
 async function errorTypeOf(res: Response): Promise<string> {
   try {
-    const type = ((await res.json()) as { error?: { type?: unknown } } | null)?.error?.type
+    const err = ((await res.json()) as { error?: { type?: unknown; message?: unknown } } | null)?.error
+    // Vyčerpaný kredit = dočasný stav (agent zprávu odloží, ne eskaluje); text chyby se nepřenáší.
+    if (typeof err?.message === 'string' && /credit balance/i.test(err.message)) return ' (billing)'
+    const type = err?.type
     return typeof type === 'string' && /^[a-z_]{1,64}$/.test(type) ? ` (${type})` : ''
   } catch {
     return ''
