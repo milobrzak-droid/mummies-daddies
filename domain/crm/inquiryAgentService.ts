@@ -226,12 +226,14 @@ export async function runInquiryAgent(deps: InquiryAgentDeps): Promise<InquiryAg
     } catch (e) {
       logError('inquiryAgent.email', e, { runId: row.id })
       stats.failed++
+      const terminal = row.attempts >= cfg.modelMaxAttempts
       await safeFinishRun(deps.store, {
         run_id: row.id,
-        status: row.attempts >= cfg.modelMaxAttempts ? 'failed' : 'pending',
+        status: terminal ? 'failed' : 'pending',
         error_code: 'processing_error',
         retry_after_seconds: retryDelaySeconds(row.attempts),
       })
+      if (terminal) await escalateFailure(ctx, { sourceKey: `inquiry:${row.id}`, source: 'email', occurredAt: row.received_at, evidence: emailEvidence(row), code: 'processing_failed' })
     }
   }
 
@@ -250,9 +252,11 @@ export async function runInquiryAgent(deps: InquiryAgentDeps): Promise<InquiryAg
       } catch (e) {
         logError('inquiryAgent.web', e, { webInquiryId: row.id })
         stats.failed++
+        const terminal = row.attempts >= cfg.modelMaxAttempts
         await deps.store
-          .finishWeb({ web_inquiry_id: row.id, status: row.attempts >= cfg.modelMaxAttempts ? 'failed' : 'new', error_code: 'processing_error' })
+          .finishWeb({ web_inquiry_id: row.id, status: terminal ? 'failed' : 'new', error_code: 'processing_error' })
           .catch((err) => logError('inquiryAgent.webFinish', err, { webInquiryId: row.id }))
+        if (terminal) await escalateFailure(ctx, { sourceKey: `web:${row.id}`, source: 'web', occurredAt: row.received_at, evidence: webEvidence(row), code: 'processing_failed' })
       }
     }
   }
@@ -266,6 +270,38 @@ type Ctx = {
   now: () => Date
   stats: InquiryAgentStats
   deps: InquiryAgentDeps
+}
+
+/** Odkaz na zprávu v Gmailu (důkaz u eskalace). */
+function emailEvidence(row: RunRow): EvidenceRef {
+  return {
+    kind: 'email_message',
+    sourceId: row.graph_message_id,
+    webLink: `https://mail.google.com/mail/?authuser=${encodeURIComponent(row.mailbox)}#all/${encodeURIComponent(row.graph_message_id)}`,
+  }
+}
+
+const webEvidence = (row: WebRow): EvidenceRef => ({ kind: 'url', sourceId: `web_inquiry:${row.id}`, webLink: null })
+
+/**
+ * Trvalé selhání (stav 'failed', zahozená odpověď): poptávka nesmí zapadnout.
+ * Bez téhle eskalace by zůstala jen řádkem fronty, který nikdo neuvidí —
+ * člověk dostane případ k posouzení s odkazem na zprávu. Best effort: chyba
+ * zápisu se jen zaloguje (stav fronty už je zapsaný).
+ */
+async function escalateFailure(
+  ctx: Ctx,
+  a: { sourceKey: string; source: 'email' | 'web'; occurredAt: string; evidence: EvidenceRef; code: string },
+): Promise<void> {
+  try {
+    await ctx.deps.store.propose(escalationProposal({
+      sourceKey: a.sourceKey, source: a.source, occurredAt: a.occurredAt, node: ctx.cfg.escalationNode, accountId: null,
+      evidence: a.evidence, reasonCodes: [a.code], eventTypeLabel: null, hasDraft: false,
+    }))
+    ctx.stats.escalate++
+  } catch (e) {
+    logError('inquiryAgent.escalateFailure', e, { sourceKey: a.sourceKey })
+  }
 }
 
 async function safeFinishRun(store: InquiryAgentStore, p: Record<string, unknown>): Promise<void> {
@@ -286,7 +322,19 @@ function verdictFields(v: AgentVerdict): Record<string, unknown> {
   }
 }
 
+/** Jak dlouho smí odpověď agenta čekat na odchozí frontu (od přijetí poptávky). */
+export const REPLY_DRAFT_MAX_AGE_HOURS = COMPANY.capabilities.agentOutbox?.maxQueueAgeHours ?? 72
+
 async function retryOutbox(ctx: Ctx, row: RunRow): Promise<void> {
+  // Koncept, který nestihl do fronty (fronta chyběla nebo odmítala), po lhůtě
+  // neodešle: nabídka by mohla být po platnosti a zákazník mezitím odpověď
+  // dostal jinak. Fronta měří stáří až od zařazení, takže to hlídá tady.
+  const ageHours = (ctx.now().getTime() - Date.parse(row.received_at)) / 3_600_000
+  if (!(ageHours <= REPLY_DRAFT_MAX_AGE_HOURS)) {
+    await ctx.deps.store.finishRun({ run_id: row.id, status: 'decided', reply_draft: null, error_code: 'reply_expired' })
+    await escalateFailure(ctx, { sourceKey: `inquiry:${row.id}`, source: 'email', occurredAt: row.received_at, evidence: emailEvidence(row), code: 'reply_expired' })
+    return
+  }
   const r = await ctx.deps.store.enqueueOutbox(row.reply_draft as Record<string, unknown>)
   if (r.ok) {
     await ctx.deps.store.finishRun({ run_id: row.id, status: 'enqueued', outbox_id: r.outboxId, reply_draft: null, error_code: null })
@@ -311,8 +359,10 @@ async function processEmail(ctx: Ctx, row: RunRow, opts: { modelAllowed: boolean
   if (fetched.kind === 'retry') {
     const exhausted = row.attempts >= cfg.modelMaxAttempts * 3
     await store.finishRun({ run_id: row.id, status: exhausted ? 'failed' : 'pending', error_code: fetched.code, retry_after_seconds: fetched.seconds })
-    if (exhausted) stats.failed++
-    else stats.retried++
+    if (exhausted) {
+      stats.failed++
+      await escalateFailure(ctx, { sourceKey: `inquiry:${row.id}`, source: 'email', occurredAt: row.received_at, evidence: emailEvidence(row), code: 'message_unreadable' })
+    } else stats.retried++
     return false
   }
   if (!opts.modelAllowed) {
@@ -374,11 +424,7 @@ async function processEmail(ctx: Ctx, row: RunRow, opts: { modelAllowed: boolean
     eventDate: extracted?.eventDate ?? null,
     guests: extracted?.guests ?? null,
   }
-  const evidence: EvidenceRef = {
-    kind: 'email_message',
-    sourceId: row.graph_message_id,
-    webLink: `https://mail.google.com/mail/?authuser=${encodeURIComponent(row.mailbox)}#all/${encodeURIComponent(row.graph_message_id)}`,
-  }
+  const evidence = emailEvidence(row)
 
   // Bez platné adresy odesílatele nejde založit kontakt: jen eskalace bez CRM.
   if (!fromAddress) {
@@ -470,6 +516,7 @@ async function processWeb(ctx: Ctx, row: WebRow): Promise<void> {
   if (!parsed.success) {
     await store.finishWeb({ web_inquiry_id: row.id, status: 'failed', error_code: 'invalid_inquiry' })
     stats.failed++
+    await escalateFailure(ctx, { sourceKey: `web:${row.id}`, source: 'web', occurredAt: row.received_at, evidence: webEvidence(row), code: 'invalid_inquiry' })
     return
   }
   const w = parsed.data
@@ -522,7 +569,7 @@ async function processWeb(ctx: Ctx, row: WebRow): Promise<void> {
     if (verdict.kind !== 'escalate') verdict = escalateVerdict(verdict, 'ambiguous_account')
     await store.propose(escalationProposal({
       sourceKey: sourceRef, source: 'web', occurredAt: row.received_at, node: cfg.escalationNode, accountId: found.account_id,
-      evidence: { kind: 'url', sourceId: `web_inquiry:${row.id}`, webLink: null },
+      evidence: webEvidence(row),
       reasonCodes: verdict.reasonCodes, eventTypeLabel: facts.eventTypeLabel, hasDraft: verdict.quote !== null,
     }))
     await store.finishWeb({ web_inquiry_id: row.id, status: 'decided', ...verdictFields(verdict), error_code: null })

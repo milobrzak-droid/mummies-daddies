@@ -273,3 +273,62 @@ describe('web (bez modelu)', () => {
     expect(s.finishedWeb[0]).toMatchObject({ status: 'failed', error_code: 'invalid_inquiry' })
   })
 })
+
+// Revize integrace: trvale selhaná poptávka nesmí zůstat jen řádkem fronty
+// ve stavu 'failed', který nikdo neuvidí — člověk dostane případ k posouzení.
+describe('trvalé selhání = eskalace člověku (poptávka nezapadne)', () => {
+  const web = (inquiry: Record<string, unknown>, over: Partial<WebRow> = {}): WebRow => ({
+    id: 5, received_at: '2026-11-05T08:30:00.000Z', customer_name: 'Petra Malá', email: 'petra@firma-beta.cz', company_name: 'Beta s.r.o.', ico: null, attempts: 1,
+    inquiry: { segment: 'b2b', event_type: 'obed', package_key: null, event_date: '2026-12-10', duration_hours: null, guests: 30,
+      venue: 'Karlín, Praha 8', extras: [], dietary: [], special_requests: null, ...inquiry },
+    ...over,
+  })
+
+  it('e-mail: výjimka po vyčerpání pokusů → failed + případ s odkazem na zprávu', async () => {
+    const { store, s } = makeStore({ runs: [run({ attempts: 4 })] })
+    ;(store.found as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('inquiry_agent_found: 23505'))
+    await runInquiryAgent(deps(store, mail()))
+    expect(s.finishedRuns.at(-1)).toMatchObject({ run_id: 7, status: 'failed', error_code: 'processing_error' })
+    expect(s.proposals).toHaveLength(1)
+    expect(s.proposals[0]).toMatchObject({ sourceKey: 'inquiry:7', reasons: ['processing_failed'], event: { evidence: { kind: 'email_message', sourceId: 'g1' } } })
+    expect(JSON.stringify(s.proposals[0])).not.toContain('4711')
+  })
+
+  it('e-mail: výjimka před vyčerpáním pokusů = jen odklad, bez případu', async () => {
+    const { store, s } = makeStore({ runs: [run({ attempts: 1 })] })
+    ;(store.found as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('x'))
+    await runInquiryAgent(deps(store, mail()))
+    expect(s.finishedRuns.at(-1)).toMatchObject({ status: 'pending' })
+    expect(s.proposals).toEqual([])
+  })
+
+  it('e-mail: zprávu nejde opakovaně načíst (např. neplatný token) → failed + případ', async () => {
+    const { store, s } = makeStore({ runs: [run({ attempts: 12 })] })
+    await runInquiryAgent(deps(store, mail({}, { kind: 'retry', seconds: 3600, code: 'mail_token_invalid_grant' })))
+    expect(s.finishedRuns[0]).toMatchObject({ status: 'failed', error_code: 'mail_token_invalid_grant' })
+    expect(s.proposals[0]).toMatchObject({ sourceKey: 'inquiry:7', reasons: ['message_unreadable'] })
+  })
+
+  it('web: poškozený řádek → failed + případ', async () => {
+    const { store, s } = makeStore({ web: [web({}, { inquiry: 'nesmysl' })] })
+    await runInquiryAgent(deps(store, mail()))
+    expect(s.proposals[0]).toMatchObject({ sourceKey: 'web:5', reasons: ['invalid_inquiry'] })
+  })
+
+  it('web: výjimka po vyčerpání pokusů → failed + případ', async () => {
+    const { store, s } = makeStore({ web: [web({}, { attempts: 4 })] })
+    ;(store.found as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('x'))
+    await runInquiryAgent(deps(store, mail()))
+    expect(s.finishedWeb.at(-1)).toMatchObject({ status: 'failed' })
+    expect(s.proposals[0]).toMatchObject({ sourceKey: 'web:5', reasons: ['processing_failed'] })
+  })
+
+  it('koncept odpovědi starší než lhůta fronty se už nezařadí (nabídka po platnosti) → případ', async () => {
+    const draft = { kind: 'offer', source_ref: 'inquiry:7' }
+    const { store, s } = makeStore({ runs: [run({ status: 'decided', reply_draft: draft, received_at: '2026-10-01T08:00:00.000Z' })] })
+    await runInquiryAgent(deps(store, mail()))
+    expect(store.enqueueOutbox).not.toHaveBeenCalled()
+    expect(s.finishedRuns[0]).toMatchObject({ run_id: 7, status: 'decided', reply_draft: null, error_code: 'reply_expired' })
+    expect(s.proposals[0]).toMatchObject({ sourceKey: 'inquiry:7', reasons: ['reply_expired'] })
+  })
+})
