@@ -93,6 +93,9 @@ export async function updateSession(request: NextRequest) {
     // Browsers POST CSP violation reports with no app session/cookies at all —
     // gating this would just turn every report into a lost redirect to /login.
     || path === '/api/csp-report'
+    // Externí uptime monitor nemá session; veřejná odpověď nese jen stav
+    // (ok/degraded/down), detail jen s Bearer HEALTH_TOKEN (app/api/health).
+    || path === '/api/health'
     // Vercel Cron nemá session a redirect nenásleduje. Autentizace je
     // povinná konstantní kontrola Bearer CRON_SECRET v každé routě
     // app/api/cron/* (hlídá test/route-auth-guard.test.ts).

@@ -5,11 +5,14 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 type Cron = { path: string; schedule: string }
 const config = JSON.parse(readFileSync(join(__dirname, '..', 'vercel.json'), 'utf8')) as { crons?: Cron[] }
 
-/** Hobby plán: nejvýš jedno spuštění denně → minuta i hodina musí být pevné číslo. */
+/** Denní plán: minuta i hodina jsou pevné číslo. */
 function atMostDaily(schedule: string): boolean {
   const [min, hour] = schedule.trim().split(/\s+/)
   return /^\d+$/.test(min) && /^\d+$/.test(hour)
 }
+
+/** Úlohy, které smějí běžet častěji než denně (Vercel Pro, balík P8 / docs/NASAZENI.md). */
+const FREQUENT = new Set(['/api/cron/inquiry-agent', '/api/cron/agent-outbox', '/api/cron/ops-alarm'])
 
 describe('vercel.json — cron', () => {
   it('outlook-mail běží denně ve 04:00 UTC', () => {
@@ -20,8 +23,10 @@ describe('vercel.json — cron', () => {
     expect(config.crons).toContainEqual({ path: '/api/cron/weekly-digest', schedule: '0 5 * * *' })
   })
 
-  it('všechny plány jsou povolené na Hobby (nejvýš 1× denně)', () => {
-    for (const c of config.crons ?? []) expect(atMostDaily(c.schedule), c.schedule).toBe(true)
+  it('častěji než denně běží jen agent, outbox a alarm (Vercel Pro); ostatní nejvýš 1× denně', () => {
+    for (const c of config.crons ?? []) {
+      if (!FREQUENT.has(c.path)) expect(atMostDaily(c.schedule), `${c.path} ${c.schedule}`).toBe(true)
+    }
   })
 })
 
