@@ -9,6 +9,7 @@
 
 import type { InquiryAgentConfig } from './agents/inquiryAgentConfig'
 import type { FollowUpCadenceConfig } from './followUpCadence'
+import type { AgentOutboxConfig } from './agents/outboxConfig'
 
 /** Šablona pracovního případu: předvyplní kroky a otevřená rozhodnutí. */
 export interface CaseTemplate<N extends string = string> {
@@ -262,7 +263,12 @@ export interface PriceMapSegment<S extends string = string> {
   key: S
   label: string
   eventTypes: readonly PriceMapEventType[]
+  /** Ceny v textu nabídky včetně DPH (spotřebitelé, B2C). Výpočet zůstává bez DPH. */
+  pricesIncludeVat?: boolean
 }
+
+/** Druh plnění pro sazbu DPH řádku nabídky (P3). */
+export type VatClass = 'food' | 'service' | 'delivery' | 'rental' | 'alcohol'
 
 export interface PriceMapExtra {
   key: string
@@ -270,6 +276,8 @@ export interface PriceMapExtra {
   /** Za hosta, za akci, nebo za hodinu trvání akce. */
   unit: 'guest' | 'event' | 'hour'
   price: number
+  /** Druh plnění pro DPH (chybí = jídlo). */
+  vatClass?: VatClass
 }
 
 export interface PriceMapConfig<S extends string = string> {
@@ -280,8 +288,14 @@ export interface PriceMapConfig<S extends string = string> {
   /** Mapa platí do (YYYY-MM-DD včetně); po tomto dni agent nic sám nespočítá. */
   validUntil: string
   currency: 'CZK'
-  /** Sazba DPH jako zlomek (0.12 = 12 %). */
+  /** Sazba DPH jako zlomek (0.12 = 12 %) — výchozí pro druh plnění bez vlastní sazby. */
   vatRate: number
+  /**
+   * Sazby DPH podle druhu plnění (jídlo, obsluha, doprava, pronájem,
+   * alkohol). Chybějící druh = `vatRate`. DPH se počítá ze součtu základů
+   * každé sazby.
+   */
+  vatRates?: Readonly<Partial<Record<VatClass, number>>>
   /** Platnost nabídky ve dnech od vystavení. */
   offerValidityDays: number
   /** Akce dřív než za tolik dní od dneška = výjimka (kapacita, nákup). */
@@ -458,6 +472,8 @@ export interface CompanyConfig<N extends string = string, P extends string = str
     inquiryAgent?: InquiryAgentConfig<N> | null
     /** Volitelné (kontrakt P4): follow-up neodpovězených nabídek. */
     followUpCadence?: FollowUpCadenceConfig<N> | null
+    /** Volitelné (P3): odchozí fronta agenta. Chybí nebo null = fronta nic neodesílá. */
+    agentOutbox?: AgentOutboxConfig | null
   }
 
   // --- Kontrakt pro paralelní balíky ------------------------------------------

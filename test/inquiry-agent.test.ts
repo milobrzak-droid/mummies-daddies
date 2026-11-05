@@ -30,8 +30,8 @@ const QUOTE = {
   mapVersion: 'ilustracni-2026-11', segment: 'b2b', eventType: 'obed', eventTypeLabel: 'Oběd',
   package: { key: 'obed_raut', label: 'Obědový raut', pricePerGuest: 690, minGuests: 20, maxGuests: 300, service: true, includes: ['raut'] },
   eventDate: '2026-12-10', guests: 50,
-  lines: [{ key: 'food', label: 'Obědový raut', quantity: 50, unit: 'host', unitPrice: 690, total: 34_500 }],
-  subtotal: 34_500, vat: 4_140, total: 38_640, currency: 'CZK', issuedAt: '2026-11-05', validUntil: '2026-11-19',
+  lines: [{ key: 'food', label: 'Obědový raut', quantity: 50, unit: 'host', unitPrice: 690, total: 34_500, vatClass: 'food', vatRate: 0.12 }],
+  subtotal: 34_500, vat: 4_140, vatBreakdown: [{ rate: 0.12, base: 34_500, vat: 4_140 }], total: 38_640, pricesIncludeVat: false, currency: 'CZK', issuedAt: '2026-11-05', validUntil: '2026-11-19',
 } as OfferQuote
 
 const offerVerdict = (): AgentVerdict => ({ kind: 'send_offer', reasonCodes: [], missing: [], quote: QUOTE, reply: { subject: 'Re: Poptávka', body: 'Dobrý den,\n\nnabídka…' } })

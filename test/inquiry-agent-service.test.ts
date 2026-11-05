@@ -66,7 +66,7 @@ function mail(headers: Record<string, string> = {}, result?: MessageFetch): Mail
 }
 
 const EXTRACTED = {
-  is_catering_inquiry: true, segment: 'b2b', segment_evidence: 'firma v podpisu', event_type: 'obed', event_date: '2026-12-10', guests: 50,
+  is_catering_inquiry: true, segment: 'b2b', segment_evidence: 'firma v podpisu', event_type: 'obed', event_date: '2026-12-10', guests: 30,
   package: null, duration_hours: null, venue: 'Karlín, Praha 8', extras: [], dietary: [], special_requests: null,
   customer_name: 'Jan Novák', company_name: 'Firma Alfa s.r.o.', document_instructions: null,
 }
@@ -223,7 +223,7 @@ describe('e-mail', () => {
 describe('web (bez modelu)', () => {
   const web = (inquiry: Record<string, unknown>, over: Partial<WebRow> = {}): WebRow => ({
     id: 5, received_at: '2026-11-05T08:30:00.000Z', customer_name: 'Petra Malá', email: 'petra@firma-beta.cz', company_name: 'Beta s.r.o.', ico: null, attempts: 1,
-    inquiry: { segment: 'b2b', event_type: 'obed', package_key: null, event_date: '2026-12-10', start_time: '12:00', duration_hours: null, guests: 50,
+    inquiry: { segment: 'b2b', event_type: 'obed', package_key: null, event_date: '2026-12-10', start_time: '12:00', duration_hours: null, guests: 30,
       venue: 'Karlín, Praha 8', extras: [], dietary: [], special_requests: null, ...inquiry },
     ...over,
   })

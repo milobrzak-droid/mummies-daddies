@@ -209,7 +209,10 @@ export const MUMMIES_DADDIES = {
         approvedAt: '2026-11-05',
         validUntil: '2027-06-30',
         currency: 'CZK',
-        vatRate: 0.12, // OVĚŘIT: jídlo vs. služba obsluhy
+        vatRate: 0.12, // výchozí sazba (jídlo)
+        // DPH po druzích plnění (od 2024: stravovací služba 12 %, alkohol 21 %).
+        // OVĚŘIT s účetní: obsluha jako součást stravovací služby, doprava a pronájem samostatně.
+        vatRates: { food: 0.12, service: 0.12, delivery: 0.21, rental: 0.21, alcohol: 0.21 },
         offerValidityDays: 14,
         minLeadDays: 3, // OVĚŘIT
         maxLeadDays: 365,
@@ -230,6 +233,8 @@ export const MUMMIES_DADDIES = {
           {
             key: 'b2c',
             label: 'Soukromé oslavy',
+            // Spotřebitelům ceny v nabídce včetně DPH.
+            pricesIncludeVat: true,
             eventTypes: [
               { key: 'svatba', label: 'Svatební hostina', packages: ['svatebni_hostina'], defaultPackage: 'svatebni_hostina' },
               { key: 'oslava', label: 'Oslava (narozeniny, křtiny)', packages: ['oslava_raut', 'bbq_party'], defaultPackage: 'oslava_raut' },
@@ -254,11 +259,11 @@ export const MUMMIES_DADDIES = {
           { key: 'romanticka_vecere', label: 'Romantická večeře', pricePerGuest: 1990, minGuests: 2, maxGuests: 2, service: true, includes: ['pětichodové menu', 'servis číšníka', 'prostírání a svíčky'] },
         ],
         extras: [
-          { key: 'napoje_alko', label: 'Víno, pivo a prosecco', unit: 'guest', price: 290 },
-          { key: 'barman', label: 'Barman', unit: 'hour', price: 650 },
-          { key: 'cheesecake_dort', label: 'Cheesecake dort', unit: 'event', price: 1290 },
-          { key: 'dekorace', label: 'Dekorace a květiny', unit: 'event', price: 4900 },
-          { key: 'ozvuceni', label: 'Ozvučení', unit: 'event', price: 3500 },
+          { key: 'napoje_alko', label: 'Víno, pivo a prosecco', unit: 'guest', price: 290, vatClass: 'alcohol' },
+          { key: 'barman', label: 'Barman', unit: 'hour', price: 650, vatClass: 'service' },
+          { key: 'cheesecake_dort', label: 'Cheesecake dort', unit: 'event', price: 1290, vatClass: 'food' },
+          { key: 'dekorace', label: 'Dekorace a květiny', unit: 'event', price: 4900, vatClass: 'rental' },
+          { key: 'ozvuceni', label: 'Ozvučení', unit: 'event', price: 3500, vatClass: 'rental' },
         ],
         dietary: [
           { key: 'vegetarian', label: 'vegetariánská varianta', surchargePerGuest: 0 },
@@ -269,7 +274,8 @@ export const MUMMIES_DADDIES = {
         weekendSurchargePct: 10,
         delivery: { includedKm: 15, pricePerKm: 30, maxKm: 100 },
         staff: { guestsPerWaiter: 20, pricePerWaiterHour: 490, minHours: 4, defaultHours: 5 },
-        autoSendMaxTotal: 150_000, // OVĚŘIT
+        // Pilot: nízký strop pro samostatné odeslání. OVĚŘIT s CEO (dohodnutá hodnota).
+        autoSendMaxTotal: 30_000,
       },
     },
 
@@ -327,6 +333,32 @@ export const MUMMIES_DADDIES = {
           body: 'Dobrý den,\n\ntermín {datum} pro vaši akci zatím držíme. Dejte nám prosím vědět, jestli můžeme nabídku potvrdit, nebo co v ní změnit.\n\nS pozdravem',
         },
       },
+    },
+
+    // P3: odchozí fronta agenta (jediná cesta e-mailu zákazníkovi). Samostatné
+    // odeslání navíc hlídá env AGENT_AUTOSEND_ENABLED, pravidlo L4 v DB
+    // a neilustrační mapa. OVĚŘIT s klientem: odkaz na VOP, znění storna,
+    // VIP seznam a vlastní domény.
+    agentOutbox: {
+      fromName: 'Mummies and Daddies',
+      messageIdDomain: 'mummiesdaddies.com',
+      offerTerms: [
+        'Kalkulace je nezávazná. Smlouva vzniká až písemným potvrzením objednávky ze strany Mummies and Daddies s.r.o.; do té doby termín ani kapacitu neblokujeme.',
+        'Storno podmínky a obchodní podmínky: https://mummiesdaddies.com/obchodni-podminky', // OVĚŘIT: adresa VOP na novém webu
+        'Informace o alergenech v jednotlivých pokrmech Vám rádi zašleme na vyžádání.',
+      ].join('\n'),
+      footer: [
+        '—',
+        'Tuto zprávu připravil automatický systém Mummies and Daddies podle našeho standardního ceníku; Vaši odpověď čte náš obchodní tým.',
+        'Mummies and Daddies s.r.o., Varšavská 715, 120 00 Praha 2, IČO 17957524, DIČ CZ17957524, zapsaná v obchodním rejstříku vedeném Městským soudem v Praze, oddíl C, vložka 379274.',
+      ].join('\n'),
+      ownDomains: ['mummiesdaddies.com'],
+      vipAddresses: [], // OVĚŘIT: naplnit citlivé kontakty (celé adresy nebo '@doména')
+      maxQueueAgeHours: 72,
+      staleClaimMinutes: 30,
+      retentionDays: 365,
+      maxPerRun: 20,
+      trustedAuthServId: 'mx.google.com',
     },
   },
 
