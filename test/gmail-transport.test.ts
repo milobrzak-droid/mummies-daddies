@@ -87,13 +87,20 @@ describe('historie a zprávy', () => {
   it('history.list: jen nové zprávy, bez duplicit, s kurzorem a další stránkou', async () => {
     const fetchImpl = vi.fn(async () =>
       json(200, {
-        history: [{ messagesAdded: [{ message: { id: 'm1' } }, { message: { id: 'm2' } }] }, { messagesAdded: [{ message: { id: 'm1' } }] }, {}],
+        history: [{ id: '950', messagesAdded: [{ message: { id: 'm1' } }, { message: { id: 'm2' } }] }, { id: '960', messagesAdded: [{ message: { id: 'm1' } }] }, { id: '970' }, { id: 'x' }],
         nextPageToken: 'p2',
         historyId: '1001',
       }),
     )
     const r = await gmailHistoryPage('t', '900', null, { fetchImpl })
-    expect(r).toEqual({ kind: 'ok', data: { messageIds: ['m1', 'm2'], nextPageToken: 'p2', historyId: '1001' } })
+    expect(r).toEqual({
+      kind: 'ok',
+      data: {
+        messageIds: ['m1', 'm2'], nextPageToken: 'p2', historyId: '1001',
+        // Záznamy s id (průběžný kurzor); záznam bez nových zpráv se drží také, neplatné id ne.
+        records: [{ id: '950', messageIds: ['m1', 'm2'] }, { id: '960', messageIds: ['m1'] }, { id: '970', messageIds: [] }],
+      },
+    })
     const url = (fetchImpl.mock.calls[0] as unknown as [string])[0]
     expect(url).toContain('startHistoryId=900')
     expect(url).toContain('historyTypes=messageAdded')

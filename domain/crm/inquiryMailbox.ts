@@ -13,7 +13,9 @@
 // spam, interní poštu, automaty, hromadnou poštu a staré zprávy. Freemail
 // (B2C) NEvyřazuje. Do fronty jdou jen identifikátory, nikdy obsah.
 import { headerAddresses, type HeaderLike } from '@/core/agents/mailAuth'
+import type { CaseProposalOutput, ProposalDraft } from '@/core/agents/template'
 import { inDomainSet, looksAutomated } from './autoIntake'
+import { INQUIRY_ESCALATION_CAPABILITY } from './inquiryAgent'
 
 type Env = Record<string, string | undefined>
 
@@ -126,7 +128,130 @@ export function screenInboundMessage(m: GmailMetaLike, ctx: ScreenContext): Scre
   return { ok: true, candidate: { internetMessageId, gmailMessageId: m.id, threadId: m.threadId, receivedAt: new Date(received).toISOString() } }
 }
 
-/** Dotaz záložního pollingu (Gmail search): Doručená pošta za posledních N dní. */
-export function pollingQuery(maxAgeDays: number): string {
-  return `in:inbox -in:chats newer_than:${Math.max(1, Math.min(Math.round(maxAgeDays), 30))}d`
+/** Dotaz pollingu s pevným začátkem okna (epocha v sekundách) — pokračování přes více běhů. */
+export function pollingQueryAfter(afterEpochSec: number): string {
+  return `in:inbox -in:chats after:${Math.max(0, Math.floor(afterEpochSec))}`
+}
+
+// ---------------------------------------------------------------------------
+// Kurzor schránky (connector_state.cursor)
+//
+//   '<historyId>'                       čtení historie (users.history.list) od historyId,
+//   'poll:<historyId>:<afterSec>:<n>'   rozpracovaný polling: okno od afterSec (pevné),
+//                                       zpracováno n nejstarších zpráv; po dokončení
+//                                       se pokračuje historií od historyId (vzatého
+//                                       PŘED prvním výpisem, takže nic nepropadne).
+
+export type MailboxCursor =
+  | { mode: 'none' }
+  | { mode: 'history'; historyId: string }
+  | { mode: 'poll'; historyId: string; afterSec: number; offset: number }
+
+const HISTORY_ID_RE = /^[0-9]{1,20}$/
+
+export function parseMailboxCursor(raw: string | null | undefined): MailboxCursor {
+  if (!raw) return { mode: 'none' }
+  const m = /^poll:([0-9]{1,20}):([0-9]{1,12}):([0-9]{1,6})$/.exec(raw)
+  if (m) return { mode: 'poll', historyId: m[1], afterSec: Number(m[2]), offset: Number(m[3]) }
+  return HISTORY_ID_RE.test(raw) ? { mode: 'history', historyId: raw } : { mode: 'none' }
+}
+
+export function pollCursor(historyId: string, afterSec: number, offset: number): string {
+  return `poll:${historyId}:${Math.max(0, Math.floor(afterSec))}:${Math.max(0, Math.floor(offset))}`
+}
+
+// ---------------------------------------------------------------------------
+// Staré zprávy, které předfiltr přeskočil (too_old): nesmí zmizet tiše
+
+export type StaleMessage = { gmailMessageId: string; receivedAt: string | null }
+
+/** Odkaz na zprávu v Gmailu dané schránky. */
+export function gmailMessageLink(mailbox: string, gmailMessageId: string): string {
+  return `https://mail.google.com/mail/?authuser=${encodeURIComponent(mailbox)}#all/${encodeURIComponent(gmailMessageId)}`
+}
+
+const czDate = (iso: string) => {
+  const d = new Date(iso)
+  return `${d.getUTCDate()}. ${d.getUTCMonth() + 1}. ${d.getUTCFullYear()}`
+}
+const gmailDay = (ms: number) => {
+  const d = new Date(ms)
+  return `${d.getUTCFullYear()}/${d.getUTCMonth() + 1}/${d.getUTCDate()}`
+}
+
+/** Odkaz na hledání v Gmailu: Doručená pošta v rozmezí dní, kdy staré zprávy přišly. */
+export function staleSearchLink(mailbox: string, items: readonly StaleMessage[]): string | null {
+  const times = items.map((i) => (i.receivedAt ? Date.parse(i.receivedAt) : NaN)).filter(Number.isFinite)
+  if (times.length === 0) return null
+  const from = Math.min(...times)
+  const to = Math.max(...times) + 86_400_000
+  const q = `in:inbox after:${gmailDay(from)} before:${gmailDay(to)}`
+  return `https://mail.google.com/mail/?authuser=${encodeURIComponent(mailbox)}#search/${encodeURIComponent(q)}`
+}
+
+/** Limit zdůvodnění návrhu případu (case_proposal_rationale_check, 0067). */
+const RATIONALE_MAX = 1000
+
+/**
+ * Jeden souhrnný návrh případu pro obchod (CSO): zprávy starší než
+ * maxMessageAgeDays, které agent kvůli stáří nezpracoval (typicky po výpadku
+ * čtení schránky). Počet, rozmezí dní, odkaz na hledání v Gmailu a přímé
+ * odkazy na první zprávy (kolik se vejde do zdůvodnění). Idempotence:
+ * schránka + klíč dávky (otisk id zpráv; opakované čtení stejné dávky
+ * nezaloží druhý návrh).
+ */
+export function staleMessagesProposal(a: {
+  mailbox: string
+  mailboxKey: string
+  batchKey: string
+  items: readonly StaleMessage[]
+  maxAgeDays: number
+  node: string
+  now: Date
+}): ProposalDraft<Record<string, never>, CaseProposalOutput> | null {
+  if (a.items.length === 0) return null
+  const first = a.items[0]
+  const n = a.items.length
+  const times = a.items.map((i) => i.receivedAt).filter((x): x is string => !!x && Number.isFinite(Date.parse(x))).sort()
+  const range = times.length ? ` (přišly ${czDate(times[0])}${times.length > 1 && czDate(times[0]) !== czDate(times[times.length - 1]) ? `–${czDate(times[times.length - 1])}` : ''})` : ''
+  const search = staleSearchLink(a.mailbox, a.items)
+  let rationale = `Ve schránce ${a.mailbox} je ${n} ${n === 1 ? 'zpráva' : n < 5 ? 'zprávy' : 'zpráv'} starší než ${a.maxAgeDays} dny${range}, `
+    + 'které agent poptávek kvůli stáří automaticky nezpracoval (nejspíš po výpadku čtení schránky). Mohou mezi nimi být poptávky — projděte je ručně.'
+  if (search) rationale += ` Hledání v Gmailu: ${search}`
+  const links: string[] = []
+  for (const it of a.items) {
+    const line = ` ${gmailMessageLink(a.mailbox, it.gmailMessageId)}`
+    const rest = n - links.length - 1
+    const tail = rest > 0 ? ` (a dalších ${rest})` : ''
+    if (rationale.length + ' Zprávy:'.length + links.join('').length + line.length + tail.length + 16 > RATIONALE_MAX) break
+    links.push(line)
+  }
+  if (links.length) {
+    const rest = n - links.length
+    rationale += ` Zprávy:${links.join('')}${rest > 0 ? ` (a dalších ${rest})` : ''}`
+  }
+  return {
+    capability: INQUIRY_ESCALATION_CAPABILITY,
+    sourceKey: `mailbox_stale:${a.mailboxKey}:${a.batchKey}`,
+    event: {
+      source: 'gmail:inbox',
+      type: 'inquiry.mailbox_stale',
+      external_id: `mailbox_stale:${a.mailboxKey}:${a.batchKey}`,
+      occurred_at: a.now.toISOString(),
+      subject: null,
+      participants: [],
+      evidence: { kind: 'email_message', sourceId: first.gmailMessageId, webLink: gmailMessageLink(a.mailbox, first.gmailMessageId) },
+      title: null,
+      payload: {},
+    },
+    output: { title: `Nezpracované starší zprávy ve schránce (${n})`, rationale: rationale.slice(0, RATIONALE_MAX) },
+    reasons: ['mailbox_stale'],
+    method: 'rule',
+    infoState: 'ai_suggestion',
+    target: {
+      node: a.node,
+      accountId: null,
+      steps: ['Projít starší zprávy ve schránce (odkazy v návrhu)', 'Poptávky založit ručně nebo na ně odpovědět', 'Ověřit, proč čtení schránky vypadlo (Provoz)'],
+    },
+  }
 }

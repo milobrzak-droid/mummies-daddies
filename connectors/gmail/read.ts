@@ -98,10 +98,21 @@ export async function gmailProfile(accessToken: string, opts?: GmailFetchOptions
   }))
 }
 
-export type GmailHistoryPage = { messageIds: string[]; nextPageToken: string | null; historyId: string | null }
+export type GmailHistoryPage = {
+  messageIds: string[]
+  nextPageToken: string | null
+  /** Aktuální historyId schránky (platný kurzor až po přečtení všech stránek). */
+  historyId: string | null
+  /**
+   * Záznamy historie v pořadí, jak přišly (vzestupně podle id), s novými
+   * zprávami. Id záznamu je průběžný kurzor: po zpracování zpráv až po něj
+   * včetně smí další čtení začít od něj (users.history.list startHistoryId).
+   */
+  records?: { id: string; messageIds: string[] }[]
+}
 
 type RawHistory = {
-  history?: { messagesAdded?: { message?: { id?: unknown; labelIds?: unknown } }[] }[]
+  history?: { id?: unknown; messagesAdded?: { message?: { id?: unknown; labelIds?: unknown } }[] }[]
   nextPageToken?: unknown
   historyId?: unknown
 }
@@ -121,14 +132,20 @@ export async function gmailHistoryPage(
   const r = await gmailGet<RawHistory>(accessToken, `/history?${q.toString()}`, opts)
   return mapOk(r, (d) => {
     const ids: string[] = []
+    const records: { id: string; messageIds: string[] }[] = []
     for (const h of d.history ?? []) {
+      const recIds: string[] = []
       for (const m of h.messagesAdded ?? []) {
         const id = m.message?.id
+        if (typeof id === 'string' && id && !recIds.includes(id)) recIds.push(id)
         if (typeof id === 'string' && id && !ids.includes(id)) ids.push(id)
       }
+      const rid = typeof h.id === 'string' || typeof h.id === 'number' ? String(h.id) : null
+      if (rid && /^[0-9]{1,20}$/.test(rid)) records.push({ id: rid, messageIds: recIds })
     }
     return {
       messageIds: ids,
+      records,
       nextPageToken: typeof d.nextPageToken === 'string' && d.nextPageToken ? d.nextPageToken : null,
       historyId: typeof d.historyId === 'string' || typeof d.historyId === 'number' ? String(d.historyId) : null,
     }
