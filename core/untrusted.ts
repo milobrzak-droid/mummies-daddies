@@ -19,6 +19,15 @@
 // jinde: výstup modelu je vždy jen NÁVRH (info_state ai_suggestion), který
 // musí potvrdit člověk, a nikdy se automaticky nezapisuje do obchodu.
 //
+// VÝJIMKA — agent příchozích poptávek (core/agents/inquiryToOffer.ts, P2):
+// tam výsledek čtení modelem může vést k SAMOSTATNÉ odpovědi zákazníkovi.
+// Proto platí přísnější pojistky: model jen čte parametry do výčtů z mapy,
+// cenu i celý text odpovědi skládá kód (nic z modelu ani z e-mailu kromě
+// jména ověřeného whitelistem, core/agents/inquiryReply.ts); pokyny v textu
+// (document_instructions) i příznaky z detectInjectionMarkers vedou na
+// eskalaci člověku; odesílatel musí projít SPF/DKIM/DMARC
+// (core/agents/mailAuth.ts) a odeslání hlídají brány odchozí fronty (P3).
+//
 // Modul je čistý (jen crypto náhoda) a nezná žádnou firmu — Loop Core.
 
 // ---------------------------------------------------------------------------

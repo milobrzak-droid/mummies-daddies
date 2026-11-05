@@ -8,6 +8,7 @@
 import type { StandardOfferConfig } from '../tenant'
 import { evaluateStandardOffer, renderInfoRequest, renderOfferEmail, type EscalationReason, type MissingField, type OfferQuote } from '../standardOffer'
 import { resolveSegment, sanitizeInquiry, toOfferInquiry, type SanitizedInquiry, type SegmentDecision } from './inquiryExtraction'
+import { safeGreetingName } from './inquiryReply'
 
 export type InquiryEmail = { subject: string; text: string; fromAddress: string | null }
 
@@ -51,13 +52,15 @@ export async function decideInquiry(
 
   const result = evaluateStandardOffer(ctx.offer, toOfferInquiry(x, segment, { distanceKm, vipContact }), ctx.today)
   const reply = `Re: ${mail.subject}`.slice(0, 250)
+  // Jméno z podpisu je nedůvěryhodné: do oslovení jen „obyčejné jméno" (core/agents/inquiryReply.ts).
+  const customerName = safeGreetingName(x.customerName)
 
   if (result.kind === 'standard') {
-    const email = renderOfferEmail(result.quote, { companyName: ctx.companyName, signature: ctx.offer.signature, customerName: x.customerName })
+    const email = renderOfferEmail(result.quote, { companyName: ctx.companyName, signature: ctx.offer.signature, customerName })
     return { kind: 'send_offer', extracted: x, segment, quote: result.quote, email: { subject: reply, body: email.body } }
   }
   if (result.kind === 'needs_info') {
-    const body = renderInfoRequest(result.missing, { signature: ctx.offer.signature, customerName: x.customerName })
+    const body = renderInfoRequest(result.missing, { signature: ctx.offer.signature, customerName })
     return { kind: 'ask_info', extracted: x, segment, missing: result.missing, email: { subject: reply, body } }
   }
   return { kind: 'escalate', extracted: x, segment, reasons: result.reasons, missing: result.missing, draft: result.draft }

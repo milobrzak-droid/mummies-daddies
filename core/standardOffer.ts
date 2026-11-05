@@ -365,7 +365,7 @@ export function renderOfferEmail(
     `DPH: ${formatCzk(quote.vat)}`,
     `Celkem s DPH: ${formatCzk(quote.total)}`,
     '',
-    `Nabídka platí do ${czDate(quote.validUntil)}. Termín je potvrzený až po Vašem potvrzení nabídky.`,
+    `Kalkulace je nezávazná a platí do ${czDate(quote.validUntil)}. Termín i objednávka jsou závazné až po písemném potvrzení z naší strany.`,
     'Pokud chcete cokoli upravit, stačí odpovědět na tento e-mail.',
     '',
     'S pozdravem',
@@ -379,7 +379,7 @@ const QUESTIONS: Record<MissingField, string> = {
   eventType: 'O jaký typ akce jde (např. raut, coffee break, oslava, svatba)?',
   eventDate: 'Na jaký den je akce plánovaná?',
   guests: 'Kolik hostů očekáváte?',
-  distanceKm: 'Kde se akce bude konat (adresa nebo obec)?',
+  distanceKm: 'Na jaké přesné adrese se akce bude konat (ulice, číslo, obec)?',
 }
 
 /** E-mail s doptáním chybějících údajů. Nic nenabízí ani neslibuje. */
