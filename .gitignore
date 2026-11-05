@@ -43,3 +43,6 @@ supabase/.temp/
 
 # git worktrees created by agents
 .claude/worktrees/
+
+# šablona proměnných (bez hodnot) se commituje
+!.env.example

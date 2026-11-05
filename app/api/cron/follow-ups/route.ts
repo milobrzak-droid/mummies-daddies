@@ -46,6 +46,16 @@
 // jako failed (close_stale_job_runs) a stav úloh zapíše do odpovědi i logu.
 // Stejný stav ukazuje Nastavení (dlaždice Stav úloh) a přehled e-mailem.
 // Samostatný cron nepřidáváme (Vercel Hobby). Chyba kontroly nic nezastaví.
+//
+// Follow-up cadence (balík P4, migrace 0105) běží za hlídačem a vypršením
+// žádostí, pod vlastním zámkem 'follow-up-send': leadům, které neodpověděly
+// na nabídku, zařadí připomínky do odchozí fronty agent_outbox (P3) podle
+// COMPANY.capabilities.followUpCadence (pracovní dny, okno odesílání, denní
+// limit, stop pravidla). VÝCHOZÍ VYPNUTO: jen s FOLLOWUP_CADENCE_ENABLED=
+// 'true'. Okno odesílání (Po–Pá 9–17) cron v 06:00 UTC mine — druhý denní běh
+// v 08:05 UTC (vercel.json) je v okně v zimě i v létě; ostatní úlohy jsou
+// idempotentní, druhý běh jim nevadí. Rozpočet z createDeadline, ať zbyde
+// čas na kontrolu úloh. Chyba cadence hlídač ani ostatní úlohy nezastaví.
 
 import { createHash, timingSafeEqual } from 'node:crypto'
 import { NextResponse } from 'next/server'
@@ -68,6 +78,10 @@ import { runMeetingCalendarSyncLive } from '@/domain/crm/meetingCalendarService'
 import { DOC_SYNC_JOB, DOC_SYNC_TTL_SECONDS, docSyncEnabledFromEnv } from '@/domain/delivery/documentSyncConfig'
 import { runDocumentSyncLive } from '@/domain/delivery/documentSyncService'
 import { runJobHealthCheck } from '@/domain/crm/jobHealth'
+import { COMPANY } from '@/config'
+import { FOLLOW_UP_SEND_ACTOR, FOLLOW_UP_SEND_CONNECTOR, followUpCadenceEnabledFromEnv } from '@/domain/crm/followUpCadence'
+import { createFollowUpCadenceDb, runFollowUpSendJob } from '@/worker/followUpSend'
+import { createDeadline } from '@/worker/deadline'
 
 export const maxDuration = 60
 
@@ -75,6 +89,10 @@ export const maxDuration = 60
 const CALENDAR_BUDGET_MS = 25_000
 /** Kontrola dokumentů (jen když je zapnutá) dostane nejvýš tolik. */
 const DOCUMENTS_BUDGET_MS = 15_000
+/** Celý běh má nejvýš tolik (pod maxDuration 60 s). */
+const ROUTE_BUDGET_MS = 55_000
+/** Cadence končí, když zbývá míň (kontrola úloh a odpověď). */
+const CADENCE_RESERVE_MS = 8_000
 
 function authorized(header: string | null, secret: string | undefined): boolean {
   if (!secret || !header) return false
@@ -92,6 +110,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
 
+  const deadline = createDeadline(ROUTE_BUDGET_MS)
   const admin = createAdminClient()
   const jobDb: JobDbAdapter = {
     async tryAcquireJobLock(jobName, ttlSeconds) {
@@ -152,6 +171,33 @@ export async function GET(request: Request) {
   })
   if (approvalExpiry.status === 'failed') logError('cron.approvalExpiry', new Error(approvalExpiry.error))
 
+  // Follow-up cadence (P4): výchozí vypnuto; chyba nic dalšího nezastaví.
+  let followUpCadence: JobResult | { status: 'disabled' } | { status: 'error'; error: string } = { status: 'disabled' }
+  if (followUpCadenceEnabledFromEnv(process.env)) {
+    try {
+      // Audit zápisů nese aktéra úlohy (x-cockpit-audit-actor = system:follow-up-send).
+      const cadenceClient = createAuditedAdminClient({ actor: { type: 'system', id: FOLLOW_UP_SEND_ACTOR } })
+      followUpCadence = await runFollowUpSendJob({
+        jobDb,
+        cadenceDb: createFollowUpCadenceDb(cadenceClient),
+        recordSuccess: recordConnectorSuccess,
+        recordError: recordConnectorError,
+        connector: FOLLOW_UP_SEND_CONNECTOR,
+        now: () => new Date(),
+        options: {
+          cfg: COMPANY.capabilities.followUpCadence,
+          wonPhases: COMPANY.wonPhases,
+          lostReasonKeys: (COMPANY.lostReasons ?? []).map((r) => r.key),
+          passed: () => deadline.passed(CADENCE_RESERVE_MS),
+        },
+      })
+    } catch (e) {
+      logError('cron.followUps.cadence', e)
+      followUpCadence = { status: 'error', error: e instanceof Error ? e.message : String(e) }
+    }
+    if (followUpCadence.status === 'failed') logError('cron.followUpCadence', new Error(followUpCadence.error))
+  }
+
   // Až po ostatních úlohách: ať vidí i jejich dnešní běhy. Nevyhazuje.
   const check = await runJobHealthCheck(admin)
   const jobHealth = {
@@ -160,5 +206,6 @@ export async function GET(request: Request) {
   }
 
   const failed = followUps.status === 'failed' || approvalExpiry.status === 'failed'
-  return NextResponse.json({ ...followUps, calendar, documents, approvalExpiry, jobHealth }, { status: failed ? 500 : 200 })
+    || followUpCadence.status === 'failed' || followUpCadence.status === 'error'
+  return NextResponse.json({ ...followUps, calendar, documents, approvalExpiry, followUpCadence, jobHealth }, { status: failed ? 500 : 200 })
 }
