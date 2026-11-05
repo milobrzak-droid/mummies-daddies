@@ -48,6 +48,7 @@ export const WORK_TABS: SectionTab[] = [
 ]
 export const DEAL_TABS: SectionTab[] = [
   { href: '/cockpit/pipeline', label: 'Tabule', salesOnly: true }, { href: '/cockpit/agent', label: 'Agent', salesOnly: true, module: 'agent' },
+  { href: '/cockpit/signaly', label: 'Signály', salesOnly: true, module: 'agent' },
   { href: '/cockpit/cilove-seznamy', label: 'Seznamy k oslovení', salesOnly: true, module: 'targetLists' },
   { href: '/cockpit/oslovovani', label: 'Oslovování', salesOnly: true, module: 'targetLists' },
 ]

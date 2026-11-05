@@ -17,12 +17,12 @@ export const SIGNAL_KIND_LABELS: Readonly<Record<SignalKind, string>> = {
 }
 
 /** Stavy outbound_signal.status (CHECK v 0107). */
-export const SIGNAL_STATUSES = ['new', 'lead', 'review', 'dismissed', 'blocked', 'failed'] as const
+export const SIGNAL_STATUSES = ['new', 'converted', 'review', 'dismissed', 'blocked', 'failed'] as const
 export type SignalStatus = (typeof SIGNAL_STATUSES)[number]
 
 export const SIGNAL_STATUS_LABELS: Readonly<Record<SignalStatus, string>> = {
   new: 'Nový',
-  lead: 'Lead v CRM',
+  converted: 'Lead v CRM',
   review: 'Ke kontrole',
   dismissed: 'Odložený',
   blocked: 'Zablokovaný',
@@ -81,7 +81,6 @@ export const signalCandidateSchema = z.object({
 /** Zkrátí a očistí řetězec ze zdroje (řídicí znaky, bílé znaky). */
 export function cleanText(s: string | null | undefined, max: number): string | null {
   if (s == null) return null
-  // eslint-disable-next-line no-control-regex
   const v = s.replace(/[\u0000-\u001f\u007f]+/g, ' ').replace(/\s+/g, ' ').trim()
   if (!v) return null
   return v.length > max ? `${v.slice(0, max - 1)}…` : v

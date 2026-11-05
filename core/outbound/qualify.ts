@@ -41,7 +41,7 @@ export const QUALIFY_REASON_LABELS: Readonly<Record<QualifyReason, string>> = {
   no_facts: 'signál nemá žádná ověřená fakta',
 }
 
-export type QualifyDecision = 'lead' | 'review' | 'dismiss' | 'blocked'
+export type QualifyDecision = 'converted' | 'review' | 'dismiss' | 'blocked'
 
 /** Co o firmě signálu víme (ARES a CRM). Vše volitelné — chybějící = neznámé. */
 export interface QualifyContext {
@@ -139,7 +139,7 @@ export function qualifySignal(signal: SignalCandidate, ctx: QualifyContext, conf
 
   score = Math.max(0, Math.min(100, Math.round(score)))
 
-  if (score >= scoring.leadThreshold && !capAtReview) return { decision: 'lead', score, reasons }
+  if (score >= scoring.leadThreshold && !capAtReview) return { decision: 'converted', score, reasons }
   if (score >= scoring.reviewThreshold || (capAtReview && score >= scoring.reviewThreshold - 15)) {
     return { decision: 'review', score, reasons }
   }

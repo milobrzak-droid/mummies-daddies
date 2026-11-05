@@ -121,7 +121,7 @@ describe.skipIf(!PGliteCtor)('0107 outbound agent (PGlite, celý řetěz)', () =
     const s3 = await upsert(tender('vvz-3'))
     const r3 = (await svc<{ r: Row }>(`SELECT outbound_lead_create($1::jsonb) AS r`, [JSON.stringify({ signal_id: s3.signal_id })]))[0].r
     expect(r3).toMatchObject({ account_id: r.account_id, created_account: false })
-    expect(await one(`SELECT status FROM outbound_signal WHERE id = $1`, [signal_id])).toEqual({ status: 'lead' })
+    expect(await one(`SELECT status FROM outbound_signal WHERE id = $1`, [signal_id])).toEqual({ status: 'converted' })
   })
 
   test('RPC úlohy smí jen service_role; klient tabulky nezapisuje a bez obchodní role nečte', async () => {
@@ -129,7 +129,7 @@ describe.skipIf(!PGliteCtor)('0107 outbound agent (PGlite, celý řetěz)', () =
     await expect(as({ role: 'anon' }, `SELECT outbound_signal_upsert($1::jsonb)`, [p])).rejects.toThrow(/permission denied/)
     await expect(as({ role: 'authenticated', sub: SALES }, `SELECT outbound_signal_upsert($1::jsonb)`, [p])).rejects.toThrow(/permission denied/)
     await expect(as({ role: 'authenticated', sub: SALES }, `SELECT outbound_unsubscribe('{}'::jsonb)`)).rejects.toThrow(/permission denied/)
-    await expect(as({ role: 'authenticated', sub: SALES }, `UPDATE outbound_signal SET status = 'lead'`)).rejects.toThrow(/permission denied/)
+    await expect(as({ role: 'authenticated', sub: SALES }, `UPDATE outbound_signal SET status = 'converted'`)).rejects.toThrow(/permission denied/)
     expect((await as<{ n: number }>({ role: 'authenticated', sub: SALES }, `SELECT count(*)::int AS n FROM outbound_signal`))[0].n).toBeGreaterThan(0)
     expect((await as<{ n: number }>({ role: 'authenticated', sub: PM }, `SELECT count(*)::int AS n FROM outbound_signal`))[0].n).toBe(0)
     expect((await as<{ n: number }>({ role: 'authenticated', sub: SALES, aal: 'aal1' }, `SELECT count(*)::int AS n FROM outbound_signal`))[0].n).toBe(0)

@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS outbound_signal (
   CONSTRAINT outbound_signal_source_check CHECK (source IN ('ares', 'vvz', 'feed', 'jobs', 'crm')),
   CONSTRAINT outbound_signal_kind_check
     CHECK (kind IN ('public_tender', 'event', 'job_posting', 'crm_anniversary', 'crm_season', 'company_change')),
-  CONSTRAINT outbound_signal_status_check CHECK (status IN ('new', 'lead', 'review', 'dismissed', 'blocked', 'failed')),
+  CONSTRAINT outbound_signal_status_check CHECK (status IN ('new', 'converted', 'review', 'dismissed', 'blocked', 'failed')),
   CONSTRAINT outbound_signal_score_check CHECK (score IS NULL OR score BETWEEN 0 AND 100),
   CONSTRAINT outbound_signal_text_len_check CHECK (
     char_length(external_ref) BETWEEN 1 AND 300
@@ -428,7 +428,7 @@ BEGIN
   RETURNING id INTO v_deal;
 
   UPDATE outbound_signal
-     SET status = 'lead', account_id = v_account, deal_id = v_deal,
+     SET status = 'converted', account_id = v_account, deal_id = v_deal,
          decided_at = now(), decided_by = p_actor
    WHERE id = s.id;
 

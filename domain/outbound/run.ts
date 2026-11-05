@@ -5,7 +5,7 @@
 //
 //   1. sběr   — signály ze zapnutých zdrojů + z CRM → outbound_signal (idempotentně)
 //   2. kvalifikace — nové signály: ARES + CRM kontext → qualifySignal → stav
-//   3. lead   — rozhodnutí 'lead' → obchod v CRM (zdroj 'agent:outbound:<zdroj>')
+//   3. lead   — rozhodnutí 'converted' → obchod v CRM (zdroj 'agent:outbound:<zdroj>')
 //   4. oslovení — právní brána decideOutreach:
 //        manual       → návrh pro člověka (nic se neodesílá)
 //        review_email → koncept e-mailu ke schválení CSO
@@ -209,7 +209,7 @@ async function qualifyAndLead(db: OutboundDb, ares: AresLookup | null, s: Stored
   const q = qualifySignal(candidate, { ares: aresCtx, crm }, config)
   stats.qualified++
 
-  if (q.decision !== 'lead') {
+  if (q.decision !== 'converted') {
     const status = q.decision === 'dismiss' ? 'dismissed' : q.decision
     stats[status === 'dismissed' ? 'dismissed' : status === 'blocked' ? 'blocked' : 'review']++
     await db.saveQualification(s.id, { status, score: q.score, reasons: q.reasons, segment: config.icp.segment, ico })
