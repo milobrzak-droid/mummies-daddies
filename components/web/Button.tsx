@@ -15,7 +15,7 @@ export type ButtonVariant = 'primary' | 'white' | 'outline' | 'ghost'
 export type ButtonSize = 'sm' | 'md' | 'lg'
 
 const BASE =
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-pill font-copy font-semibold tracking-[0.01em] ' +
+  'inline-flex max-w-full items-center justify-center gap-2 whitespace-nowrap max-sm:whitespace-normal max-sm:py-2 rounded-pill font-copy font-semibold tracking-[0.01em] ' +
   'transition-[background-color,color,box-shadow,transform] duration-quick ease-md-out motion-safe:active:scale-[0.98] ' +
   'disabled:cursor-not-allowed disabled:opacity-60'
 
@@ -55,13 +55,29 @@ export function Button(props: AsLink | AsButton) {
   const { variant = 'primary', size = 'md', arrow, icon, fullWidth, className, children, ...rest } = props
   const cls = buttonClasses({ variant, size, fullWidth, className })
   const showArrow = arrow ?? variant === 'ghost'
-  const inner = (
-    <>
-      {icon}
-      <span>{children}</span>
-      {showArrow ? <IconArrowRight size={18} className="motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5" /> : null}
-    </>
-  )
+  const arrowIcon = <IconArrowRight size={18} className="motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5" />
+  // Textový odkaz (ghost) se na mobilu může zalomit: šipka je pak v řádku za posledním slovem
+  // (nezlomitelná mezera), ne osamocená u pravého okraje.
+  const inner =
+    variant === 'ghost' && showArrow ? (
+      <>
+        {icon}
+        <span>
+          {children}
+          {/* U+2060 (word joiner) brání zalomení před šipkou; inline-block šipka nedědí podtržení. */}
+          <span className="whitespace-nowrap">
+            {'\u2060'}
+            <span className="ml-2 inline-block align-[-0.2em]">{arrowIcon}</span>
+          </span>
+        </span>
+      </>
+    ) : (
+      <>
+        {icon}
+        <span>{children}</span>
+        {showArrow ? arrowIcon : null}
+      </>
+    )
   if ('href' in rest && typeof rest.href === 'string') {
     const { href, ...a } = rest as AsLink
     const external = /^(https?:|tel:|mailto:)/.test(href)

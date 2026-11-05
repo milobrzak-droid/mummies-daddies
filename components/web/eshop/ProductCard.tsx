@@ -36,6 +36,7 @@ export function ProductCard({
       photo={product.photo}
       tone={product.tone}
       aspect="portrait"
+      photoClassName="max-sm:aspect-square"
       sizes={sizes}
       headingLevel={headingLevel}
       className={cx('h-full', className)}
@@ -47,10 +48,10 @@ export function ProductCard({
             </Badge>
           ) : null}
           <PriceTag text={product.priceText || null} amount={product.priceText ? null : product.price} size="md" />
+          {/* Tlačítko dole u ceny: v řadě karet tak sedí na stejné lince bez ohledu na délku popisu. */}
+          {quickAdd ? <QuickAddButton slug={product.slug} label={quickAdd.label} added={quickAdd.added} cart={quickAdd.cart} className="mt-2" /> : null}
         </span>
       }
-    >
-      {quickAdd ? <QuickAddButton slug={product.slug} label={quickAdd.label} added={quickAdd.added} cart={quickAdd.cart} /> : null}
-    </PastelCard>
+    />
   )
 }

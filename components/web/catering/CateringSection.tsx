@@ -147,7 +147,7 @@ export function CateringSection({ section, layout, ctx, tone, soft }: { section:
       return wrap(
         <>
           <SectionIntro id={id} title={section.heading} body={section.body} />
-          <ul className="grid gap-5 sm:grid-cols-2 sm:gap-6 lg:max-w-5xl">
+          <ul className="grid gap-5 sm:grid-cols-2 sm:gap-6">
             {links.map((it, i) => (
               <li key={it.href}>
                 <PastelCard

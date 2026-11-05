@@ -22,7 +22,7 @@ export function Footer() {
         Patička webu
       </h2>
       <Container className="py-section-sm">
-        <div className="grid gap-12 lg:grid-cols-[1.2fr_2fr]">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.4fr)]">
           <div className="max-w-sm">
             <Logo tone="light" />
             <p className="mt-5 text-lead text-cream/85">{CLAIM}</p>
@@ -49,9 +49,9 @@ export function Footer() {
             </ul>
           </div>
 
-          <div className="grid gap-10 sm:grid-cols-2 xl:grid-cols-4">
-            {FOOTER_COLUMNS.map((col) => (
-              <nav key={col.title} aria-label={col.title}>
+          <div className="grid grid-cols-2 gap-x-6 gap-y-10 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)_minmax(0,0.9fr)_minmax(0,1.45fr)]">
+            {FOOTER_COLUMNS.map((col, i) => (
+              <nav key={col.title} aria-label={col.title} className={i === 0 ? 'row-span-2 xl:row-span-1' : undefined}>
                 <h3 className="font-copy text-eyebrow uppercase text-cream/70">{col.title}</h3>
                 <ul className="mt-4 space-y-1">
                   {col.links.map((l) => (
@@ -65,7 +65,7 @@ export function Footer() {
               </nav>
             ))}
 
-            <div>
+            <div className="col-span-2 xl:col-span-1">
               <h3 className="font-copy text-eyebrow uppercase text-cream/70">Kontakt</h3>
               <ul className="mt-4 space-y-4 text-small">
                 {COMPANY.people.map((p) => (
@@ -81,7 +81,11 @@ export function Footer() {
                 ))}
                 <li>
                   <a href={`mailto:${COMPANY.email}`} className="md-focus-on-dark inline-flex min-h-9 items-center gap-2 text-cream/90 hover:text-cream hover:underline">
-                    <IconMail size={16} /> {COMPANY.email}
+                    <IconMail size={16} className="shrink-0" />
+                    <span className="min-w-0">
+                      {COMPANY.email.split('@')[0]}@<wbr />
+                      {COMPANY.email.split('@')[1]}
+                    </span>
                   </a>
                 </li>
               </ul>

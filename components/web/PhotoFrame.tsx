@@ -61,7 +61,8 @@ export function PhotoFrame({
   /** Překryv (štítky, gradient). */
   children?: ReactNode
 }) {
-  const frame = cx('relative overflow-hidden', ASPECT[aspect], rounded && 'rounded-frame', className)
+  // 'fill' je absolute – nesmí ho přebít 'relative' (jinak má rám nulovou výšku).
+  const frame = cx(aspect === 'fill' ? 'overflow-hidden' : 'relative overflow-hidden', ASPECT[aspect], rounded && 'rounded-frame', className)
   if (!photo || photo.placeholder || !photo.src) {
     return (
       <div role="img" aria-label={photo?.alt ?? placeholderLabel ?? 'Fotka bude doplněna'} className={cx(frame, TONE_BG_DEEP[tone], 'md-placeholder-pattern')}>

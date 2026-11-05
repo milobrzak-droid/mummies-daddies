@@ -61,6 +61,7 @@ export function References({
               photo={c.photo}
               tone={TONES[i % TONES.length]}
               aspect="tall"
+              photoClassName="max-md:aspect-[4/3]"
               sizes="(min-width: 1280px) 400px, (min-width: 768px) 31vw, 92vw"
             />
           </li>

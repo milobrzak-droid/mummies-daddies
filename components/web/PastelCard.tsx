@@ -23,6 +23,7 @@ export function PastelCard({
   photo,
   tone = 'blush',
   aspect = 'portrait',
+  photoClassName,
   sizes = '(min-width: 1280px) 400px, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw',
   eyebrow,
   meta,
@@ -37,6 +38,8 @@ export function PastelCard({
   photo?: Photo | null
   tone?: SurfaceTone
   aspect?: PhotoAspect
+  /** Doplňkové třídy rámu fotky (např. jiný poměr stran na mobilu: "max-sm:aspect-[3/2]"). */
+  photoClassName?: string
   sizes?: string
   eyebrow?: string | null
   /** Pod popisem: cena, minimum osob, štítky. */
@@ -57,7 +60,7 @@ export function PastelCard({
       )}
     >
       {photo !== undefined ? (
-        <PhotoFrame photo={photo} aspect={aspect} sizes={sizes} tone={tone} zoomOnHover={!!href} />
+        <PhotoFrame photo={photo} aspect={aspect} className={photoClassName} sizes={sizes} tone={tone} zoomOnHover={!!href} />
       ) : null}
       <div className={cx('flex flex-1 flex-col px-2 pb-3 sm:px-3', photo !== undefined ? 'pt-5' : 'pt-4')}>
         {eyebrow ? (

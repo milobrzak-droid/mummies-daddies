@@ -48,6 +48,7 @@ export function EventTypeGrid({
               photo={c.photo}
               tone={toneAt(i, PASTEL_TONES)}
               aspect="portrait"
+              photoClassName="max-sm:aspect-[3/2]"
               sizes="(min-width: 1280px) 400px, (min-width: 1024px) 31vw, (min-width: 640px) 46vw, 92vw"
               meta={
                 c.price || c.minimum ? (

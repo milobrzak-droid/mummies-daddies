@@ -143,25 +143,25 @@ export function MenuCard({ items, fallback, className }: { items: string[]; fall
 export function Steps({ items, className }: { items: string[]; className?: string }) {
   if (!items.length) return null
   return (
-    <ol className={cx('grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4', className)}>
+    <ol className={cx('grid gap-x-8 gap-y-6 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4', className)}>
       {items.map((raw, i) => {
         const it = parseItem(raw)
         const step = it.title ? splitStepNumber(it.title) : splitStepNumber(raw)
         const n = step.n ?? i + 1
         return (
-          <li key={i} className="border-t border-cocoa/20 pt-5">
-            <span aria-hidden="true" className="block font-display text-[2.75rem] font-medium leading-none text-cocoa/70">
+          <li key={i} className="grid grid-cols-[3rem_minmax(0,1fr)] gap-x-3 border-t border-cocoa/20 pt-5 sm:block">
+            <span aria-hidden="true" className="row-span-2 block font-display text-[2rem] font-medium leading-none text-cocoa/70 sm:text-[2.75rem]">
               {String(n).padStart(2, '0')}
             </span>
             {it.title ? (
               <>
-                <h3 className="md-caps mt-4 text-h3 text-cocoa">{step.title}</h3>
+                <h3 className="md-caps mt-1 text-h3 text-cocoa sm:mt-4">{step.title}</h3>
                 <p className="md-pretty mt-3 text-copy text-cocoa-soft">
                   <RichText text={it.text} />
                 </p>
               </>
             ) : (
-              <p className="md-pretty mt-4 text-lead text-cocoa">
+              <p className="md-pretty mt-1 text-lead text-cocoa sm:mt-4">
                 <RichText text={step.title} />
               </p>
             )}
@@ -176,7 +176,7 @@ export function Steps({ items, className }: { items: string[]; className?: strin
 
 const GRID_COLS: Record<number, string> = {
   1: 'max-w-xl',
-  2: 'sm:grid-cols-2 lg:max-w-5xl',
+  2: 'sm:grid-cols-2',
   4: 'sm:grid-cols-2',
 }
 
@@ -276,14 +276,24 @@ export function PhotoGrid({ photos, tone = 'blush', className }: { photos: Photo
   const real = photos.filter((p) => !p.placeholder && p.src)
   if (!real.length) return null
   const n = real.length
-  const cols = n === 1 ? '' : n === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-2 lg:grid-cols-3'
+  // Na mobilu dvě fotky vedle sebe (u tří první přes celou šířku) – pás fotek nezabere několik obrazovek.
+  const cols = n === 1 ? '' : n === 2 ? 'grid-cols-2' : 'grid-cols-2 lg:grid-cols-3'
   const aspect: PhotoAspect = n === 1 ? 'wide' : n === 2 ? 'square' : 'portrait'
-  const sizes = n === 1 ? '(min-width: 1280px) 1200px, 100vw' : n === 2 ? '(min-width: 1280px) 600px, (min-width: 640px) 50vw, 100vw' : '(min-width: 1280px) 400px, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw'
+  const sizes = n === 1 ? '(min-width: 1280px) 1200px, 100vw' : n === 2 ? '(min-width: 1280px) 600px, 50vw' : '(min-width: 1280px) 400px, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw'
   return (
     <ul className={cx('grid gap-4 sm:gap-6', cols, className)}>
       {real.map((p, i) => (
-        <li key={`${p.slot}-${i}`} className={cx(n === 3 && i === 2 && 'sm:col-span-2 lg:col-span-1')}>
-          <PhotoFrame photo={p} aspect={n === 3 && i === 2 ? 'portrait' : aspect} sizes={sizes} tone={toneAt(i)} className={cx(n === 3 && i === 2 && 'sm:aspect-[16/9] lg:aspect-[4/5]')} />
+        <li key={`${p.slot}-${i}`} className={cx(n === 3 && i === 0 && 'max-sm:col-span-2', n === 3 && i === 2 && 'sm:col-span-2 lg:col-span-1')}>
+          <PhotoFrame
+            photo={p}
+            aspect={n === 3 && i === 2 ? 'portrait' : aspect}
+            sizes={sizes}
+            tone={toneAt(i)}
+            className={cx(
+              n >= 3 && (n === 3 && i === 0 ? 'max-sm:aspect-[3/2]' : 'max-sm:aspect-square'),
+              n === 3 && i === 2 && 'sm:aspect-[16/9] lg:aspect-[4/5]',
+            )}
+          />
         </li>
       ))}
     </ul>
