@@ -1,20 +1,18 @@
-// Konektor Gmail odchozí fronty (@/connectors/gmailOutbox): přesné URL a tělo
+// Odesílání přes konektor Gmail (@/connectors/gmail, send.ts — odchozí fronta P3): přesné URL a tělo
 // users.messages.send (vlákno, hlavičky odpovědi), mapování odpovědí na
 // accepted / throttled / unauthorized / forbidden / rejected / uncertain,
-// metadata zprávy, dohledání podle Message-ID a obnova tokenu. Bez sítě.
+// metadata zprávy a dohledání podle Message-ID. Token: test/gmail-transport. Bez sítě.
 import { describe, expect, test, vi } from 'vitest'
 import {
   GMAIL_API_BASE,
-  GOOGLE_TOKEN_URL,
   base64Url,
   buildMimeMessage,
   encodeHeaderWord,
   findGmailMessageByRfcId,
   getGmailMessageMeta,
   getGmailThreadMeta,
-  refreshGoogleAccessToken,
   sendGmailMessage,
-} from '@/connectors/gmailOutbox'
+} from '@/connectors/gmail'
 
 const json = (status: number, body: unknown) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
 
@@ -147,17 +145,5 @@ describe('čtení metadat a dohledání', () => {
     expect(await findGmailMessageByRfcId('tok', '<ao.7.abc@firma.example>', f)).toEqual({ ok: true, found: { id: 'sent1', threadId: 't1' } })
     expect((f.mock.calls[0] as unknown as [string])[0]).toBe(`${GMAIL_API_BASE}/messages?q=${encodeURIComponent('rfc822msgid:ao.7.abc@firma.example')}&includeSpamTrash=true&maxResults=5`)
     expect(await findGmailMessageByRfcId('tok', '<ao.7.abc@firma.example>', async () => json(200, { resultSizeEstimate: 0 }))).toEqual({ ok: true, found: null })
-  })
-})
-
-describe('obnova tokenu Google', () => {
-  test('form s refresh tokenem; bez nového refresh tokenu platí starý', async () => {
-    const f = vi.fn(async () => json(200, { access_token: 'acc', expires_in: 3599, token_type: 'Bearer' }))
-    const r = await refreshGoogleAccessToken({ clientId: 'cid', clientSecret: 'sec' }, 'ref', f)
-    expect(r).toEqual({ access_token: 'acc', refresh_token: 'ref', expires_in: 3599 })
-    const [url, init] = f.mock.calls[0] as unknown as [string, RequestInit]
-    expect(url).toBe(GOOGLE_TOKEN_URL)
-    expect(Object.fromEntries(new URLSearchParams(init.body as string))).toEqual({ client_id: 'cid', client_secret: 'sec', refresh_token: 'ref', grant_type: 'refresh_token' })
-    expect(await refreshGoogleAccessToken({ clientId: 'c', clientSecret: 's' }, 'r', async () => json(400, { error: 'invalid_grant' }))).toBeNull()
   })
 })

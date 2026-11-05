@@ -14,6 +14,7 @@ import {
   fingerprintSignals,
   loadStuckQueues,
   renderAlarmText,
+  statsSignals,
 } from '@/domain/ops/opsHealth'
 import { alarmWebhookUrl, decideAlarm, postAlarm, repeatMinutesFromEnv } from '@/domain/ops/opsAlarm'
 
@@ -39,6 +40,37 @@ describe('classifyJobError', () => {
     expect(classifyJobError('400 Your credit balance is too low to access the Anthropic API')).toBe('model_credit')
     expect(classifyJobError('timeout')).toBeNull()
     expect(classifyJobError(null)).toBeNull()
+  })
+})
+
+describe('statsSignals (chyby Gmail OAuth a fronty P2/P3 ze statistik běhu)', () => {
+  it('agent poptávek: neplatný token schránky, výpadek čtení, selhané poptávky', () => {
+    expect(statsSignals('inquiry-agent', { mailbox: { errors: { token_invalid_grant: 1 } }, agent: { failed: 0 } })).toEqual(['gmail_oauth'])
+    expect(statsSignals('inquiry-agent', { mailbox: { error: 'Google: invalid_grant' }, agent: {} })).toEqual(['gmail_oauth'])
+    expect(statsSignals('inquiry-agent', { mailbox: { errors: { token_error: 1 } }, agent: { failed: 2 } })).toEqual(['queue_error'])
+    expect(statsSignals('inquiry-agent', { mailbox: { errors: {} }, agent: { failed: 0 } })).toEqual([])
+  })
+
+  it('odchozí fronta: token / 401 = gmail_oauth, selhané nebo nejisté zprávy = queue_error', () => {
+    expect(statsSignals('agent-outbox', { reasons: { token_invalid_grant: 3 }, failed: 0, uncertain: 0 })).toEqual(['gmail_oauth'])
+    expect(statsSignals('agent-outbox', { reasons: { unauthorized: 1 }, failed: 1, uncertain: 0 })).toEqual(['gmail_oauth', 'queue_error'])
+    expect(statsSignals('agent-outbox', { reasons: { token_not_configured: 1 }, failed: 0, uncertain: 1 })).toEqual(['queue_error'])
+    expect(statsSignals('agent-outbox', { status: 'waiting_for_migration' })).toEqual([])
+    expect(statsSignals('ares-enrich', { failed: 5 })).toEqual([])
+  })
+
+  it('assessOps bere jen poslední úspěšný běh a signál nese název úlohy', () => {
+    const h = assessOps({
+      now: NOW,
+      stuckQueues: [],
+      jobRows: [
+        { ...run('agent-outbox', 'succeeded', 2), stats: { reasons: { token_invalid_grant: 1 }, failed: 0, uncertain: 0 } },
+        { ...run('agent-outbox', 'succeeded', 7), stats: { failed: 4 } },
+        { ...run('inquiry-agent', 'succeeded', 3), stats: { mailbox: { errors: {} }, agent: { failed: 0 } } },
+      ],
+    })
+    expect(h.signals).toEqual([{ code: 'gmail_oauth', subject: 'agent-outbox', since: ago(2) }])
+    expect(renderAlarmText(h.signals, null)).toMatch(/Gmail/)
   })
 })
 

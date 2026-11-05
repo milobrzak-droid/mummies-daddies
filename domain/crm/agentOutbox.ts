@@ -20,7 +20,7 @@
 //
 // LOGY: jen id, druhy a kódy. Nikdy text, předmět ani adresy.
 import { createHash, randomBytes } from 'node:crypto'
-import type { OutboxKind } from '@/core/agents/outboxPort'
+import type { OutboxHeaders, OutboxKind } from '@/core/agents/outboxPort'
 import type { AgentOutboxConfig } from '@/core/agents/outboxConfig'
 import {
   OUTBOX_REASON_LABELS,
@@ -54,6 +54,8 @@ export interface OutboxRow {
   to_email: string | null
   subject: string | null
   body: string | null
+  /** Jen oslovení (P7): List-Unsubscribe a List-Unsubscribe-Post. */
+  headers?: OutboxHeaders | null
   price_map_version: string | null
   quote_total: number | string | null
   status: string
@@ -65,7 +67,7 @@ export interface OutboxRow {
 }
 
 export const OUTBOX_COLUMNS =
-  'id, kind, source_ref, deal_id, scope_version_id, mailbox_member_id, mode, in_reply_to_message_id, to_email, subject, body, price_map_version, quote_total, status, stop_reason, approved_at, rfc_message_id, created_at, body_purged_at'
+  'id, kind, source_ref, deal_id, scope_version_id, mailbox_member_id, mode, in_reply_to_message_id, to_email, subject, body, headers, price_map_version, quote_total, status, stop_reason, approved_at, rfc_message_id, created_at, body_purged_at'
 
 /** Fakta z CRM k jedné zprávě (bez osobních údajů v logu). */
 export interface DealFacts {
@@ -97,9 +99,17 @@ export interface OutboxStore {
   finish(id: number, status: 'blocked' | 'failed' | 'needs_attention' | 'queued', reason: string, errorCode?: string | null, task?: { title: string; text: string } | null): Promise<boolean>
   requestOfferApproval(id: number): Promise<{ ok: boolean; reason?: string }>
   purgeText(days: number): Promise<number>
+  /**
+   * Režim nové zprávy ({to}) u odpovědi na e-mailovou poptávku
+   * ('inquiry:<run id>', jiná schránka než příjemce): Message-ID původní
+   * zprávy z inquiry_agent_run.internet_message_id pro In-Reply-To
+   * a References, ať zákazník odpověď vidí ve svém vlákně. null = nic.
+   */
+  threadHeaders?(row: OutboxRow): Promise<{ inReplyTo: string; references: string } | null>
 }
 
-export type MailToken = { ok: true; accessToken: string } | { ok: false }
+/** reason: kód selhání tokenu (např. invalid_grant, not_configured) — do statistik a alarmu. */
+export type MailToken = { ok: true; accessToken: string } | { ok: false; reason?: string }
 
 export interface OriginalMessage {
   threadId: string | null
@@ -119,7 +129,7 @@ export interface OutboxMail {
   original(token: string, gmailMessageId: string): Promise<{ ok: true; message: OriginalMessage } | { ok: false; kind: 'not_found' | 'unauthorized' | 'forbidden' | 'error' }>
   /** Napsal zákazník do vlákna po `sinceMs` (zpráva bez štítku SENT od jiné adresy než schránka)? */
   customerRepliedInThread(token: string, threadId: string, sinceMs: number, mailboxEmail: string): Promise<boolean | null>
-  send(token: string, input: { from: { name: string; address: string }; to: string; subject: string; text: string; messageId: string; inReplyTo: string | null; references: string | null; threadId: string | null; outboxId: number }): Promise<SendOutcome>
+  send(token: string, input: { from: { name: string; address: string }; to: string; subject: string; text: string; messageId: string; inReplyTo: string | null; references: string | null; threadId: string | null; outboxId: number; headers?: OutboxHeaders | null }): Promise<SendOutcome>
   findSent(token: string, rfcMessageId: string): Promise<{ ok: true; found: { id: string; threadId: string | null } | null } | { ok: false }>
 }
 
@@ -134,6 +144,10 @@ export interface OutboxRunConfig {
   followUpLimits: { dailyLimit: number } | null
   /** Je teď okno odesílání připomínek? (null = připomínky bez okna) */
   followUpWindowOpen: boolean | null
+  /** Oslovení (P7): denní limit z outboundAgent.outreach; null = firma outbound nemá (nic neodejde). */
+  outreachLimits?: { dailyLimit: number } | null
+  /** Je teď okno odesílání oslovení (outboundAgent.outreach.sendWindow)? */
+  outreachWindowOpen?: boolean | null
   wonPhases: readonly string[]
 }
 
@@ -164,7 +178,7 @@ const bump = (s: OutboxRunStats, reason: string) => {
 
 // --- Pomocné ---------------------------------------------------------------------
 
-const KIND_LABEL: Record<OutboxKind, string> = { offer: 'cenová nabídka', info_request: 'doptání údajů', follow_up: 'připomínka nabídky' }
+const KIND_LABEL: Record<OutboxKind, string> = { offer: 'cenová nabídka', info_request: 'doptání údajů', follow_up: 'připomínka nabídky', outreach: 'obchodní oslovení' }
 
 /** Vlastní Message-ID (podle něj se zpráva dohledá v Odeslané poště). */
 export function newRfcMessageId(id: number, domain: string, rand: () => string = () => randomBytes(9).toString('hex')): string {
@@ -281,13 +295,16 @@ async function processRow(
 
   if (row.body_purged_at || !row.body || !row.subject) return block('body_purged')
   if (!row.mailbox_member_id) return block('mailbox_inactive')
+  // Oslovení (P7) bez hlaviček odhlášení nesmí odejít (DB to hlídá taky).
+  if (row.kind === 'outreach' && !row.headers?.['List-Unsubscribe']) return block('missing_unsubscribe')
 
   const tok = await tokenFor(row.mailbox_member_id)
   if (!tok.ok) {
-    // Schránka není připojená: nic se nemění, zkusí se v dalším běhu
-    // (alarm zajistí kontrola úloh přes statistiky běhu).
+    // Schránka není připojená: nic se nemění, zkusí se v dalším běhu.
+    // Kód (token_invalid_grant …) jde do statistik běhu; z nich alarm
+    // (domain/ops/opsHealth.ts) pozná neplatný OAuth Gmailu.
     stats.deferred++
-    bump(stats, 'token_unavailable')
+    bump(stats, tok.reason ? `token_${tok.reason}` : 'token_unavailable')
     return
   }
 
@@ -312,6 +329,8 @@ async function processRow(
   } else {
     recipient = normalizeAddress(row.to_email)
   }
+  // Nová zpráva ({to}) jako odpověď na e-mailovou poptávku: zařadit do vlákna zákazníka.
+  const thread = row.mode === 'to' && store.threadHeaders ? await store.threadHeaders(row) : null
 
   const since = row.approved_at && row.approved_at > row.created_at ? row.approved_at : row.created_at
   const facts = await store.dealFacts(row, recipient, since)
@@ -350,7 +369,9 @@ async function processRow(
     autoSendKinds: config.autoSendKinds,
     autoSendMaxTotal: config.autoSendMaxTotal,
     maxQueueAgeHours: config.outbox.maxQueueAgeHours,
-    withinSendWindow: row.kind === 'follow_up' ? config.followUpWindowOpen : null,
+    withinSendWindow: row.kind === 'follow_up' ? config.followUpWindowOpen
+      : row.kind === 'outreach' ? (config.outreachLimits ? config.outreachWindowOpen ?? false : false)
+      : null,
   }
 
   const decision: OutboxDecision = decideOutbox(item, f, gates)
@@ -363,7 +384,7 @@ async function processRow(
   if (decision.action === 'request_approval') return requestApproval(row, decision.reasons[0] ?? 'authority_not_l4', deps, stats, log)
 
   // --- Odeslání: claim → Gmail → confirm/finish -------------------------------
-  const limits = outboxLimits(row.kind, config.inquiryLimits, config.followUpLimits)
+  const limits = outboxLimits(row.kind, config.inquiryLimits, config.followUpLimits, config.outreachLimits)
   const rfcMessageId = newRfcMessageId(row.id, config.outbox.messageIdDomain)
   const claimed = await store.claim({
     id: row.id, recipient: recipient!, rfcMessageId, autonomous: decision.autonomous,
@@ -390,10 +411,11 @@ async function processRow(
     subject: row.subject!,
     text,
     messageId: rfcMessageId,
-    inReplyTo: original?.messageId ?? null,
-    references: original?.references ?? null,
+    inReplyTo: original?.messageId ?? thread?.inReplyTo ?? null,
+    references: original?.references ?? thread?.references ?? null,
     threadId: original?.threadId ?? null,
     outboxId: row.id,
+    headers: row.kind === 'outreach' ? row.headers ?? null : null,
   })
 
   if (outcome.kind === 'accepted') {

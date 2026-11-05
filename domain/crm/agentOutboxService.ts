@@ -1,13 +1,15 @@
 // Zapojení úlohy agent-outbox (./agentOutbox.ts) na Supabase (RPC z 0104,
 // servisní klíč s aktérem system:agent_outbox pro audit) a Gmail API
-// (@/connectors/gmailOutbox). Nastavení z @/config a z prostředí:
+// (@/connectors/gmail, send.ts + token.ts). Nastavení z @/config a z prostředí:
 //
 //   AGENT_OUTBOX_ENABLED=true     úloha vůbec běží (route bez něj vrací 404)
 //   AGENT_AUTOSEND_ENABLED=true   smí odeslat i BEZ člověka (jinak jen schválené)
-//   GMAIL_OAUTH_CLIENT_ID / GMAIL_OAUTH_CLIENT_SECRET   interní OAuth aplikace
+//   OUTBOUND_AUTOSEND_ENABLED=true  oslovení P7 smí odejít bez člověka (navíc L4 send_outreach)
+//   GMAIL_OAUTH_CLIENT_ID / GMAIL_OAUTH_CLIENT_SECRET / GMAIL_REFRESH_TOKENS
 //
-// Token schránky: calendar_token (šifrovaně, 0031/0041) s provider 'google'
-// pro člena týmu mailbox_member_id; obnova přes Google OAuth.
+// Token schránky: společný modul @/connectors/gmail (token.ts) — refresh
+// token podle e-mailu člena týmu mailbox_member_id z GMAIL_REFRESH_TOKENS,
+// stejně jako čtení poptávek (P2).
 import { COMPANY } from '@/config'
 import { createAuditedAdminClient } from '@/core/auditDb'
 import type { OutboxKind } from '@/core/agents/outboxPort'
@@ -18,13 +20,11 @@ import {
   findGmailMessageByRfcId,
   getGmailMessageMeta,
   getGmailThreadMeta,
-  googleOAuthClientFromEnv,
-  refreshGoogleAccessToken,
+  gmailAccessToken,
   sendGmailMessage,
-} from '@/connectors/gmailOutbox'
-import { logError, logWarn } from '@/lib/log'
+} from '@/connectors/gmail'
+import { logWarn } from '@/lib/log'
 import { pragueToday } from '@/lib/pragueDate'
-import { resolveAccessToken, type StoredToken, type TokenDeps } from './mailSync'
 import {
   OUTBOX_COLUMNS,
   runAgentOutbox,
@@ -81,15 +81,20 @@ export function outboxRunConfig(env: Record<string, string | undefined>, now: Da
   const map = caps.standardOffer?.priceMap ?? null
   const inquiry = caps.inquiryAgent ?? null
   const followUp = caps.followUpCadence ?? null
+  const outreach = caps.outboundAgent?.outreach ?? null
   return {
     outbox,
     autoSendEnabled: env.AGENT_AUTOSEND_ENABLED === 'true',
     companyMapVersion: map?.version ?? null,
     autoSendMaxTotal: map?.autoSendMaxTotal ?? null,
-    autoSendKinds: autoSendOutboxKinds(inquiry?.autoSendKinds, followUp != null),
+    autoSendKinds: autoSendOutboxKinds(inquiry?.autoSendKinds, followUp != null, outreach != null && env.OUTBOUND_AUTOSEND_ENABLED === 'true'),
     inquiryLimits: inquiry ? { dailyAutoSendLimit: inquiry.dailyAutoSendLimit, perRecipientDailyLimit: inquiry.perRecipientDailyLimit } : null,
     followUpLimits: followUp ? { dailyLimit: followUp.dailyLimit } : null,
     followUpWindowOpen: followUp ? isWithinWindow(pragueWeekdayHour(now), followUp.sendWindow) : null,
+    // Oslovení P7: okno a denní limit hlídá úloha outbound-agent při zařazení
+    // a fronta znovu při odeslání (zpráva může čekat přes noc).
+    outreachLimits: outreach ? { dailyLimit: outreach.dailyLimit } : null,
+    outreachWindowOpen: outreach ? isWithinWindow(pragueWeekdayHour(now), outreach.sendWindow) : null,
     wonPhases: Object.values(COMPANY.wonPhases as Record<string, readonly string[]>).flat(),
   }
 }
@@ -188,41 +193,36 @@ export function createOutboxStore(admin: Admin, wonPhases: readonly string[]): O
     async purgeText(days) {
       return Number((await rpc<number | null>('agent_outbox_purge_text', { p_days: days })) ?? 0)
     },
+    async threadHeaders(row) {
+      const m = /^inquiry:([0-9]+)$/.exec(row.source_ref)
+      if (!m) return null
+      const { data, error } = await admin.from('inquiry_agent_run').select('internet_message_id').eq('id', Number(m[1])).maybeSingle()
+      if (error) fail('inquiry_agent_run.message_id', error)
+      return threadHeadersFromMessageId((data as { internet_message_id?: string | null } | null)?.internet_message_id ?? null)
+    },
   }
+}
+
+/** In-Reply-To / References z Message-ID původní zprávy; nečitelná hodnota = null (bez vlákna). */
+export function threadHeadersFromMessageId(raw: string | null | undefined): { inReplyTo: string; references: string } | null {
+  const v = (raw ?? '').trim()
+  const id = /^<[^<>\s]{1,500}>$/.test(v) ? v : /^[^<>\s@]{1,250}@[^<>\s@]{1,250}$/.test(v) ? `<${v}>` : null
+  if (!id || !/^[\x21-\x7e]+$/.test(id)) return null
+  return { inReplyTo: id, references: id }
 }
 
 // --- Gmail ---------------------------------------------------------------------
 
-/** Token schránky z calendar_token (jen provider 'google'). */
-export function createGmailTokenDeps(admin: Admin, memberId: string, env: Record<string, string | undefined>): TokenDeps {
-  const client = googleOAuthClientFromEnv(env)
-  return {
-    async load() {
-      const { data, error } = await admin.rpc('calendar_token_get_for_service', { p_member_id: memberId })
-      if (error) throw new Error(`calendar_token_get_for_service: ${error.code ?? 'error'}`)
-      const row = ((data as (StoredToken & { provider: string | null })[] | null) ?? [])[0] ?? null
-      return row && row.provider === 'google' ? row : null
-    },
-    refresh: (refreshToken) => (client ? refreshGoogleAccessToken(client, refreshToken) : Promise.resolve(null)),
-    async save(t) {
-      const { error } = await admin.rpc('calendar_token_update_for_service', {
-        p_member_id: memberId, p_access_token: t.access_token, p_refresh_token: t.refresh_token, p_expires_at: t.expires_at,
-      })
-      if (error) logError('agentOutbox.tokenSave', new Error(error.code ?? 'error'))
-      return !error
-    },
-    now: Date.now,
-  }
-}
-
 export function createGmailOutboxMail(admin: Admin, env: Record<string, string | undefined>, fetchImpl: typeof fetch = fetch): OutboxMail {
   return {
     async token(memberId) {
-      try {
-        return { ok: true, accessToken: await resolveAccessToken(createGmailTokenDeps(admin, memberId, env)) }
-      } catch {
-        return { ok: false }
-      }
+      // Schránka = e-mail člena týmu; token ze společného modulu (GMAIL_REFRESH_TOKENS).
+      const { data, error } = await admin.from('team_member').select('email').eq('id', memberId).maybeSingle()
+      if (error) return { ok: false, reason: 'error' }
+      const email = parseSingleMailbox((data as { email?: string | null } | null)?.email ?? null)
+      if (!email) return { ok: false, reason: 'not_configured' }
+      const t = await gmailAccessToken(email, { env, fetchImpl })
+      return t.ok ? t : { ok: false, reason: t.reason }
     },
     async original(token, id) {
       const r = await getGmailMessageMeta(token, id, fetchImpl)
@@ -242,7 +242,8 @@ export function createGmailOutboxMail(admin: Admin, env: Record<string, string |
         raw = base64Url(buildMimeMessage({
           from: x.from, to: x.to, subject: x.subject, text: x.text, messageId: x.messageId,
           inReplyTo: x.inReplyTo, references: x.references, date: new Date(),
-          extraHeaders: { 'X-Cockpit-Outbox': String(x.outboxId) },
+          // Oslovení (P7): hlavičky odhlášení jedním kliknutím (RFC 2369 / RFC 8058).
+          extraHeaders: { 'X-Cockpit-Outbox': String(x.outboxId), ...(x.headers ?? {}) },
         }))
       } catch {
         // Zprávu nejde sestavit: prokazatelně neodešla.

@@ -1,9 +1,11 @@
 // Gmail API — přístupový token schránky (OAuth 2.0, interní aplikace
 // v Google Cloud projektu firmy).
 //
-// Model: každá čtená schránka (vedení, obchod, vyhrazená poptavky@) jednou
-// udělí souhlas interní aplikaci s rozsahy GMAIL_READ_SCOPES (+ odeslání pro
-// odchozí frontu, P3). Refresh token schránky je tajemství v env:
+// JEDINÝ zdroj tokenu Gmailu v systému: čtení poptávek (P2), odchozí fronta
+// (P3) i outbound (P7, oddělená odesílací schránka) berou token odsud.
+// Model: každá schránka (vedení, obchod, vyhrazená poptavky@, odesílací
+// schránka outboundu) jednou udělí souhlas interní aplikaci s rozsahy
+// GMAIL_SCOPES. Refresh token schránky je tajemství v env:
 //   GMAIL_OAUTH_CLIENT_ID, GMAIL_OAUTH_CLIENT_SECRET
 //   GMAIL_REFRESH_TOKENS  JSON objekt {"adresa schránky": "refresh token", …}
 // Přístupový token (≈ 1 h) se drží jen v paměti procesu.
@@ -14,8 +16,10 @@
 
 export const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token'
 
-/** Rozsahy pro čtení příchozích poptávek. Odeslání (gmail.send) přidává P3. */
+/** Rozsahy pro čtení příchozích poptávek. */
 export const GMAIL_READ_SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'] as const
+/** Rozsahy, které schránka udělí (čtení + odeslání odchozí fronty). */
+export const GMAIL_SCOPES = [...GMAIL_READ_SCOPES, 'https://www.googleapis.com/auth/gmail.send'] as const
 
 export type GmailTokenResult =
   | { ok: true; accessToken: string }

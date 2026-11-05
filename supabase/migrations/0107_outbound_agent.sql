@@ -272,21 +272,73 @@ REVOKE ALL ON outbound_signal, outbound_outreach, outreach_consent, outreach_sup
 REVOKE INSERT, UPDATE, DELETE, TRUNCATE ON outbound_signal, outbound_outreach, outreach_consent, outreach_suppression FROM authenticated;
 
 -- ===========================================================================
--- 6) Fronta agent_outbox: druh 'outreach' (aditivně, jen když fronta existuje)
+-- 6) Fronta agent_outbox: oslovení (druh 'outreach', integrace s P3)
 -- ===========================================================================
--- Kontrakt (core/agents/outboxPort.ts) zná kind offer|info_request|follow_up.
--- P7 přidává 'outreach' a source_ref 'outreach:<outbound_outreach.id>'.
--- Tabulku zakládá P3 v 0104; když už je, rozšíří se CHECK na kind (pokud
--- se jmenuje agent_outbox_kind_check). Bez tabulky se nic neděje a úloha
--- outbound-agent nechá oslovení ve stavu 'approved' (RPC chybí → další běh).
+-- Druh 'outreach', source_ref 'outreach:<outbound_outreach.id>' a hlavičky
+-- List-Unsubscribe / List-Unsubscribe-Post přijímá fronta přímo v 0104
+-- (CHECK, agent_outbox_enqueue, pravidlo send_outreach). Tady jen vazba na
+-- tabulku oslovení, kterou 0104 neznala:
+--   a) při zařazení se přenese schválení člověkem (outbound_outreach.decided_by)
+--      do approved_at / approved_by — fronta ho pak znovu neblokuje; oslovení
+--      bez schválení (auto_email) odejde jen přes brány pravomoci fronty
+--      (AGENT_AUTOSEND_ENABLED, L4 send_outreach) a nikdy bez stavu approved,
+--   b) po potvrzení odeslání (agent_outbox → sent) se oslovení označí 'sent'.
+-- Bez tabulky agent_outbox (0104 chybí) se nic neděje.
+
+CREATE OR REPLACE FUNCTION outbound_outbox_before_insert()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  o outbound_outreach%ROWTYPE;
+BEGIN
+  IF NEW.kind <> 'outreach' THEN
+    RETURN NEW;
+  END IF;
+  SELECT * INTO o FROM outbound_outreach WHERE id = substring(NEW.source_ref FROM 10)::bigint;
+  IF NOT FOUND OR o.status NOT IN ('approved', 'queued') OR o.channel = 'manual' THEN
+    RAISE EXCEPTION 'OB010: do fronty jde jen schválené e-mailové oslovení' USING ERRCODE = 'check_violation';
+  END IF;
+  IF o.decided_by IS NOT NULL THEN
+    NEW.approved_at := coalesce(o.decided_at, now());
+    NEW.approved_by := 'user:' || o.decided_by::text;
+  END IF;
+  RETURN NEW;
+END $$;
+
+CREATE OR REPLACE FUNCTION outbound_outbox_after_sent()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+BEGIN
+  IF NEW.kind = 'outreach' AND NEW.status = 'sent' AND OLD.status IS DISTINCT FROM 'sent' THEN
+    UPDATE outbound_outreach
+       SET status = 'sent',
+           outbox_source_ref = coalesce(outbox_source_ref, NEW.source_ref),
+           outbox_id = coalesce(outbox_id, NEW.id),
+           prague_day = coalesce(NEW.prague_day, prague_day)
+     WHERE id = substring(NEW.source_ref FROM 10)::bigint
+       AND status IN ('approved', 'queued');
+  END IF;
+  RETURN NEW;
+END $$;
+
+REVOKE ALL ON FUNCTION outbound_outbox_before_insert() FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON FUNCTION outbound_outbox_after_sent() FROM PUBLIC, anon, authenticated;
+
 DO $$
 BEGIN
-  IF to_regclass('public.agent_outbox') IS NOT NULL
-     AND EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'agent_outbox_kind_check'
-                  AND conrelid = to_regclass('public.agent_outbox')) THEN
-    ALTER TABLE agent_outbox DROP CONSTRAINT agent_outbox_kind_check;
-    ALTER TABLE agent_outbox ADD CONSTRAINT agent_outbox_kind_check
-      CHECK (kind IN ('offer', 'info_request', 'follow_up', 'outreach'));
+  IF to_regclass('public.agent_outbox') IS NOT NULL THEN
+    DROP TRIGGER IF EXISTS outbound_outbox_before_insert ON agent_outbox;
+    CREATE TRIGGER outbound_outbox_before_insert BEFORE INSERT ON agent_outbox
+      FOR EACH ROW EXECUTE FUNCTION outbound_outbox_before_insert();
+    DROP TRIGGER IF EXISTS outbound_outbox_after_sent ON agent_outbox;
+    CREATE TRIGGER outbound_outbox_after_sent AFTER UPDATE OF status ON agent_outbox
+      FOR EACH ROW EXECUTE FUNCTION outbound_outbox_after_sent();
   END IF;
 END $$;
 

@@ -14,7 +14,7 @@ import {
   type OutboxStore,
   type SendOutcome,
 } from '@/domain/crm/agentOutbox'
-import { outboxRunConfig, pragueWeekdayHour } from '@/domain/crm/agentOutboxService'
+import { outboxRunConfig, pragueWeekdayHour, threadHeadersFromMessageId } from '@/domain/crm/agentOutboxService'
 
 const NOW = new Date('2026-11-05T10:00:00Z')
 const MAILBOX = 'b1111111-1111-4111-8111-111111111111'
@@ -300,5 +300,99 @@ describe('agent-outbox: nastavení firmy', () => {
   test('vlastní Message-ID', () => {
     expect(newRfcMessageId(5, 'Firma.Example', () => 'ab12')).toBe('<ao.5.ab12@firma.example>')
     expect(() => newRfcMessageId(5, 'zla domena')).toThrow()
+  })
+})
+
+// --- Integrace P7 (oslovení) a P2 (vlákno v režimu {to}) -------------------------
+
+const OUTREACH_HEADERS = { 'List-Unsubscribe': '<https://www.firma.example/api/web/odhlaseni?t=abc>', 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' } as const
+const outreachRow = (over: Partial<OutboxRow> = {}) => row({
+  id: 31, kind: 'outreach', source_ref: 'outreach:5', scope_version_id: null, mode: 'to', in_reply_to_message_id: null,
+  to_email: 'nakup@beta.example', subject: 'Rok od vaší akce', body: 'Dobrý den,\n…\n--\nOdhlášení: https://www.firma.example/api/web/odhlaseni?t=abc',
+  price_map_version: null, quote_total: null, approved_at: '2026-11-05T08:00:00Z', headers: OUTREACH_HEADERS, ...over,
+})
+const OUTREACH_CFG: Partial<OutboxRunConfig> = { outreachLimits: { dailyLimit: 15 }, outreachWindowOpen: true }
+
+describe('agent-outbox: oslovení outbound agenta (P7)', () => {
+  test('schválené oslovení odejde v okně s hlavičkami odhlášení, bez patičky fronty, s vlastním limitem', async () => {
+    const { store, db, calls } = fakeStore([outreachRow()])
+    const { mail, sent } = fakeMail()
+    const stats = await run(store, mail, OUTREACH_CFG)
+    expect(stats).toMatchObject({ sent: 1, sentAutonomous: 0 })
+    expect(calls.claims[0]).toMatchObject({ autonomous: false, dailyLimit: 15, limitKinds: ['outreach'], perRecipientDailyLimit: 2 })
+    expect(sent[0]).toMatchObject({ to: 'nakup@beta.example', headers: OUTREACH_HEADERS, inReplyTo: null, threadId: null })
+    expect(sent[0].text).not.toContain('Kalkulace je nezávazná.')
+    expect(sent[0].text).not.toContain('IČO 00000000')
+    expect(db.get(31)!.status).toBe('sent')
+  })
+
+  test('mimo okno odesílání oslovení čeká; bez konfigurace outboundu neodejde vůbec', async () => {
+    for (const cfg of [{ ...OUTREACH_CFG, outreachWindowOpen: false }, { outreachLimits: null, outreachWindowOpen: null }]) {
+      const { store, calls } = fakeStore([outreachRow()])
+      const { mail, sent } = fakeMail()
+      const stats = await run(store, mail, cfg)
+      expect(stats).toMatchObject({ sent: 0, deferred: 1 })
+      expect(stats.reasons).toMatchObject({ outside_send_window: 1 })
+      expect(calls.claims).toHaveLength(0)
+      expect(sent).toHaveLength(0)
+    }
+  })
+
+  test('neschválené oslovení bez OUTBOUND_AUTOSEND (druh mimo autoSendKinds) jde na schválení; bez hlaviček se zablokuje', async () => {
+    const a = fakeStore([outreachRow({ approved_at: null })])
+    await run(a.store, fakeMail().mail, OUTREACH_CFG)
+    expect(a.calls.finishes[0]).toMatchObject({ status: 'blocked', reason: 'approval_required' })
+    expect(a.calls.claims).toHaveLength(0)
+
+    const b = fakeStore([outreachRow({ headers: null })])
+    await run(b.store, fakeMail().mail, OUTREACH_CFG)
+    expect(b.calls.finishes[0]).toMatchObject({ status: 'blocked', reason: 'missing_unsubscribe' })
+  })
+
+  test('samostatné oslovení: ilustrační mapa ho neblokuje, brána L4 a druh ano', async () => {
+    const { store, calls } = fakeStore([outreachRow({ approved_at: null })])
+    const stats = await run(store, fakeMail().mail, { ...OUTREACH_CFG, companyMapVersion: 'ilustracni-2026-11', autoSendKinds: ['outreach'] })
+    expect(stats).toMatchObject({ sent: 1, sentAutonomous: 1 })
+    expect(calls.claims[0]).toMatchObject({ autonomous: true })
+  })
+
+  test('outboxRunConfig: oslovení samostatně jen s OUTBOUND_AUTOSEND_ENABLED; limit a okno z konfigurace firmy', () => {
+    const off = outboxRunConfig({ AGENT_AUTOSEND_ENABLED: 'true' }, NOW)!
+    expect(off.autoSendKinds).not.toContain('outreach')
+    expect(off.outreachLimits).toEqual({ dailyLimit: COMPANY.capabilities.outboundAgent!.outreach.dailyLimit })
+    const on = outboxRunConfig({ AGENT_AUTOSEND_ENABLED: 'true', OUTBOUND_AUTOSEND_ENABLED: 'true' }, NOW)!
+    expect(on.autoSendKinds).toContain('outreach')
+    // 5. 11. 2026 je čtvrtek, 11:00 v Praze — v okně út–čt 9–16.
+    expect(on.outreachWindowOpen).toBe(true)
+    expect(outboxRunConfig({}, new Date('2026-11-06T10:00:00Z'))!.outreachWindowOpen).toBe(false)
+  })
+})
+
+describe('agent-outbox: odpověď na e-mail z jiné schránky ({to}) ve vlákně zákazníka', () => {
+  test('In-Reply-To a References podle inquiry_agent_run.internet_message_id', async () => {
+    const { store } = fakeStore([row({ kind: 'info_request', scope_version_id: null, mode: 'to', in_reply_to_message_id: null, to_email: 'karel@alfa.example', approved_at: '2026-11-05T09:30:00Z' })])
+    const threadHeaders = vi.fn(async () => ({ inReplyTo: '<orig-77@alfa.example>', references: '<orig-77@alfa.example>' }))
+    store.threadHeaders = threadHeaders
+    const { mail, sent } = fakeMail()
+    await run(store, mail)
+    expect(threadHeaders).toHaveBeenCalledTimes(1)
+    expect(sent[0]).toMatchObject({ to: 'karel@alfa.example', inReplyTo: '<orig-77@alfa.example>', references: '<orig-77@alfa.example>', threadId: null, headers: null })
+  })
+
+  test('threadHeadersFromMessageId: s i bez lomených závorek; nečitelné = null', () => {
+    expect(threadHeadersFromMessageId('<a.b@c.example>')).toEqual({ inReplyTo: '<a.b@c.example>', references: '<a.b@c.example>' })
+    expect(threadHeadersFromMessageId('a.b@c.example')).toEqual({ inReplyTo: '<a.b@c.example>', references: '<a.b@c.example>' })
+    for (const bad of [null, '', 'bez zavinace', '<a@b>\r\nBcc: x@y', '<a b@c>']) expect(threadHeadersFromMessageId(bad)).toBeNull()
+  })
+})
+
+describe('agent-outbox: neplatný token Gmailu do statistik (alarm)', () => {
+  test('token_invalid_grant se započítá, nic se neodešle', async () => {
+    const { store } = fakeStore([row()])
+    const { mail, sent } = fakeMail()
+    mail.token = async () => ({ ok: false, reason: 'invalid_grant' })
+    const stats = await run(store, mail)
+    expect(stats.reasons).toMatchObject({ token_invalid_grant: 1 })
+    expect(sent).toHaveLength(0)
   })
 })

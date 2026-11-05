@@ -6,8 +6,15 @@
 -- že bez všech bran pravomoci nic neodejde bez člověka a že po odeslání
 -- zůstane auditní stopa. Tou cestou je tabulka agent_outbox a RPC níže.
 --
+-- Integrace P7: druh 'outreach' (obchodní oslovení outbound agenta,
+-- source_ref 'outreach:<outbound_outreach.id>', vždy režim 'to') s povinnými
+-- hlavičkami List-Unsubscribe a List-Unsubscribe-Post (sloupec headers).
+-- Oslovení má vlastní pravidlo pravomoci send_outreach (seed L2), okno
+-- odesílání a denní limit z konfigurace outbound agenta hlídá úloha;
+-- stav oslovení (sent) a schválení člověkem přenáší 0107.
+--
 -- TOK (claim–send–confirm):
---   1) P2 (poptávka) a P4 (follow-up) zařadí zprávu RPC agent_outbox_enqueue
+--   1) P2 (poptávka), P4 (follow-up) a P7 (oslovení) zařadí zprávu RPC agent_outbox_enqueue
 --      (idempotentní podle source_ref). Text je vygenerovaný z mapy nebo
 --      šablony, nikdy text příchozí zprávy.
 --   2) Úloha agent-outbox (P3, servisní klíč) u každé zprávy ve stavu queued
@@ -102,6 +109,9 @@ CREATE TABLE IF NOT EXISTS agent_outbox (
   recipient              text,
   subject                text,
   body                   text,
+  -- Další hlavičky zprávy: jen u oslovení (P7) a jen List-Unsubscribe
+  -- + List-Unsubscribe-Post (RFC 2369 / RFC 8058).
+  headers                jsonb,
   price_map_version      text,
   quote_total            numeric(14, 2),
   status                 text NOT NULL DEFAULT 'queued',
@@ -127,8 +137,20 @@ CREATE TABLE IF NOT EXISTS agent_outbox (
   CONSTRAINT agent_outbox_source_ref_key UNIQUE (source_ref),
   CONSTRAINT agent_outbox_scope_version_key UNIQUE (scope_version_id),
   CONSTRAINT agent_outbox_rfc_message_id_key UNIQUE (rfc_message_id),
-  CONSTRAINT agent_outbox_kind_check CHECK (kind IN ('offer', 'info_request', 'follow_up')),
-  CONSTRAINT agent_outbox_source_ref_check CHECK (source_ref ~ '^(inquiry|web|followup):[0-9]+(:[0-9]+)?$'),
+  CONSTRAINT agent_outbox_kind_check CHECK (kind IN ('offer', 'info_request', 'follow_up', 'outreach')),
+  CONSTRAINT agent_outbox_source_ref_check CHECK (
+    source_ref ~ '^(inquiry|web|followup):[0-9]+(:[0-9]+)?$' OR source_ref ~ '^outreach:[0-9]+$'
+  ),
+  CONSTRAINT agent_outbox_outreach_check CHECK (
+    (kind = 'outreach') = (source_ref ~ '^outreach:') AND (kind <> 'outreach' OR mode = 'to')
+  ),
+  CONSTRAINT agent_outbox_headers_check CHECK (
+    headers IS NULL
+    OR (kind = 'outreach' AND jsonb_typeof(headers) = 'object'
+        AND headers ?& ARRAY['List-Unsubscribe', 'List-Unsubscribe-Post']
+        AND (headers - 'List-Unsubscribe' - 'List-Unsubscribe-Post') = '{}'::jsonb)
+  ),
+  CONSTRAINT agent_outbox_outreach_headers_check CHECK (kind <> 'outreach' OR headers IS NOT NULL OR body_purged_at IS NOT NULL),
   CONSTRAINT agent_outbox_status_check
     CHECK (status IN ('queued', 'claimed', 'sent', 'failed', 'needs_attention', 'blocked')),
   CONSTRAINT agent_outbox_mode_check CHECK (
@@ -238,6 +260,7 @@ AS $$
     WHEN 'offer' THEN 'send_standard_offer'
     WHEN 'info_request' THEN 'send_info_request'
     WHEN 'follow_up' THEN 'send_follow_up'
+    WHEN 'outreach' THEN 'send_outreach'
   END
 $$;
 
@@ -295,6 +318,7 @@ AS $$
   SELECT CASE p_kind
     WHEN 'offer' THEN 'nabídka'
     WHEN 'info_request' THEN 'doptání údajů'
+    WHEN 'outreach' THEN 'obchodní oslovení'
     ELSE 'připomínka'
   END
 $$;
@@ -319,6 +343,8 @@ DECLARE
   v_to       text;
   v_subject  text;
   v_text     text;
+  v_headers  jsonb;
+  v_unsub    text;
   v_ver      deal_scope_version%ROWTYPE;
   v_total    numeric;
   v_id       bigint;
@@ -328,10 +354,12 @@ BEGIN
   END IF;
   v_kind := p ->> 'kind';
   v_ref := p ->> 'source_ref';
-  IF v_kind IS NULL OR v_kind NOT IN ('offer', 'info_request', 'follow_up') THEN
+  IF v_kind IS NULL OR v_kind NOT IN ('offer', 'info_request', 'follow_up', 'outreach') THEN
     RAISE EXCEPTION 'AO001: neznámý druh zprávy' USING ERRCODE = 'check_violation';
   END IF;
-  IF v_ref IS NULL OR v_ref !~ '^(inquiry|web|followup):[0-9]+(:[0-9]+)?$' THEN
+  IF v_ref IS NULL
+     OR (v_kind <> 'outreach' AND v_ref !~ '^(inquiry|web|followup):[0-9]+(:[0-9]+)?$')
+     OR (v_kind = 'outreach' AND v_ref !~ '^outreach:[0-9]+$') THEN
     RAISE EXCEPTION 'AO001: neplatný source_ref' USING ERRCODE = 'check_violation';
   END IF;
 
@@ -373,6 +401,21 @@ BEGIN
     RAISE EXCEPTION 'AO001: předmět 1–300 a text 1–20 000 znaků' USING ERRCODE = 'check_violation';
   END IF;
 
+  -- Hlavičky odhlášení: povinné u oslovení (P7), jinde se nepřijímají.
+  IF v_kind = 'outreach' THEN
+    IF v_to IS NULL THEN
+      RAISE EXCEPTION 'AO004: oslovení je vždy nová zpráva na adresu' USING ERRCODE = 'check_violation';
+    END IF;
+    v_unsub := btrim(coalesce(p #>> '{headers,List-Unsubscribe}', ''));
+    IF v_unsub !~ '^<https://[^<>[:space:],]+>$' OR char_length(v_unsub) > 502
+       OR coalesce(p #>> '{headers,List-Unsubscribe-Post}', '') <> 'List-Unsubscribe=One-Click' THEN
+      RAISE EXCEPTION 'AO004: oslovení musí mít hlavičky List-Unsubscribe (https) a List-Unsubscribe-Post' USING ERRCODE = 'check_violation';
+    END IF;
+    v_headers := jsonb_build_object('List-Unsubscribe', v_unsub, 'List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
+  ELSIF jsonb_typeof(p -> 'headers') = 'object' AND p -> 'headers' <> '{}'::jsonb THEN
+    RAISE EXCEPTION 'AO004: další hlavičky smí nést jen oslovení' USING ERRCODE = 'check_violation';
+  END IF;
+
   IF v_kind = 'offer' THEN
     IF v_version IS NULL THEN
       RAISE EXCEPTION 'AO003: nabídka musí mít verzi rozsahu' USING ERRCODE = 'check_violation';
@@ -391,11 +434,11 @@ BEGIN
 
   INSERT INTO agent_outbox (
     kind, source_ref, deal_id, scope_version_id, mailbox_member_id, mode, in_reply_to_message_id,
-    to_email, subject, body, price_map_version, quote_total
+    to_email, subject, body, headers, price_map_version, quote_total
   ) VALUES (
     v_kind, v_ref, v_deal, v_version, v_member,
     CASE WHEN v_reply IS NOT NULL THEN 'reply' ELSE 'to' END,
-    v_reply, v_to, v_subject, v_text,
+    v_reply, v_to, v_subject, v_text, v_headers,
     left(nullif(btrim(p ->> 'price_map_version'), ''), 64),
     v_total
   )
@@ -850,7 +893,7 @@ BEGIN
     RAISE EXCEPTION 'AO030: retence nejméně 30 dní' USING ERRCODE = 'check_violation';
   END IF;
   UPDATE agent_outbox
-     SET subject = NULL, body = NULL, to_email = NULL, recipient = NULL, body_purged_at = now()
+     SET subject = NULL, body = NULL, headers = NULL, to_email = NULL, recipient = NULL, body_purged_at = now()
    WHERE body_purged_at IS NULL AND status IN ('sent', 'failed', 'blocked')
      AND coalesce(sent_at, updated_at) < now() - make_interval(days => p_days);
   GET DIAGNOSTICS v_n = ROW_COUNT;
@@ -876,7 +919,7 @@ BEGIN
   UPDATE agent_outbox
      SET status = CASE WHEN status = 'queued' THEN 'blocked' ELSE status END,
          stop_reason = CASE WHEN status = 'queued' THEN 'gdpr_erased' ELSE stop_reason END,
-         subject = NULL, body = NULL, to_email = NULL, recipient = NULL, body_purged_at = now()
+         subject = NULL, body = NULL, headers = NULL, to_email = NULL, recipient = NULL, body_purged_at = now()
    WHERE (lower(to_email) = v_email OR lower(recipient) = v_email)
      AND status <> 'claimed';
   GET DIAGNOSTICS v_n = ROW_COUNT;
@@ -1115,7 +1158,8 @@ SELECT v.kind, 'L2', true, v.note, 'system:migration_0104'
 FROM (VALUES
   ('send_standard_offer', 'Agent smi sam odeslat standardni nabidku z mapy jen s L4; vychozi L2 = schvaluje obchod'),
   ('send_info_request', 'Agent smi sam odeslat doptani udaju jen s L4; vychozi L2 = schvaluje obchod'),
-  ('send_follow_up', 'Agent smi sam odeslat pripominku nabidky jen s L4; vychozi L2 = schvaluje obchod')
+  ('send_follow_up', 'Agent smi sam odeslat pripominku nabidky jen s L4; vychozi L2 = schvaluje obchod'),
+  ('send_outreach', 'Agent smi sam odeslat obchodni osloveni (P7) jen s L4; vychozi L2 = schvaluje obchod')
 ) AS v(kind, note)
 WHERE NOT EXISTS (SELECT 1 FROM authority_policy ap WHERE ap.action_kind = v.kind AND ap.active);
 

@@ -213,7 +213,7 @@ function headerValues(headers: unknown, name: string): string[] {
 }
 
 /** Hlavičky původní zprávy potřebné k odpovědi ve vlákně. */
-export interface GmailMessageMeta {
+export interface GmailReplyMeta {
   id: string
   threadId: string | null
   internalDate: number | null
@@ -229,7 +229,7 @@ export interface GmailMessageMeta {
 
 const META_HEADERS = ['From', 'Reply-To', 'Message-ID', 'References', 'Subject', 'Authentication-Results']
 
-function toMeta(m: Record<string, unknown>): GmailMessageMeta | null {
+function toMeta(m: Record<string, unknown>): GmailReplyMeta | null {
   const id = m.id
   if (typeof id !== 'string' || !ID_RE.test(id)) return null
   const headers = (m.payload as { headers?: unknown } | undefined)?.headers
@@ -253,7 +253,7 @@ export async function getGmailMessageMeta(
   accessToken: string,
   messageId: string,
   fetchImpl: GmailFetch = fetch,
-): Promise<{ ok: true; message: GmailMessageMeta } | GmailReadError> {
+): Promise<{ ok: true; message: GmailReplyMeta } | GmailReadError> {
   if (!ID_RE.test(messageId)) return { ok: false, kind: 'not_found', status: 0 }
   const qs = ['format=metadata', ...META_HEADERS.map((h) => `metadataHeaders=${encodeURIComponent(h)}`)].join('&')
   const r = await getJson(accessToken, `${GMAIL_API_BASE}/messages/${encodeURIComponent(messageId)}?${qs}`, fetchImpl)
@@ -267,13 +267,13 @@ export async function getGmailThreadMeta(
   accessToken: string,
   threadId: string,
   fetchImpl: GmailFetch = fetch,
-): Promise<{ ok: true; messages: GmailMessageMeta[] } | GmailReadError> {
+): Promise<{ ok: true; messages: GmailReplyMeta[] } | GmailReadError> {
   if (!ID_RE.test(threadId)) return { ok: false, kind: 'not_found', status: 0 }
   const qs = ['format=metadata', 'metadataHeaders=From'].join('&')
   const r = await getJson(accessToken, `${GMAIL_API_BASE}/threads/${encodeURIComponent(threadId)}?${qs}`, fetchImpl)
   if (!r.ok) return r
   const msgs = (r.json as { messages?: unknown }).messages
-  const out = Array.isArray(msgs) ? msgs.map((m) => (m && typeof m === 'object' ? toMeta(m as Record<string, unknown>) : null)).filter((m): m is GmailMessageMeta => m !== null) : []
+  const out = Array.isArray(msgs) ? msgs.map((m) => (m && typeof m === 'object' ? toMeta(m as Record<string, unknown>) : null)).filter((m): m is GmailReplyMeta => m !== null) : []
   return { ok: true, messages: out }
 }
 

@@ -136,6 +136,7 @@ describe.skipIf(!PGliteCtor)('odchozí fronta agenta 0104 (PGlite)', () => {
     expect(pol).toEqual([
       { action_kind: 'send_follow_up', level: 'L2' },
       { action_kind: 'send_info_request', level: 'L2' },
+      { action_kind: 'send_outreach', level: 'L2' },
       { action_kind: 'send_standard_offer', level: 'L2' },
     ])
     const rls = await one<{ rls: boolean }>(`SELECT relrowsecurity AS rls FROM pg_class WHERE relname = 'agent_outbox'`)

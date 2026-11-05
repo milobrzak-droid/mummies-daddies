@@ -5,6 +5,7 @@ import { readdirSync, readFileSync } from 'node:fs'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { emailHash } from '@/core/outbound/unsubscribe'
 import { signalUpsertPayload } from '@/core/outbound/signal'
+import { outreachEnqueuePayload } from '@/core/outbound/outbox'
 
 type Row = Record<string, unknown>
 type Db = {
@@ -170,6 +171,45 @@ describe.skipIf(!PGliteCtor)('0107 outbound agent (PGlite, celý řetěz)', () =
     // Opakované odhlášení nic nerozbije.
     expect((await svc<{ r: Row }>(`SELECT outbound_unsubscribe($1::jsonb) AS r`, [JSON.stringify({ email_hash: hash })]))[0].r).toEqual({ suppressed: true, contacts: 0 })
     await expect(svc(`SELECT outbound_unsubscribe('{"email_hash":"x"}'::jsonb)`)).rejects.toThrow(/OU000/)
+  })
+
+  test('fronta 0104 přijme oslovení: hlavičky odhlášení, schválení člověkem, po odeslání stav sent', async () => {
+    const { signal_id } = await upsert(tender('vvz-outbox'))
+    const lead = (await svc<{ r: Row }>(`SELECT outbound_lead_create($1::jsonb) AS r`, [JSON.stringify({ signal_id })]))[0].r
+    const dealId = Number(lead.deal_id)
+    const mk = async (status: string, decidedBy: string | null) => (await db.query<{ id: number }>(
+      `INSERT INTO outbound_outreach (account_id, deal_id, channel, status, basis, subject, body, decided_by, decided_at)
+       VALUES ($1, $2, 'review_email', $3, 'existing_customer', 'Rok od akce', 'Text', $4, CASE WHEN $4::uuid IS NULL THEN NULL ELSE now() END) RETURNING id`,
+      [lead.account_id, dealId, status, decidedBy])).rows[0].id
+    const payload = (id: number) => outreachEnqueuePayload({
+      outreachId: id, dealId, mailboxMemberId: SALES, to: 'nakup@firma.example', subject: 'Rok od akce', text: 'Text\n--\nOdhlášení: https://x.example/o?t=1',
+      listUnsubscribeUrl: 'https://x.example/o?t=1',
+    })
+    const enqueue = (p: Record<string, unknown>) => svc<{ r: { outbox_id: number; duplicate: boolean } }>(`SELECT agent_outbox_enqueue($1::jsonb) AS r`, [JSON.stringify(p)])
+
+    // Neschválené (koncept) oslovení se do fronty nedostane.
+    const draft = await mk('draft', null)
+    await expect(enqueue(payload(draft))).rejects.toThrow(/OB010/)
+    // Bez hlaviček odhlášení ne; hlavičky u jiného druhu taky ne.
+    const ok = await mk('approved', SALES)
+    await expect(enqueue({ ...payload(ok), headers: undefined })).rejects.toThrow(/AO004/)
+    await expect(enqueue({ ...payload(ok), kind: 'follow_up', source_ref: `followup:${dealId}:9` })).rejects.toThrow(/AO004/)
+
+    const { outbox_id: id } = (await enqueue(payload(ok)))[0].r
+    const row = await one<Row>(`SELECT kind, mode, headers, approved_at IS NOT NULL AS approved, approved_by FROM agent_outbox WHERE id = $1`, [id])
+    expect(row).toEqual({
+      kind: 'outreach', mode: 'to', approved: true, approved_by: `user:${SALES}`,
+      headers: { 'List-Unsubscribe': '<https://x.example/o?t=1>', 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' },
+    })
+    expect((await enqueue(payload(ok)))[0].r).toEqual({ outbox_id: id, duplicate: true })
+
+    // Claim (schváleno člověkem) → confirm → oslovení 'sent'.
+    const c = (await svc<{ r: Row }>(`SELECT agent_outbox_claim($1, $2, $3, false, 15, ARRAY['outreach']::text[], 1) AS r`,
+      [id, 'nakup@firma.example', `<ao.${id}.x@mummiesdaddies.com>`]))[0].r
+    expect(c).toMatchObject({ ok: true })
+    await svc(`SELECT agent_outbox_confirm($1, 'gm1', 'th1', NULL)`, [id])
+    expect(await one(`SELECT status, outbox_id, outbox_source_ref FROM outbound_outreach WHERE id = $1`, [ok]))
+      .toEqual({ status: 'sent', outbox_id: id, outbox_source_ref: `outreach:${ok}` })
   })
 
   test('audit nenese název, text, e-mail ani otisk', async () => {

@@ -1,6 +1,7 @@
 // Kontrakt balíku P3 (odchozí fronta agent_outbox): JEDINÁ cesta, kudy
 // Cockpit posílá e-mail zákazníkovi. Do fronty zapisují P2 (nabídka,
-// doptání) a P4 (follow-up) voláním RPC agent_outbox_enqueue(p jsonb);
+// doptání), P4 (follow-up) a P7 (obchodní oslovení, druh 'outreach' —
+// doplněno při integraci) voláním RPC agent_outbox_enqueue(p jsonb);
 // odesílá jen úloha agent-outbox (P3) po kontrole bran a stop pravidel.
 // Zmrazeno základovým balíkem; vlastník po rozvětvení: P3.
 //
@@ -11,7 +12,10 @@
 //     (PostgREST PGRST202 / Postgres 42883) a volající nechá svůj stav
 //     beze změny a zkusí to v dalším běhu.
 
-export type OutboxKind = 'offer' | 'info_request' | 'follow_up'
+export type OutboxKind = 'offer' | 'info_request' | 'follow_up' | 'outreach'
+
+/** Hlavičky odhlášení (RFC 2369 / RFC 8058) — povinné u oslovení (P7), jinde žádné. */
+export type OutboxHeaders = { 'List-Unsubscribe': string; 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' }
 
 /** Odpověď ve vlákně příchozí zprávy (Graph id), nebo nová zpráva na adresu. */
 export type OutboxMode = { reply: string } | { to: string }
@@ -20,7 +24,7 @@ export interface OutboxEnqueue {
   kind: OutboxKind
   /**
    * Klíč idempotence (UNIQUE): 'inquiry:<inquiry_agent_run.id>',
-   * 'web:<web_inquiry.id>', 'followup:<deal_id>:<pořadí>'.
+   * 'web:<web_inquiry.id>', 'followup:<deal_id>:<pořadí>', 'outreach:<outbound_outreach.id>'.
    */
   sourceRef: string
   dealId: number
@@ -34,13 +38,15 @@ export interface OutboxEnqueue {
   text: string
   /** Verze cenové mapy, ze které nabídka vznikla (audit). */
   priceMapVersion?: string | null
+  /** Jen druh 'outreach': hlavičky odhlášení, které fronta přenese do zprávy. */
+  headers?: OutboxHeaders | null
 }
 
 export type OutboxEnqueueResult = { outbox_id: number; duplicate: boolean }
 
 export const OUTBOX_ENQUEUE_RPC = 'agent_outbox_enqueue'
 
-export const OUTBOX_SOURCE_REF_RE = /^(inquiry|web|followup):[0-9]+(:[0-9]+)?$/
+export const OUTBOX_SOURCE_REF_RE = /^(?:(inquiry|web|followup):[0-9]+(:[0-9]+)?|outreach:[0-9]+)$/
 
 /** Payload pro RPC (snake_case, jak ho čte SQL). */
 export function outboxEnqueuePayload(x: OutboxEnqueue): Record<string, unknown> {
@@ -54,5 +60,6 @@ export function outboxEnqueuePayload(x: OutboxEnqueue): Record<string, unknown> 
     subject: x.subject,
     text: x.text,
     price_map_version: x.priceMapVersion ?? null,
+    ...(x.headers ? { headers: { ...x.headers } } : {}),
   }
 }

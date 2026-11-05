@@ -11,7 +11,15 @@
 //   - gmail_oauth  chyba úlohy ukazuje na neplatný / odvolaný token Google,
 //   - model_credit chyba úlohy ukazuje na vyčerpaný kredit / limit Anthropic,
 //   - queue_stuck  fronta (web_inquiry, inquiry_agent_run, agent_outbox) má
-//                  položky, které se nehnuly déle než limit.
+//                  položky, které se nehnuly déle než limit,
+//   - queue_error  poslední běh agenta (P2) nebo odchozí fronty (P3) doběhl,
+//                  ale ve statistikách hlásí selhané / nejisté zprávy.
+// Úlohy agenta a fronty chybu tokenu nebo zprávy NEhlásí jako selhání běhu
+// (jedna schránka nesmí zastavit ostatní), jen ve statistikách běhu
+// (job_run.stats): P2 mailbox.errors.token_invalid_grant, mailbox.error,
+// agent.failed; P3 reasons.token_invalid_grant / unauthorized, failed,
+// uncertain. Proto se čtou i statistiky posledního úspěšného běhu
+// (statsSignals níže) — jen počty a kódy, nikdy obsah.
 // Používá ho /api/health (veřejně jen souhrn) a /api/cron/ops-alarm
 // (oznámení správci přes ALERT_WEBHOOK_URL, s potlačením opakování).
 //
@@ -31,7 +39,7 @@ import { createHash } from 'node:crypto'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { assessJobHealth, jobLabel, type JobRunRow } from '@/domain/crm/jobHealth'
 
-export type OpsSignalCode = 'job_failed' | 'job_stuck' | 'job_silent' | 'gmail_oauth' | 'model_credit' | 'queue_stuck'
+export type OpsSignalCode = 'job_failed' | 'job_stuck' | 'job_silent' | 'gmail_oauth' | 'model_credit' | 'queue_stuck' | 'queue_error'
 
 export type OpsSignal = {
   code: OpsSignalCode
@@ -106,9 +114,39 @@ export function classifyJobError(error: string | null): 'gmail_oauth' | 'model_c
 
 const SILENCE_SEEN_HOURS = 24
 
+/** Řádek job_run pro alarm: navíc statistiky běhu (jsonb, jen počty a kódy). */
+export type OpsJobRunRow = JobRunRow & { stats?: unknown }
+
+/** Úlohy, jejichž statistiky nesou chyby Gmail OAuth a fronty (P2, P3). */
+export const STATS_JOBS = ['inquiry-agent', 'agent-outbox'] as const
+
+const obj = (v: unknown): Record<string, unknown> => (v && typeof v === 'object' && !Array.isArray(v) ? (v as Record<string, unknown>) : {})
+const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : 0)
+
+/**
+ * Signály ze statistik úspěšného běhu úlohy agenta (P2) nebo fronty (P3).
+ * Čte jen klíče a počty; text chyby (mailbox.error) se jen klasifikuje.
+ */
+export function statsSignals(job: string, stats: unknown): ('gmail_oauth' | 'model_credit' | 'queue_error')[] {
+  const s = obj(stats)
+  const out = new Set<'gmail_oauth' | 'model_credit' | 'queue_error'>()
+  if (job === 'inquiry-agent') {
+    const mailbox = obj(s.mailbox)
+    const errors = obj(mailbox.errors)
+    if (num(errors.token_invalid_grant) > 0) out.add('gmail_oauth')
+    if (typeof mailbox.error === 'string') out.add(classifyJobError(mailbox.error) ?? 'queue_error')
+    if (num(obj(s.agent).failed) > 0) out.add('queue_error')
+  } else if (job === 'agent-outbox') {
+    const reasons = obj(s.reasons)
+    if (num(reasons.token_invalid_grant) > 0 || num(reasons.unauthorized) > 0) out.add('gmail_oauth')
+    if (num(s.failed) > 0 || num(s.uncertain) > 0) out.add('queue_error')
+  }
+  return [...out].sort()
+}
+
 /** Čistá funkce: z běhů úloh a stavu front seznam signálů. */
 export function assessOps(input: {
-  jobRows: readonly JobRunRow[]
+  jobRows: readonly OpsJobRunRow[]
   stuckQueues: readonly { subject: string; since: string | null }[]
   now: Date
   expectedJobs?: Readonly<Record<string, number>>
@@ -140,6 +178,17 @@ export function assessOps(input: {
     }
   }
 
+  // Chyby Gmail OAuth a fronty ze statistik posledního úspěšného běhu (P2, P3).
+  for (const job of STATS_JOBS) {
+    const last = jobRows
+      .filter((r) => r.job_name === job && r.status === 'succeeded')
+      .reduce<OpsJobRunRow | null>((m, r) => (!m || r.started_at > m.started_at ? r : m), null)
+    if (!last) continue
+    for (const code of statsSignals(job, last.stats)) {
+      if (!signals.some((x) => x.code === code && x.subject === job)) signals.push({ code, subject: job, since: last.started_at })
+    }
+  }
+
   for (const q of stuckQueues) signals.push({ code: 'queue_stuck', subject: q.subject, since: q.since })
 
   signals.sort((a, b) => a.code.localeCompare(b.code) || a.subject.localeCompare(b.subject))
@@ -160,6 +209,7 @@ const CODE_TEXT: Record<OpsSignalCode, string> = {
   gmail_oauth: 'neplatný nebo odvolaný přístup ke Gmailu — znovu autorizovat schránku',
   model_credit: 'vyčerpaný kredit nebo limit Anthropic — dobít / zvýšit limit',
   queue_stuck: 'fronta stojí',
+  queue_error: 'zprávy agenta selhaly nebo není jisté, zda odešly — zkontrolovat Cockpit → Agent (Čeká na člověka)',
 }
 
 /** Text oznámení správci (česky, bez osobních údajů). */
@@ -180,12 +230,12 @@ export function renderAlarmText(signals: readonly OpsSignal[], appUrl: string | 
 
 type Db = Pick<SupabaseClient, 'from'>
 const MISSING = new Set(['42P01', 'PGRST205', '42703', 'PGRST204'])
-const JOB_COLUMNS = 'id, job_name, status, started_at, finished_at, locked_until, error'
+const JOB_COLUMNS = 'id, job_name, status, started_at, finished_at, locked_until, error, stats'
 
 export class OpsReadError extends Error {}
 
 /** Běhy úloh za posledních 7 dní. Chyba čtení = DB nedostupná → výjimka. */
-export async function loadJobRows(db: Db, now: Date): Promise<JobRunRow[]> {
+export async function loadJobRows(db: Db, now: Date): Promise<OpsJobRunRow[]> {
   const from = new Date(now.getTime() - 7 * 86_400_000).toISOString()
   const { data, error } = await db
     .from('job_run')
@@ -194,7 +244,7 @@ export async function loadJobRows(db: Db, now: Date): Promise<JobRunRow[]> {
     .order('started_at', { ascending: false })
     .limit(2000)
   if (error) throw new OpsReadError(`job_run: ${String((error as { code?: unknown }).code ?? 'chyba')}`)
-  return (data ?? []) as JobRunRow[]
+  return (data ?? []) as OpsJobRunRow[]
 }
 
 /** Fronty, kde nejstarší položka v daném stavu překročila limit. */

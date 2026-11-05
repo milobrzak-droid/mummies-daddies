@@ -124,15 +124,18 @@ texty, IČO, URL ani otisk). Logy a statistiky úlohy obsahují jen počty a kó
 
 ## Integrace s ostatními balíky
 
-- **P3 (agent_outbox):** kontrakt zná `kind` offer|info_request|follow_up. P7 posílá `kind: 'outreach'`
-  a `source_ref: 'outreach:<id>'` a navíc `headers` (List-Unsubscribe). Potřeba v P3:
-  `agent_outbox_enqueue` musí přijmout `outreach` (0107 rozšíří CHECK `agent_outbox_kind_check`,
-  pokud se tak jmenuje), `OUTBOX_SOURCE_REF_RE` rozšířit o `outreach`, odeslání přenést hlavičky,
-  dodržet okno odesílání outbound (P3 cron běží 06:30 UTC — mimo okno Út–Čt 9–16) a po odeslání
-  nastavit `outbound_outreach.status = 'sent'` (nebo ho P7 dočte z `agent_outbox` podle `source_ref`).
-  Dokud RPC chybí, oslovení zůstává „schváleno" a zkusí se příště.
-- **P2/P5:** `deal.source` přidává 0107 jako `ADD COLUMN IF NOT EXISTS` (bez CHECK). Pokud pole
-  zavede jiný balík s CHECKem, musí povolit předponu `agent:outbound:`.
+- **P3 (agent_outbox) — vyřešeno při integraci:** fronta zná druh `outreach` (typ `OutboxKind`,
+  CHECK a `agent_outbox_enqueue` v 0104, `OUTBOX_SOURCE_REF_RE`), přijme jen `source_ref
+  'outreach:<id>'` v režimu `{to}` a s povinnými hlavičkami `List-Unsubscribe` (https)
+  a `List-Unsubscribe-Post: List-Unsubscribe=One-Click`, které přenese do odeslané zprávy
+  (sloupec `agent_outbox.headers`). Fronta sama hlídá okno odesílání a denní limit z
+  `outboundAgent.outreach` (zpráva zařazená v okně, ale odesílaná později, počká na další okno)
+  a k oslovení nepřidává svou patičku ani podmínky nabídky. Samostatné odeslání bez člověka:
+  `OUTBOUND_AUTOSEND_ENABLED` + `AGENT_AUTOSEND_ENABLED` + pravidlo L4 `send_outreach` (seed L2).
+  0107 (trigger na `agent_outbox`) přenese schválení CSO do `approved_at` a po potvrzení odeslání
+  nastaví `outbound_outreach.status = 'sent'`. Dokud RPC chybí, oslovení zůstává „schváleno".
+- **P2/P5:** `deal.source` zavádí 0103 s CHECKem pro jednoslovné zdroje; 0107 ho rozšiřuje
+  o zdroj s dvojtečkou (`agent:outbound:<zdroj>`). Export obchodů (P9) zdroj čte z `deal.source`.
 - **P6:** odhlášení je route handler `/api/web/odhlaseni` (bez Turnstile — brána je HMAC token);
   test/route-auth-guard ho má jako samostatnou třídu.
 - **Retence/GDPR výmaz:** rozšířit sweep na `outbound_signal`/`outbound_outreach` (např. odložené
@@ -140,7 +143,7 @@ texty, IČO, URL ani otisk). Logy a statistiky úlohy obsahují jen počty a kó
 
 ## Zapnutí (provoz)
 
-1. Migrace 0107 (po 0104 P3, aby se rozšířil CHECK fronty).
+1. Migrace 0107 (po 0103 a 0104; trigger oslovení se napojí na frontu, jen když 0104 existuje).
 2. Založit odesílací schránku na subdoméně + DNS (SPF, DKIM, DMARC), přidat ji jako člena týmu.
 3. Doplnit `outboundAgent` v `config/mummiesDaddies.ts` (vše `OVĚŘIT`): patička s IČO a sídlem,
    zdroje RSS/iCal a inzerátů, vyloučené firmy, VIP.

@@ -12,7 +12,7 @@
 //
 // Zapnutí: migrace 0104, env AGENT_OUTBOX_ENABLED=true, CRON_SECRET,
 // GMAIL_OAUTH_CLIENT_ID / GMAIL_OAUTH_CLIENT_SECRET, klíč Supabase se
-// service rolí a připojená schránka Gmail (calendar_token, provider google).
+// service rolí a token odesílací schránky v GMAIL_REFRESH_TOKENS (společný @/connectors/gmail).
 //
 // Autorizace: `Authorization: Bearer ${CRON_SECRET}`, porovnání v
 // konstantním čase (stejně jako ostatní crony). Zámek proti překryvu

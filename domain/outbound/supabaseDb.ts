@@ -191,7 +191,8 @@ export function supabaseOutboundDb(client: Client, opts: { today: string; now: D
     async markQueued(id, x) {
       check('outbound_outreach.update', await client.from('outbound_outreach').update({
         status: 'queued', outbox_source_ref: x.sourceRef, outbox_id: x.outboxId, prague_day: x.pragueDay,
-      }).eq('id', id))
+        // Jen ze 'approved': když fronta mezitím odeslala (trigger 0107 → 'sent'), stav se nevrací.
+      }).eq('id', id).eq('status', 'approved'))
     },
 
     async markSkipped(id, reason) {

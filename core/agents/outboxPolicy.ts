@@ -25,14 +25,22 @@ export function isIllustrativeMapVersion(version: string | null | undefined): bo
   return typeof version === 'string' && /^ilustracni/i.test(version.trim())
 }
 
-/** Druhy zpráv fronty, které smí odejít bez člověka (z kontraktů P2 a P4). */
-export function autoSendOutboxKinds(inquiryKinds: readonly AutoSendKind[] | null | undefined, followUpEnabled: boolean): OutboxKind[] {
+/**
+ * Druhy zpráv fronty, které smí odejít bez člověka (z kontraktů P2 a P4;
+ * oslovení P7 jen se zapnutým OUTBOUND_AUTOSEND_ENABLED).
+ */
+export function autoSendOutboxKinds(
+  inquiryKinds: readonly AutoSendKind[] | null | undefined,
+  followUpEnabled: boolean,
+  outreachEnabled = false,
+): OutboxKind[] {
   const out: OutboxKind[] = []
   for (const k of inquiryKinds ?? []) {
     if (k === 'send_offer' && !out.includes('offer')) out.push('offer')
     if (k === 'ask_info' && !out.includes('info_request')) out.push('info_request')
   }
   if (followUpEnabled) out.push('follow_up')
+  if (outreachEnabled) out.push('outreach')
   return out
 }
 
@@ -253,7 +261,7 @@ export interface OutboxGates {
   /** Strop částky nabídky bez DPH pro samostatné odeslání. */
   autoSendMaxTotal: number | null
   maxQueueAgeHours: number
-  /** Okno odesílání (jen připomínky): null = bez okna. */
+  /** Okno odesílání (připomínky P4, oslovení P7): null = bez okna. */
   withinSendWindow: boolean | null
 }
 
@@ -277,8 +285,8 @@ export function outboxStopReason(item: OutboxItemView, f: OutboxFacts): OutboxSt
   if (f.replyProblems.includes('reply_to_mismatch')) return 'reply_to_mismatch'
   if (f.replyProblems.includes('sender_not_verified')) return 'sender_not_verified'
   if (f.customerReplied) return 'customer_replied'
-  // Odložený obchod: připomínka nemá smysl ani po schválení.
-  if (item.kind === 'follow_up' && f.snoozed) return 'snoozed'
+  // Odložený obchod: připomínka ani oslovení nemá smysl ani po schválení.
+  if ((item.kind === 'follow_up' || item.kind === 'outreach') && f.snoozed) return 'snoozed'
   return null
 }
 
@@ -287,7 +295,8 @@ export function outboxGateFailures(item: OutboxItemView, f: OutboxFacts, g: Outb
   const out: OutboxGateReason[] = []
   if (!g.autoSendEnabled) out.push('autosend_disabled')
   if (!g.autonomyGranted) out.push('authority_not_l4')
-  if (isIllustrativeMapVersion(g.companyMapVersion) || isIllustrativeMapVersion(item.priceMapVersion)) out.push('illustrative_map')
+  // Oslovení (P7) cenu z mapy nenese — schválenost mapy se ho netýká.
+  if (item.kind !== 'outreach' && (isIllustrativeMapVersion(g.companyMapVersion) || isIllustrativeMapVersion(item.priceMapVersion))) out.push('illustrative_map')
   if (!g.autoSendKinds.includes(item.kind)) out.push('kind_not_allowed')
   if (item.kind === 'offer') {
     if (g.autoSendMaxTotal == null || item.quoteTotal == null || item.quoteTotal > g.autoSendMaxTotal) out.push('over_auto_send_limit')
@@ -319,13 +328,21 @@ export interface OutboxLimits {
   perRecipientDailyLimit: number
 }
 
-/** Limity pro druh zprávy: odpovědi na poptávku sdílí limit agenta, připomínky mají svůj. */
+/**
+ * Limity pro druh zprávy: odpovědi na poptávku sdílí limit agenta,
+ * připomínky (P4) a oslovení (P7) mají každé svůj denní limit.
+ */
 export function outboxLimits(
   kind: OutboxKind,
   inquiry: { dailyAutoSendLimit: number; perRecipientDailyLimit: number } | null | undefined,
   followUp: { dailyLimit: number } | null | undefined,
+  outreach?: { dailyLimit: number } | null,
 ): OutboxLimits {
   const perRecipientDailyLimit = Math.max(0, inquiry?.perRecipientDailyLimit ?? 0)
+  if (kind === 'outreach') {
+    // Oslovení: jedna zpráva příjemci za den i bez nastavení agenta poptávek.
+    return { dailyLimit: Math.max(0, outreach?.dailyLimit ?? 0), limitKinds: ['outreach'], perRecipientDailyLimit: Math.max(1, perRecipientDailyLimit) }
+  }
   if (kind === 'follow_up') {
     return { dailyLimit: Math.max(0, followUp?.dailyLimit ?? 0), limitKinds: ['follow_up'], perRecipientDailyLimit }
   }
@@ -347,6 +364,10 @@ export function isWithinWindow(local: { isoWeekday: number; hour: number }, w: {
  */
 export function customerText(kind: OutboxKind, text: string, cfg: { footer: string; offerTerms: string }): string {
   let out = text.replace(/\r\n?/g, '\n').trimEnd()
+  // Oslovení (P7) má vlastní povinnou patičku s identifikací odesílatele
+  // a odkazem na odhlášení (core/outbound/outreachText.ts); patička fronty
+  // („podle standardního ceníku") a podmínky nabídky k němu nepatří.
+  if (kind === 'outreach') return out
   const parts = [kind === 'info_request' ? '' : cfg.offerTerms, cfg.footer].map((p) => p.trim()).filter(Boolean)
   for (const p of parts) if (!out.includes(p)) out = `${out}\n\n${p}`
   return out
