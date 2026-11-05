@@ -263,7 +263,8 @@ describe('napojené tabulky == DB_AUDITED_TABLES', () => {
     // authority_policy už kryje 0064 (tvrdý režim), 0082 ji nepřepisuje.
     expect(hardTables).toContain('authority_policy')
     expect(softTables).toEqual(['allocation', 'approval_execution', 'case_proposal', 'deal_partner', 'deal_scope_version',
-      'engagement_document_finding', 'financial_record', 'idoklad_discrepancy', 'import_batch', 'loop_node', 'mail_content_intake', 'metric_observation', 'shop_order', 'team_member',
+      'engagement_document_finding', 'financial_record', 'idoklad_discrepancy', 'import_batch', 'loop_node', 'mail_content_intake', 'metric_observation',
+      'outbound_outreach', 'outbound_signal', 'outreach_consent', 'outreach_suppression', 'shop_order', 'team_member',
       'web_inquiry'])
   })
 
