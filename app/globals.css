@@ -1,0 +1,5 @@
+/* Kořenové CSS samostatné vývojové aplikace. V hlavním systému už tyto
+   direktivy jsou v jeho app/globals.css – web si nese jen app/(web)/web.css. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
