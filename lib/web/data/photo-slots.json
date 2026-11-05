@@ -1,0 +1,753 @@
+{
+ "summary": "Nový výběr staví na tom, že produktem je catering. Hrdinou webu je vlastní raut ze svatby Jitka & Rostislav (79e341f9, 2048×1363, roastbeef na břidlici vpravo dole, světlé pozadí stanu). Hero úvodu i OG obrázek tak jsou vlastní fotky jídla na akci, ne cheesecake. Nejsilnější vlastní fotky jídla jsou ze svateb a přímo z kuchyně: raut na etažérách 9a57444 a 79e341f9, verrines ve stodole 7fa16d1a, bufet ve stodole bbf09a5e, dezertní bar 7b4ebe41 a ac3dd34d, rizoto s parmazánem 6bd5e83d a caprese 6dc2c9da. Silné jsou i fotky, kde je vidět zástěra s logem: kuchař se svatebním dortem c1717bc9, obsluha s novomanželi a2438cd2, Rudolf u grilu 9ba6a726, obsluha u bufetu 49f5776e. Garden party s hortenziemi e2f7ce9d (4608×2592) je pastelová a vlastní, výborně se hodí na oslavy a piknik. Na fotce je ale cedulka s cenami, tu je potřeba vyretušovat nebo oříznout. Cheesecaky teď mají fotku u všech 7 produktů, protože nový katalog doplnil pistáciovo-malinový 4d4d8042, karamelový 45735a22 a vanilkový a36f2629. Kvalitou ale nejde o jednotnou sadu: vanilkový je amatérský, karamelový je na černém pozadí a Mummy vanilkovo-ovocný nejspíš pochází ze stocku. Slabá místa: firemní catering mimo Vánoce, snídaně, coffee break, obědové boxy, sharing table a teambuilding nemají kvalitní vlastní fotky. Zatím je drží amatérské fotky z mobilu, označené jako provizorní. BVLGARI nemá ani jednu fotku jídla. Chybí také signature jídla (sous-vide krkovice, chobotnice, rillettes, krevety v pestu) a společný portrét Rudy a Moniky. Většina svatebních fotek je od profesionálního fotografa, takže před spuštěním je potřeba ověřit práva fotografa a souhlas párů a obsluhy. Obecný postup u všech: stáhnout originály z Wixu (náhledy mají jen 900 px), u filtrovaných fotek jemně stáhnout saturaci a doostření a sjednotit teplotu barev do světlého pastelového tónu. Všechny stockové fotky jsou označené jako provisional nebo vyřazené.",
+ "slots": [
+  {
+   "slot": "home.hero",
+   "file": "7692a3_79e341f93545464b959007d23c3229b3~mv2.jpg",
+   "crop": "16:9 (2048×1152), ořez shora o cca 10 %, roastbeef na břidlici v pravé dolní třetině; vlevo 40 % pudrově růžový přechod nebo panel pod H1 (levá strana fotky je rušná)",
+   "note": "Vlastní raut ze svatby Jitka & Rostislav, světlé pozadí stanu a jídlo jako hrdina. Stáhnout originál, jemně ubrat saturaci a doostření. Ověřit práva svatebního fotografa. Export AVIF/WebP s fetchpriority=high.",
+   "provisional": false,
+   "original": "7692a3_79e341f93545464b959007d23c3229b3~mv2.jpg"
+  },
+  {
+   "slot": "home.hero.mobile",
+   "file": "7692a3_9a57444889f34dd7b21f60203b715f07~mv2.jpg",
+   "crop": "4:5 (1363×1704), fokus na střed stolu (etažéry a verrines), horní pětina zůstává pro text",
+   "note": "Vlastní fotka na výšku (1363×1817) ze stejné svatby, na mobilu funguje lépe než ořez 16:9.",
+   "provisional": false,
+   "original": "7692a3_9a57444889f34dd7b21f60203b715f07~mv2.jpg"
+  },
+  {
+   "slot": "home.hero.alt-1",
+   "file": "7692a3_6bd5e83df74843fbbfb5473816fa713b~mv2.jpg",
+   "crop": "16:9 (1880×1058), talíře rizota vpravo dole, ruka se strouhaným parmazánem nahoře",
+   "note": "Druhý snímek hera (servírovaná večeře, fine dining v akci). Fotka je z cs stránky Svatby. Pouze ruční přepínání, bez auto-carouselu.",
+   "provisional": false,
+   "original": "7692a3_6bd5e83df74843fbbfb5473816fa713b~mv2.jpg"
+  },
+  {
+   "slot": "home.hero.alt-2",
+   "file": "7692a3_e2f7ce9dadd140aca01c1f17520e04c9~mv2.jpg",
+   "crop": "16:9 nativně (4608×2592), horní pás s okrovou zdí nechat pro text; cedulku s cenami vyretušovat nebo oříznout zdola",
+   "note": "Třetí snímek hera (garden party, růžové hortenzie ladí s paletou). Vlastní fotka ze stránky picnicparty.",
+   "provisional": false,
+   "original": "7692a3_e2f7ce9dadd140aca01c1f17520e04c9~mv2.jpg"
+  },
+  {
+   "slot": "home.grid.firemni",
+   "file": "7692a3_49f5776e47cf41f2924ed22b3d4563e6~mv2.jpg",
+   "crop": "4:5 (712×890), na střed mezi obsluhu a bufet, lednice v pozadí oříznout",
+   "note": "Vlastní fotka obsluhy v modrých zástěrách u bufetu, ukazuje plný servis. Nižší rozlišení (1230×890) na kartu stačí. Barvy jsou přesycené, je potřeba korekce.",
+   "provisional": true,
+   "original": "7692a3_49f5776e47cf41f2924ed22b3d4563e6~mv2.jpg"
+  },
+  {
+   "slot": "home.grid.snidane",
+   "file": "7692a3_0bc61ac166ca4c70a7985db2fa44f6ba~mv2.jpg",
+   "crop": "4:5, fokus na croissanty a šneky vpravo, kleště co nejvíc mimo záběr",
+   "note": "Vlastní snídaňový bufet z mobilu, je přeostřený. Provizorně do focení snídaně.",
+   "provisional": true,
+   "original": "7692a3_0bc61ac166ca4c70a7985db2fa44f6ba~mv2.jpg"
+  },
+  {
+   "slot": "home.grid.coffee-break",
+   "file": "7692a3_3116e5b243d744bb8a67f38fe2bb6916~mv2.jpg",
+   "crop": "4:5 (718×897), výřez z levé poloviny, 3–4 košíčky v plné ostrosti",
+   "note": "Vlastní mini cheesecaky z akce, typická sladká položka coffee breaku. Fotka je amatérská a tmavá. Provizorně, protože kvalitní vlastní fotka coffee breaku chybí.",
+   "provisional": true,
+   "original": "7692a3_3116e5b243d744bb8a67f38fe2bb6916~mv2.jpg"
+  },
+  {
+   "slot": "home.grid.obedy",
+   "file": "7692a3_6dc2c9daae7f4c03b0a6713206ac48b8~mv2.jpg",
+   "crop": "4:5, ostrý střední talíř caprese ve spodních dvou třetinách",
+   "note": "Vlastní fotka v kvalitě 5, světlá a lákavá. Fotka je ze stránky Svatby, jako ukázka servírovaného oběda ale funguje.",
+   "provisional": false,
+   "original": "7692a3_6dc2c9daae7f4c03b0a6713206ac48b8~mv2.jpg"
+  },
+  {
+   "slot": "home.grid.vecere-a-bankety",
+   "file": "7692a3_6bd5e83df74843fbbfb5473816fa713b~mv2.jpg",
+   "crop": "4:5, přední talíř rizota s rukolou dole, parmazán nahoře",
+   "note": "Stejná fotka jako alternativní snímek hera. Pokud se v heru použije, na kartu dát c9a81205.",
+   "provisional": false,
+   "original": "7692a3_6bd5e83df74843fbbfb5473816fa713b~mv2.jpg"
+  },
+  {
+   "slot": "home.grid.spolecenske-akce",
+   "file": "7692a3_7fa16d1a8a4f4a3196a2058050a94662~mv2.jpg",
+   "crop": "4:5 (1970×2463), dolní část s verrines a jednohubkami, cedulku „Tvarohová pomazánka“ zachovat",
+   "note": "Vlastní raut a finger food ve stodole (Katka & Jirka). Ručně psaná cedulka je doklad, že jde o jejich akci.",
+   "provisional": false,
+   "original": "7692a3_7fa16d1a8a4f4a3196a2058050a94662~mv2.jpg"
+  },
+  {
+   "slot": "home.grid.svatby",
+   "file": "7692a3_bbf09a5ea72942bf9513fd53a775fda1~mv2.jpg",
+   "crop": "4:5 (2668×3335), ovocná mísa v dolní třetině, světýlka stodoly nahoře",
+   "note": "Svatební bufet ve stodole, profesionální foto (2668×4000). Ověřit práva fotografa.",
+   "provisional": false,
+   "original": "7692a3_bbf09a5ea72942bf9513fd53a775fda1~mv2.jpg"
+  },
+  {
+   "slot": "home.grid.oslavy-a-piknik",
+   "file": "7692a3_e2f7ce9dadd140aca01c1f17520e04c9~mv2.jpg",
+   "crop": "4:5 z pravé poloviny (bedýnky s chlebíčky a hortenziemi), cedulku s cenami vynechat",
+   "note": "Vlastní garden party v pastelových barvách (4608×2592).",
+   "provisional": false,
+   "original": "7692a3_e2f7ce9dadd140aca01c1f17520e04c9~mv2.jpg"
+  },
+  {
+   "slot": "home.grid.teambuilding",
+   "file": "7692a3_9ba6a726f3854fa9a716772be193a06b~mv2.jpg",
+   "crop": "4:5, kuchař a kýta na grilu, kotouč papírových utěrek v popředí oříznout",
+   "note": "Šéfkuchař (výšivka Nikolai) krájí maso z grilu venku, ilustruje live cooking a BBQ. Provizorně, protože vlastní fotka týmového vaření nebo sushi workshopu chybí.",
+   "provisional": true,
+   "original": "7692a3_9ba6a726f3854fa9a716772be193a06b~mv2.jpg"
+  },
+  {
+   "slot": "home.references.bvlgari",
+   "file": "7692a3_2cb839ca029f4970bde8ef5c33d071ab~mv2.jpg",
+   "crop": "4:3 na knihy Bvlgari",
+   "note": "Jen prostor butiku, bez jídla a lidí. Použít jen se souhlasem klienta. Vlastní fotka cateringu z akce chybí.",
+   "provisional": true,
+   "original": "7692a3_2cb839ca029f4970bde8ef5c33d071ab~mv2.jpg"
+  },
+  {
+   "slot": "home.references.jitka-rostislav",
+   "file": "7692a3_ac3dd34d446e4386bd3a231be86a8cdf~mv2.jpg",
+   "crop": "4:3 nebo 3:2, pohárky panna cotty vlevo dole, čokoládové košíčky vpravo",
+   "note": "Dezertní bar na růžovém papíře, fotka je nejblíž pastelové referenci. Raut z této svatby už je v heru, proto pro kartu jiný motiv.",
+   "provisional": false,
+   "original": "7692a3_ac3dd34d446e4386bd3a231be86a8cdf~mv2.jpg"
+  },
+  {
+   "slot": "home.references.katka-jirka",
+   "file": "7692a3_a2438cd279a843ceaf812d4b24e5ac72~mv2.jpg",
+   "crop": "4:3, ořez prázdné dlažby dole, novomanželé a servírka s logem v horních dvou třetinách",
+   "note": "Obsluha M&D se zástěrou s logem při rozbíjení talíře, autentický doklad (U Dvou Stodol). Potřeba souhlas páru a servírky.",
+   "provisional": false,
+   "original": "7692a3_a2438cd279a843ceaf812d4b24e5ac72~mv2.jpg"
+  },
+  {
+   "slot": "home.kitchen.1",
+   "file": "7692a3_f645e82466324ab4bdb524a630e817ff~mv2.jpg",
+   "crop": "1:1 (710×710) na plátek teriny a toast",
+   "note": "Terina z kachních jater, signature technika z restaurace. Fotka je ze starého blogu, původ ověřit.",
+   "provisional": false,
+   "original": "7692a3_f645e82466324ab4bdb524a630e817ff~mv2.jpg"
+  },
+  {
+   "slot": "home.kitchen.2",
+   "file": "7692a3_97a7dc158d2244ee821a9748a31beb69~mv2.jpg",
+   "crop": "1:1 nativně",
+   "note": "Kuřecí prsa s pestem, jahodami a jedlým květem (svatba J&R).",
+   "provisional": false,
+   "original": "7692a3_97a7dc158d2244ee821a9748a31beb69~mv2.jpg"
+  },
+  {
+   "slot": "home.kitchen.3",
+   "file": "7692a3_c9a81205d7d54a3b9b28d7183d06c9e8~mv2.jpg",
+   "crop": "1:1 (667×667) na spodní talíř s roastbeefem, kuchaře z větší části oříznout",
+   "note": "Předkrm z private diningu, vlastní fotka v nízkém rozlišení. Na dlaždici zhruba 330 px stačí.",
+   "provisional": true,
+   "original": "7692a3_c9a81205d7d54a3b9b28d7183d06c9e8~mv2.jpg"
+  },
+  {
+   "slot": "home.kitchen.4",
+   "file": "7692a3_45ce35d695bf4edb8668ec705053544f~mv2.jpg",
+   "crop": "1:1 na přední chlebíček s hráškovou pomazánkou",
+   "note": "Vlastní finger food. Je přesycený, potřeba korekce.",
+   "provisional": true,
+   "original": "7692a3_45ce35d695bf4edb8668ec705053544f~mv2.jpg"
+  },
+  {
+   "slot": "home.kitchen.5",
+   "file": "7692a3_7b4ebe41451c40afad08a25dcf8d806f~mv2.jpg",
+   "crop": "1:1 nativně",
+   "note": "Svatební dort s růžemi, pastelová fotka s referenceFit 5. Popisek: sladký bar a dorty.",
+   "provisional": false,
+   "original": "7692a3_7b4ebe41451c40afad08a25dcf8d806f~mv2.jpg"
+  },
+  {
+   "slot": "home.kitchen.6",
+   "file": "7692a3_72884343bc19485fa9b2c1bf2dba0e38~mv2.jpg",
+   "crop": "1:1 na dva přední cupcaky s cedulkou „dobrou chuť“",
+   "note": "Vlastní sladký bar (Katka & Jirka). Signature jídla podle zadání (krkovice, chobotnice, rillettes, krevety) zatím chybí, viz missing.",
+   "provisional": false,
+   "original": "7692a3_72884343bc19485fa9b2c1bf2dba0e38~mv2.jpg"
+  },
+  {
+   "slot": "home.venues.u-dvou-stodol",
+   "file": "7692a3_089080f78b8e4ab69b9d4e13ca12e363~mv2.jpg",
+   "crop": "3:2 na střed sálu se světýlky",
+   "note": "Cihlová stodola s prosklenou stěnou, odpovídá prostoru na fotce Katka & Jirka (U Dvou Stodol). Přiřazení ověřit u klienta.",
+   "provisional": true,
+   "original": "7692a3_089080f78b8e4ab69b9d4e13ca12e363~mv2.jpg"
+  },
+  {
+   "slot": "home.venues.hudlicka-stodola",
+   "file": "7692a3_7d322f736f564b409e10379b6f4f5e51~mv2.jpg",
+   "crop": "3:2 nativně",
+   "note": "Interiér cihlové stodoly. Není jisté, který prostor to je, přiřazení musí potvrdit klient.",
+   "provisional": true,
+   "original": "7692a3_7d322f736f564b409e10379b6f4f5e51~mv2.jpg"
+  },
+  {
+   "slot": "home.venues.stary-tyn",
+   "file": "7692a3_f9cb3c58c35c448b9dd55c5fc7231103~mv2.jpg",
+   "crop": "4:3 z horních dvou třetin (fasáda a koktejlový stolek)",
+   "note": "Kamenná stodola s welcome drinkem. Prostor i práva fotografa ověřit.",
+   "provisional": true,
+   "original": "7692a3_f9cb3c58c35c448b9dd55c5fc7231103~mv2.jpg"
+  },
+  {
+   "slot": "home.cheesecakes.daddy-vanilkovy",
+   "file": "7692a3_a36f2629f1e24eb283708c16b366b24e~mv2.jpg",
+   "crop": "1:1 na střed dortu, vyvážit žluté světlo, pozadí nahradit pastelovým",
+   "note": "Vlastní produktová fotka, ale amatérská. Nutné přefotit.",
+   "provisional": true,
+   "original": "7692a3_a36f2629f1e24eb283708c16b366b24e~mv2.jpg"
+  },
+  {
+   "slot": "home.cheesecakes.daddy-pistaciovo-malinovy",
+   "file": "7692a3_4d4d80428ae64f7b8ba28425f0158fa0~mv2.jpg",
+   "crop": "1:1 nativně, mírně stáhnout přepálené okraje",
+   "note": "Nejlepší vlastní fotka cheesecaku: světlá, shora, s vykrojenými dílky.",
+   "provisional": false,
+   "original": "7692a3_4d4d80428ae64f7b8ba28425f0158fa0~mv2.jpg"
+  },
+  {
+   "slot": "home.cheesecakes.mini-10ks",
+   "file": "7692a3_831f222b94164e19851f10bdab1da0e5~mv2.jpg",
+   "crop": "4:5, čokoládový mini cheesecake v dolní třetině, tyrkysové pozadí nahoře",
+   "note": "Stylem je fotka nejblíž referenci, ale možná jde o stock (kadaifi neodpovídá sortimentu). Ověřit, jinak použít vlastní 3116e5b2.",
+   "provisional": true,
+   "original": "7692a3_831f222b94164e19851f10bdab1da0e5~mv2.jpg"
+  },
+  {
+   "slot": "home.team",
+   "file": "7692a3_79bbb07140b348cf9d4df6662c58e7da~mv2.jpg",
+   "crop": "4:5 z originálu 3840×5760, žena v saku na střed, přepálené okno nahoře oříznout, gauč a radiátor mimo záběr",
+   "note": "Pravděpodobně Monika s kuchařem v kuchyni. Totožnost ověřit. Provizorně do společného portrétu Rudy a Moniky.",
+   "provisional": true,
+   "original": "7692a3_79bbb07140b348cf9d4df6662c58e7da~mv2.jpg"
+  },
+  {
+   "slot": "og.default",
+   "file": "7692a3_79e341f93545464b959007d23c3229b3~mv2.jpg",
+   "crop": "1200×630 (1,91:1), roastbeef a citrony vpravo, vlevo místo pro logo na růžovém panelu",
+   "note": "Výchozí OG obrázek celého webu. Catering, ne cheesecake.",
+   "provisional": false,
+   "original": "7692a3_79e341f93545464b959007d23c3229b3~mv2.jpg"
+  },
+  {
+   "slot": "catering.hero",
+   "file": "7692a3_9a57444889f34dd7b21f60203b715f07~mv2.jpg",
+   "crop": "split layout: fotka vpravo 4:5, text na krémovém poli vlevo; nebo 16:9 výřez ze středu (etažéry s břidlicí)",
+   "note": "Rozcestník formátů, bohatý raut ukazuje šíři nabídky.",
+   "provisional": false,
+   "original": "7692a3_9a57444889f34dd7b21f60203b715f07~mv2.jpg"
+  },
+  {
+   "slot": "catering.formats.bufet",
+   "file": "7692a3_49f5776e47cf41f2924ed22b3d4563e6~mv2.jpg",
+   "crop": "3:2 nativně, lednice vpravo nahoře oříznout",
+   "note": "Bufet s obsluhou.",
+   "provisional": true,
+   "original": "7692a3_49f5776e47cf41f2924ed22b3d4563e6~mv2.jpg"
+  },
+  {
+   "slot": "catering.formats.raut",
+   "file": "7692a3_79e341f93545464b959007d23c3229b3~mv2.jpg",
+   "crop": "3:2 nativně",
+   "note": "Studený raut na etažérách.",
+   "provisional": false,
+   "original": "7692a3_79e341f93545464b959007d23c3229b3~mv2.jpg"
+  },
+  {
+   "slot": "catering.formats.finger-food",
+   "file": "7692a3_7fa16d1a8a4f4a3196a2058050a94662~mv2.jpg",
+   "crop": "1:1 na verrines dole",
+   "note": "Jednohubky ve skleničkách.",
+   "provisional": false,
+   "original": "7692a3_7fa16d1a8a4f4a3196a2058050a94662~mv2.jpg"
+  },
+  {
+   "slot": "catering.formats.banket",
+   "file": "7692a3_6dc2c9daae7f4c03b0a6713206ac48b8~mv2.jpg",
+   "crop": "3:2 nativně",
+   "note": "Servírované talíře pro banket nebo menu.",
+   "provisional": false,
+   "original": "7692a3_6dc2c9daae7f4c03b0a6713206ac48b8~mv2.jpg"
+  },
+  {
+   "slot": "catering.formats.bbq-live-cooking",
+   "file": "7692a3_9ba6a726f3854fa9a716772be193a06b~mv2.jpg",
+   "crop": "1:1 na kuchaře a maso",
+   "note": "Live cooking venku.",
+   "provisional": false,
+   "original": "7692a3_9ba6a726f3854fa9a716772be193a06b~mv2.jpg"
+  },
+  {
+   "slot": "catering.firemni.hero",
+   "file": "7692a3_8fb82abdcd984670ab84326170f11d84~mv2.jpg",
+   "crop": "16:9 (2250×1266) ze středu (roastbeef, sýry, ovoce na břidlici)",
+   "note": "Světlý studený bufet ze stránky catering-breakfast. Nehodnocený jako stock, původ potvrdit. Celoroční motiv, ne vánoční.",
+   "provisional": true,
+   "original": "7692a3_8fb82abdcd984670ab84326170f11d84~mv2.jpg"
+  },
+  {
+   "slot": "catering.firemni.gallery",
+   "file": "7692a3_cffa32b4869940ac8df2371628e22b1f~mv2.jpg",
+   "crop": "3:2 (6500×4333), sushi rolky v popředí; modré světlo korigovat do neutrální",
+   "note": "Vlastní sushi na firemním rautu. Ilustruje i variantu se sushi workshopem.",
+   "provisional": false,
+   "original": "7692a3_cffa32b4869940ac8df2371628e22b1f~mv2.jpg"
+  },
+  {
+   "slot": "catering.firemni.gallery",
+   "file": "7692a3_241e3630afda49d9a0dd39bd161778da~mv2.jpg",
+   "crop": "4:5 (4333×5416), dezerty a chlebíčky v dolní polovině",
+   "note": "Firemní večírek, modré světlo. Sezónně spíš na /vanoce.",
+   "provisional": false,
+   "original": "7692a3_241e3630afda49d9a0dd39bd161778da~mv2.jpg"
+  },
+  {
+   "slot": "catering.firemni.gallery",
+   "file": "7692a3_ed227a5e3820487abaf1d9a03e896a32~mv2.jpg",
+   "crop": "1:1 na střed stojanu",
+   "note": "Obložený stojan pro poradu nebo board meeting. Je přesycený.",
+   "provisional": true,
+   "original": "7692a3_ed227a5e3820487abaf1d9a03e896a32~mv2.jpg"
+  },
+  {
+   "slot": "catering.snidane.hero",
+   "file": "7692a3_0bc61ac166ca4c70a7985db2fa44f6ba~mv2.jpg",
+   "crop": "split: fotka vpravo 4:5 (1559×1949), pečivo na střed",
+   "note": "Vlastní, ale slabá. Nutné focení snídaně.",
+   "provisional": true,
+   "original": "7692a3_0bc61ac166ca4c70a7985db2fa44f6ba~mv2.jpg"
+  },
+  {
+   "slot": "catering.snidane.gallery",
+   "file": "7692a3_11611baaf0784df6b5050dc834761a53~mv2.jpg",
+   "crop": "1:1 na 4 půlky avokáda",
+   "note": "Zdravá snídaně. Tmavé pozadí, z mobilu.",
+   "provisional": true,
+   "original": "7692a3_11611baaf0784df6b5050dc834761a53~mv2.jpeg"
+  },
+  {
+   "slot": "catering.snidane.gallery",
+   "file": "7692a3_45ce35d695bf4edb8668ec705053544f~mv2.jpg",
+   "crop": "1:1",
+   "note": "Chlebíčky na snídaňový bufet.",
+   "provisional": true,
+   "original": "7692a3_45ce35d695bf4edb8668ec705053544f~mv2.jpg"
+  },
+  {
+   "slot": "catering.coffee-break.hero",
+   "file": "7692a3_b26a6deb4e0346639589427534311aa0~mv2.jpg",
+   "crop": "2:1 (837×418), jen jako polovina split layoutu, ne na celou šířku",
+   "note": "Vlastní tartaletky a dezerty na etážích, nízké rozlišení. Nutné focení coffee breaku.",
+   "provisional": true,
+   "original": "7692a3_b26a6deb4e0346639589427534311aa0~mv2.jpg"
+  },
+  {
+   "slot": "catering.coffee-break.gallery",
+   "file": "7692a3_3116e5b243d744bb8a67f38fe2bb6916~mv2.jpg",
+   "crop": "4:3 výřez s 6–8 košíčky",
+   "note": "Mini cheesecaky jako součást coffee breaku.",
+   "provisional": true,
+   "original": "7692a3_3116e5b243d744bb8a67f38fe2bb6916~mv2.jpg"
+  },
+  {
+   "slot": "catering.obedy.hero",
+   "file": "7692a3_6dc2c9daae7f4c03b0a6713206ac48b8~mv2.jpg",
+   "crop": "16:9 (2490×1400), ostrý střední talíř vpravo od středu",
+   "note": "Vlastní fotka v kvalitě 5. Boxy grab-and-go chybí.",
+   "provisional": false,
+   "original": "7692a3_6dc2c9daae7f4c03b0a6713206ac48b8~mv2.jpg"
+  },
+  {
+   "slot": "catering.obedy.gallery",
+   "file": "7692a3_cd74b2131fe94fba829d18edef89a851~mv2.jpg",
+   "crop": "3:2, oříznutý horní talíř vynechat",
+   "note": "Číšník nese teplé hlavní jídlo. Tvrdé světlo.",
+   "provisional": true,
+   "original": "7692a3_cd74b2131fe94fba829d18edef89a851~mv2.jpg"
+  },
+  {
+   "slot": "catering.vecere-a-bankety.hero",
+   "file": "7692a3_6bd5e83df74843fbbfb5473816fa713b~mv2.jpg",
+   "crop": "16:9 (1880×1058), talíře vpravo dole",
+   "note": "Servírování přímo na místě, fine dining.",
+   "provisional": false,
+   "original": "7692a3_6bd5e83df74843fbbfb5473816fa713b~mv2.jpg"
+  },
+  {
+   "slot": "catering.vecere-a-bankety.gallery",
+   "file": "7692a3_c9a81205d7d54a3b9b28d7183d06c9e8~mv2.jpg",
+   "crop": "4:5 nativně (667×959)",
+   "note": "Šéfkuchař aranžuje předkrm. Zákulisí, nízké rozlišení.",
+   "provisional": true,
+   "original": "7692a3_c9a81205d7d54a3b9b28d7183d06c9e8~mv2.jpg"
+  },
+  {
+   "slot": "catering.vecere-a-bankety.gallery",
+   "file": "7692a3_f645e82466324ab4bdb524a630e817ff~mv2.jpg",
+   "crop": "3:2 nativně",
+   "note": "Terina z kachních jater jako předkrm banketu.",
+   "provisional": false,
+   "original": "7692a3_f645e82466324ab4bdb524a630e817ff~mv2.jpg"
+  },
+  {
+   "slot": "catering.spolecenske-akce.hero",
+   "file": "7692a3_7fa16d1a8a4f4a3196a2058050a94662~mv2.jpg",
+   "crop": "split: fotka vpravo 4:5; nebo 16:9 výřez z dolní poloviny (verrines a zelenina)",
+   "note": "Raut a finger food. Fotka je ze svatby, jako ukázka formátu ale obstojí.",
+   "provisional": false,
+   "original": "7692a3_7fa16d1a8a4f4a3196a2058050a94662~mv2.jpg"
+  },
+  {
+   "slot": "catering.spolecenske-akce.gallery",
+   "file": "7692a3_88efd18dee91474bb92e750a12c49449~mv2.jpg",
+   "crop": "4:5, ústřice a šampaňské, ruku oříznout",
+   "note": "Luxusní finger food a champagne (firemní stránka). Večerní šum.",
+   "provisional": true,
+   "original": "7692a3_88efd18dee91474bb92e750a12c49449~mv2.jpg"
+  },
+  {
+   "slot": "catering.spolecenske-akce.gallery",
+   "file": "7692a3_cb37b877d207464894d9d67e9019b60b~mv2.jpg",
+   "crop": "4:5 nativně",
+   "note": "Hosteska nalévá pyramidu šampaňského (Coupe de Champagne). Nutný souhlas osoby, vánoční výzdoba.",
+   "provisional": true,
+   "original": "7692a3_cb37b877d207464894d9d67e9019b60b~mv2.jpg"
+  },
+  {
+   "slot": "catering.spolecenske-akce.bvlgari",
+   "file": "7692a3_2cb839ca029f4970bde8ef5c33d071ab~mv2.jpg",
+   "crop": "1:1",
+   "note": "Case study BVLGARI, jen se souhlasem klienta. Fotky jídla z akce chybí.",
+   "provisional": true,
+   "original": "7692a3_2cb839ca029f4970bde8ef5c33d071ab~mv2.jpg"
+  },
+  {
+   "slot": "catering.teambuilding.hero",
+   "file": "7692a3_9ba6a726f3854fa9a716772be193a06b~mv2.jpg",
+   "crop": "split: fotka vpravo 2:3 (2668×4000), lens flare zachovat jako atmosféru, papírové utěrky oříznout",
+   "note": "Live cooking a grilování se šéfkuchařem. Vaření s týmem chybí.",
+   "provisional": true,
+   "original": "7692a3_9ba6a726f3854fa9a716772be193a06b~mv2.jpg"
+  },
+  {
+   "slot": "catering.svatby.hero",
+   "file": "7692a3_c1717bc9a5f34bd5a775fb56afd45bfe~mv2.jpg",
+   "crop": "split: fotka vpravo 2:3 (2001×3000), kuchař s dortem na střed, text na růžovém poli vlevo",
+   "note": "Fotka v kvalitě 5, logo na zástěře, svatební hosté v pozadí. Spojuje jídlo, servis a značku. Ověřit práva fotografa.",
+   "provisional": false,
+   "original": "7692a3_c1717bc9a5f34bd5a775fb56afd45bfe~mv2.jpg"
+  },
+  {
+   "slot": "catering.svatby.gallery",
+   "file": "7692a3_9a57444889f34dd7b21f60203b715f07~mv2.jpg",
+   "crop": "4:5",
+   "note": "Svatební raut J&R.",
+   "provisional": false,
+   "original": "7692a3_9a57444889f34dd7b21f60203b715f07~mv2.jpg"
+  },
+  {
+   "slot": "catering.svatby.gallery",
+   "file": "7692a3_bbf09a5ea72942bf9513fd53a775fda1~mv2.jpg",
+   "crop": "4:5",
+   "note": "Bufet ve stodole.",
+   "provisional": false,
+   "original": "7692a3_bbf09a5ea72942bf9513fd53a775fda1~mv2.jpg"
+  },
+  {
+   "slot": "catering.svatby.sweet-bar",
+   "file": "7692a3_ac3dd34d446e4386bd3a231be86a8cdf~mv2.jpg",
+   "crop": "4:5 nativně (1363×1704)",
+   "note": "Sladký bar v pastelové růžové.",
+   "provisional": false,
+   "original": "7692a3_ac3dd34d446e4386bd3a231be86a8cdf~mv2.jpg"
+  },
+  {
+   "slot": "catering.svatby.cake",
+   "file": "7692a3_7b4ebe41451c40afad08a25dcf8d806f~mv2.jpg",
+   "crop": "1:1 nativně",
+   "note": "Svatební dort, fotka nejblíž referenci.",
+   "provisional": false,
+   "original": "7692a3_7b4ebe41451c40afad08a25dcf8d806f~mv2.jpg"
+  },
+  {
+   "slot": "catering.svatby.gallery",
+   "file": "7692a3_3ef6ed7c4ece43259d2bb89f5b5dd961~mv2.jpg",
+   "crop": "4:5, malé rozlišení 627×764, jen jako dlaždice",
+   "note": "Dort v zámecké zahradě, přesycený. Jen do galerie.",
+   "provisional": true,
+   "original": "7692a3_3ef6ed7c4ece43259d2bb89f5b5dd961~mv2.jpg"
+  },
+  {
+   "slot": "catering.oslavy-a-piknik.hero",
+   "file": "7692a3_e2f7ce9dadd140aca01c1f17520e04c9~mv2.jpg",
+   "crop": "16:9 nativně (4608×2592), text v horním pásu se zdí, cedulku s cenami vyretušovat",
+   "note": "Garden party, vlastní a pastelová fotka.",
+   "provisional": false,
+   "original": "7692a3_e2f7ce9dadd140aca01c1f17520e04c9~mv2.jpg"
+  },
+  {
+   "slot": "catering.oslavy-a-piknik.gallery",
+   "file": "7692a3_3746532986c34adc91d6e99abf6e7122~mv2.jpg",
+   "crop": "4:5, usekanou postavu vpravo oříznout",
+   "note": "Host s burgerem na zahradní oslavě. Tónování je potřeba zjemnit, potřeba souhlas osob (dítě v záběru).",
+   "provisional": true,
+   "original": "7692a3_3746532986c34adc91d6e99abf6e7122~mv2.jpg"
+  },
+  {
+   "slot": "catering.oslavy-a-piknik.gallery",
+   "file": "7692a3_3f1d7b917ccf4aeead08090b62ed3578~mv2.jpg",
+   "crop": "3:2, igelit vlevo nahoře oříznout",
+   "note": "Venkovní raut. Silný filtr.",
+   "provisional": true,
+   "original": "7692a3_3f1d7b917ccf4aeead08090b62ed3578~mv2.jpg"
+  },
+  {
+   "slot": "reference.jitka-rostislav.cover",
+   "file": "7692a3_79e341f93545464b959007d23c3229b3~mv2.jpg",
+   "crop": "16:9",
+   "note": "Galerie case study: 9a57444, 97a7dc15, ac3dd34d, 7b4ebe41, 3116e5b2, 3746532.",
+   "provisional": false,
+   "original": "7692a3_79e341f93545464b959007d23c3229b3~mv2.jpg"
+  },
+  {
+   "slot": "reference.katka-jirka.cover",
+   "file": "7692a3_7fa16d1a8a4f4a3196a2058050a94662~mv2.jpg",
+   "crop": "16:9 výřez z dolní poloviny",
+   "note": "Galerie: a2438cd2, 72884343, 9a98b6bc, 797c0fc3 (přípitek, souhlas). Fotky s cigaretou (cdff2c04) a družičkami nepoužívat.",
+   "provisional": false,
+   "original": "7692a3_7fa16d1a8a4f4a3196a2058050a94662~mv2.jpg"
+  },
+  {
+   "slot": "reference.bvlgari.cover",
+   "file": "7692a3_2cb839ca029f4970bde8ef5c33d071ab~mv2.jpg",
+   "crop": "1:1",
+   "note": "Jen se souhlasem klienta. Doplnit fotky jídla z akce.",
+   "provisional": true,
+   "original": "7692a3_2cb839ca029f4970bde8ef5c33d071ab~mv2.jpg"
+  },
+  {
+   "slot": "prostory.hero",
+   "file": "7692a3_7d322f736f564b409e10379b6f4f5e51~mv2.jpg",
+   "crop": "16:9 (1440×810)",
+   "note": "Cihlová stodola s prostřením. Nízké rozlišení na plnou šířku, vyžádat originál od prostoru.",
+   "provisional": true,
+   "original": "7692a3_7d322f736f564b409e10379b6f4f5e51~mv2.jpg"
+  },
+  {
+   "slot": "prostory.u-dvou-stodol",
+   "file": "7692a3_089080f78b8e4ab69b9d4e13ca12e363~mv2.jpg",
+   "crop": "3:2",
+   "note": "Přiřazení ověřit.",
+   "provisional": true,
+   "original": "7692a3_089080f78b8e4ab69b9d4e13ca12e363~mv2.jpg"
+  },
+  {
+   "slot": "prostory.gallery",
+   "file": "7692a3_202fc8ee2fd145e892e6990cfafa9e67~mv2.jpg",
+   "crop": "3:2 nativně",
+   "note": "Svatební sál se záclonami. Prostor a práva ověřit.",
+   "provisional": true,
+   "original": "7692a3_202fc8ee2fd145e892e6990cfafa9e67~mv2.jpg"
+  },
+  {
+   "slot": "prostory.stary-tyn",
+   "file": "7692a3_f9cb3c58c35c448b9dd55c5fc7231103~mv2.jpg",
+   "crop": "4:5",
+   "note": "Přiřazení ověřit.",
+   "provisional": true,
+   "original": "7692a3_f9cb3c58c35c448b9dd55c5fc7231103~mv2.jpg"
+  },
+  {
+   "slot": "prostory.palac",
+   "file": "7692a3_cd3352ecd7a14d13b7e27a2d096a19a1~mv2.jpeg",
+   "crop": "4:5, srovnat širokoúhlé zkreslení",
+   "note": "Barokní palác ze stránky socialevents. Ověřit, o jaký prostor jde a zda ho nabízejí.",
+   "provisional": true,
+   "original": "7692a3_cd3352ecd7a14d13b7e27a2d096a19a1~mv2.jpeg"
+  },
+  {
+   "slot": "o-nas.hero",
+   "file": "7692a3_c1717bc9a5f34bd5a775fb56afd45bfe~mv2.jpg",
+   "crop": "split 2:3",
+   "note": "Kuchař M&D při práci na akci.",
+   "provisional": false,
+   "original": "7692a3_c1717bc9a5f34bd5a775fb56afd45bfe~mv2.jpg"
+  },
+  {
+   "slot": "o-nas.rudolf",
+   "file": "7692a3_9ba6a726f3854fa9a716772be193a06b~mv2.jpg",
+   "crop": "4:5 na postavu",
+   "note": "Na zástěře výšivka Nikolai. Pro portrét vyžádat ještě klasickou profesionální fotku.",
+   "provisional": false,
+   "original": "7692a3_9ba6a726f3854fa9a716772be193a06b~mv2.jpg"
+  },
+  {
+   "slot": "o-nas.monika",
+   "file": "7692a3_79bbb07140b348cf9d4df6662c58e7da~mv2.jpg",
+   "crop": "4:5 z originálu 3840×5760, těsněji na postavu",
+   "note": "Ověřit, že jde o Moniku. Prostředí je neuklizené, nutný nový portrét.",
+   "provisional": true,
+   "original": "7692a3_79bbb07140b348cf9d4df6662c58e7da~mv2.jpg"
+  },
+  {
+   "slot": "o-nas.team",
+   "file": "7692a3_a2438cd279a843ceaf812d4b24e5ac72~mv2.jpg",
+   "crop": "4:5",
+   "note": "Servis s úsměvem, zástěra s logem.",
+   "provisional": false,
+   "original": "7692a3_a2438cd279a843ceaf812d4b24e5ac72~mv2.jpg"
+  },
+  {
+   "slot": "o-nas.team",
+   "file": "7692a3_b5fd87d097c5457cad0df83232c357cb~mv2.jpg",
+   "crop": "4:5, hasicí přístroj oříznout",
+   "note": "Cukrářka se svatebním dortem. Filtr a nízké rozlišení (791×1067).",
+   "provisional": true,
+   "original": "7692a3_b5fd87d097c5457cad0df83232c357cb~mv2.jpg"
+  },
+  {
+   "slot": "cheesecaky.hero",
+   "file": "7692a3_4d4d80428ae64f7b8ba28425f0158fa0~mv2.jpg",
+   "crop": "16:9 výřez ze středu dortu, nebo split 1:1 vpravo na pastelově zeleném poli",
+   "note": "Vlajkový produkt, fotka je světlá a vlastní.",
+   "provisional": false,
+   "original": "7692a3_4d4d80428ae64f7b8ba28425f0158fa0~mv2.jpg"
+  },
+  {
+   "slot": "cheesecaky.daddy-pistaciovo-malinovy.main",
+   "file": "7692a3_4d4d80428ae64f7b8ba28425f0158fa0~mv2.jpg",
+   "crop": "1:1 nativně",
+   "note": "Hotové.",
+   "provisional": false,
+   "original": "7692a3_4d4d80428ae64f7b8ba28425f0158fa0~mv2.jpg"
+  },
+  {
+   "slot": "cheesecaky.daddy-vanilkovy.main",
+   "file": "7692a3_a36f2629f1e24eb283708c16b366b24e~mv2.jpg",
+   "crop": "1:1",
+   "note": "Amatérská fotka. Stock c409b8e0 (citronová tarta) nepoužívat, klame. Přefotit.",
+   "provisional": true,
+   "original": "7692a3_a36f2629f1e24eb283708c16b366b24e~mv2.jpg"
+  },
+  {
+   "slot": "cheesecaky.daddy-cokoladovo-liskooriskovy.main",
+   "file": "7692a3_eb33ec0f2b9645f99b2793fa72e2cb66~mv2.jpg",
+   "crop": "1:1 těsně za zlatou podložkou",
+   "note": "Vlastní fotka, odpovídá receptuře. Ostré světlo.",
+   "provisional": true,
+   "original": "7692a3_eb33ec0f2b9645f99b2793fa72e2cb66~mv2.jpg"
+  },
+  {
+   "slot": "cheesecaky.daddy-vanilkovo-karamelovy.main",
+   "file": "7692a3_45735a22ccdb4e1786cec71bc7570013~mv2.jpg",
+   "crop": "1:1 (2036×2036), černé pozadí vyměnit za pastelové nebo přefotit",
+   "note": "Nejspíš vlastní fotka, produkt sedí. Pozadí neladí s referencí.",
+   "provisional": true,
+   "original": "7692a3_45735a22ccdb4e1786cec71bc7570013~mv2.jpg"
+  },
+  {
+   "slot": "cheesecaky.mummy-vanilkovo-ovocny.main",
+   "file": "7692a3_bf718e19afff415c94307949d36b8892~mv2.jpg",
+   "crop": "1:1",
+   "note": "Ověřit, zda nejde o stock. Stockové 11ace89f a 1e286da6 nepoužívat.",
+   "provisional": true,
+   "original": "7692a3_bf718e19afff415c94307949d36b8892~mv2.jpg"
+  },
+  {
+   "slot": "cheesecaky.mummy-vanilkovo-pomerancovy-vanocni.main",
+   "file": "7692a3_1b4211fb35b84fbe85f2f88171daa422~mv2.jpg",
+   "crop": "1:1 z originálu 2912×1646 na dort",
+   "note": "Vlastní fotka, sezónní. Kýčovité ozdoby retušovat nebo přefotit.",
+   "provisional": true,
+   "original": "7692a3_1b4211fb35b84fbe85f2f88171daa422~mv2.jpg"
+  },
+  {
+   "slot": "cheesecaky.mini-cheesecaky-10-ks.main",
+   "file": "7692a3_831f222b94164e19851f10bdab1da0e5~mv2.jpg",
+   "crop": "4:5",
+   "note": "Ověřit práva, galerie 454ab4dd.",
+   "provisional": true,
+   "original": "7692a3_831f222b94164e19851f10bdab1da0e5~mv2.jpg"
+  },
+  {
+   "slot": "cheesecaky.na-akci-banner",
+   "file": "7692a3_3116e5b243d744bb8a67f38fe2bb6916~mv2.jpg",
+   "crop": "21:9 pás, ztmavit a zjemnit doostření",
+   "note": "Desítky mini cheesecaků na akci, upsell do poptávky.",
+   "provisional": true,
+   "original": "7692a3_3116e5b243d744bb8a67f38fe2bb6916~mv2.jpg"
+  },
+  {
+   "slot": "vanoce.hero",
+   "file": "7692a3_fd02c486c38a43bbb3dd20ae3075dd6e~mv2.jpg",
+   "crop": "16:9 (6500×3656), bufet vpravo, bokeh stromku vlevo pro text",
+   "note": "Vlastní vánoční firemní večírek ve vysokém rozlišení.",
+   "provisional": false,
+   "original": "7692a3_fd02c486c38a43bbb3dd20ae3075dd6e~mv2.jpg"
+  },
+  {
+   "slot": "vanoce.gallery",
+   "file": "7692a3_b058bc4b617c4322b3945ac91f77465e~mv2.jpg",
+   "crop": "4:3, červenou zeď zčásti oříznout",
+   "note": "Vlastní vánoční raut s cukrovím. Amatérská fotka.",
+   "provisional": true,
+   "original": "7692a3_b058bc4b617c4322b3945ac91f77465e~mv2.jpg"
+  },
+  {
+   "slot": "vanoce.gallery",
+   "file": "7692a3_241e3630afda49d9a0dd39bd161778da~mv2.jpg",
+   "crop": "4:5",
+   "note": "Vánoční firemní bufet.",
+   "provisional": false,
+   "original": "7692a3_241e3630afda49d9a0dd39bd161778da~mv2.jpg"
+  },
+  {
+   "slot": "poptavka.trust",
+   "file": "7692a3_49f5776e47cf41f2924ed22b3d4563e6~mv2.jpg",
+   "crop": "3:2",
+   "note": "Lidé za cateringem vedle formuláře nebo agenta. Stejně dobře poslouží i a2438cd2.",
+   "provisional": true,
+   "original": "7692a3_49f5776e47cf41f2924ed22b3d4563e6~mv2.jpg"
+  },
+  {
+   "slot": "blog.svatebni-catering",
+   "file": "7692a3_9a57444889f34dd7b21f60203b715f07~mv2.jpg",
+   "crop": "16:9",
+   "note": "Další články: raut vs. banket 6bd5e83d, firemní večírek fd02c486, finger food 7fa16d1a, garden party e2f7ce9d, terina f645e824, cheesecake jako zážitek 4d4d8042.",
+   "provisional": false,
+   "original": "7692a3_9a57444889f34dd7b21f60203b715f07~mv2.jpg"
+  }
+ ],
+ "missing": [
+  "Signature jídla do sekce Z naší kuchyně (6× 1:1, světlé pozadí, denní světlo): sous-vide krkovice s bylinkami, chobotnice v červeném víně, kachní rillettes, grilované krevety v bazalkovém pestu, panna cotty a makronky, mini cheesecaky v jednotném stylu.",
+  "Hero úvodu ve stylu reference: raut nebo servírovaná tabule na pudrově růžovém či krémovém pozadí, jídlo vpravo dole, vlevo volné místo na H1, 16:9 minimálně 2400 px, měkké denní světlo a stín listí. Současná 79e341f9 funguje, ale vlevo je rušná.",
+  "Firemní catering mimo Vánoce: oběd nebo board meeting v kanceláři, konference, coffee break na školení, bez rozpoznatelných osob nebo se souhlasem.",
+  "Snídaně: snídaňový bufet, americká snídaně, zdravá snídaně (ovesné kaše, smoothie, ovocné mísy) jako produktové fotky.",
+  "Coffee break: minisendviče, mini dezerty, mini cheesecaky a káva na jednom stole. Dále coffee break se sushi a kurzem vaření.",
+  "Obědové boxy grab-and-go a teplé obědy s rozvozem (box, salát, bowl).",
+  "Sharing table a servírovaná večeře s párováním vín (formát pro 8–30 osob).",
+  "Teambuilding: tým vaří se šéfkuchařem, sushi workshop, food stations.",
+  "Gentlemanský klub (rumy, whisky, doutníky bez cizích značek), fresh a smoothie bar, mobilní bar a welcome drink.",
+  "BVLGARI: fotky jídla a servisu z akce v Pařížské a souhlas klienta. Dnes je jen interiér butiku.",
+  "Oslavy: narozeniny a křtiny s jejich jídlem (bez dětí v hlavní roli, nebo se souhlasem), piknikový koš a party box jako produkt.",
+  "Společný portrét Rudy a Moniky v kuchyni (4:5 a 16:9) a samostatné profesionální portréty obou. Monika zatím není potvrzená.",
+  "Partnerské prostory: oficiální fotky Hudlické Stodoly, Statku Starý Týn, U Dvou Stodol a Na Veselce Řitka od prostorů se svolením. K tomu potvrzení, která fotka patří ke kterému prostoru.",
+  "Cheesecaky: přefotit všech 7 jednotně (pastelové pozadí podle příchutě, celý dort a výřez, stejný úhel a světlo). Nejvíc to potřebují Daddy vanilkový, vanilkovo-karamelový, Mummy vanilkovo-ovocný a vánoční.",
+  "Dárkový poukaz: nový grafický návrh (stávající grafiky 576ce71b a 60e23339 nevyhovují).",
+  "Vánoce: vlastní vánoční cukroví na objednávku a firemní dárkový balíček.",
+  "Loga klientů (vektor, se souhlasem) a logo M&D ve vektoru SVG.",
+  "Originály ve plném rozlišení všech vybraných fotek a potvrzení práv svatebních fotografů. Souhlas párů J&R a K&J a obsluhy na fotkách."
+ ]
+}

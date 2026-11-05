@@ -1,11 +1,16 @@
 import type { Config } from 'tailwindcss'
+import { webTailwindExtend as web } from './lib/web/tokens'
 
 // Tokeny design systému (docs/PROVOZ.md). Hodnoty žijí v app/globals.css
 // jako CSS proměnné; tady jsou jen jejich jména pro utility třídy.
-export default {
-  content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}'],
-  theme: {
-    extend: {
+//
+// Veřejný web (app/(web), components/web) má vlastní tokeny v lib/web/tokens.ts.
+// Jména se s Cockpitem nepotkávají (cream, cocoa, raspberry, font-display…),
+// proto se slučují po klíčích theme.extend. Jediný společný klíč je
+// transitionDuration.base — Cockpit ho nepoužívá, platí hodnota webu.
+type FontSizeValue = [fontSize: string, config: { lineHeight: string; letterSpacing?: string; fontWeight?: string }]
+
+const cockpit = {
       colors: {
         navy:'var(--c-navy)', ink:'var(--c-ink)', slate:'var(--c-slate)',
         accent:'var(--c-accent)', 'accent-text':'var(--c-accent-text)', line:'var(--c-line)', soft:'var(--c-soft)',
@@ -35,7 +40,7 @@ export default {
         body:['0.875rem', { lineHeight:'1.5' }],
         callout:['0.8125rem', { lineHeight:'1.46' }],
         footnote:['0.75rem', { lineHeight:'1.42' }],
-      },
+      } satisfies Record<string, FontSizeValue> as Record<string, FontSizeValue>,
       borderRadius: {
         xs:'var(--radius-xs)', btn:'var(--radius-btn)', tile:'var(--radius-tile)', card:'var(--radius-card)',
       },
@@ -46,6 +51,22 @@ export default {
       transitionDuration: { press:'120ms', fast:'150ms', base:'220ms' },
       transitionTimingFunction: { standard:'cubic-bezier(.2,0,0,1)', press:'cubic-bezier(.3,.7,.3,1)' },
       maxWidth: { content:'1480px' },
+}
+
+export default {
+  content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './lib/web/**/*.{ts,tsx}'],
+  theme: {
+    extend: {
+      ...web,
+      colors: { ...cockpit.colors, ...web.colors },
+      fontFamily: { ...cockpit.fontFamily, ...web.fontFamily },
+      fontSize: { ...cockpit.fontSize, ...web.fontSize },
+      spacing: web.spacing,
+      maxWidth: { ...cockpit.maxWidth, ...web.maxWidth },
+      borderRadius: { ...cockpit.borderRadius, ...web.borderRadius },
+      boxShadow: { ...cockpit.boxShadow, ...web.boxShadow },
+      transitionDuration: { ...cockpit.transitionDuration, ...web.transitionDuration },
+      transitionTimingFunction: { ...cockpit.transitionTimingFunction, ...web.transitionTimingFunction },
     },
   },
 } satisfies Config

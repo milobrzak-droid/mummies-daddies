@@ -1,0 +1,509 @@
+{
+ "positioning": "Mummies and Daddies = cateringová kuchyně vedená šéfkuchařem, ne cukrárna. Jídlo na úrovni fine diningu (zakladatelé Ruda a Monika vařili v top restauracích a 5* hotelech), servírované s rodinnou péčí a úsměvem. Nabídku dostanete do pár minut, ne za tři dny. Cheesecaky podle amerického receptu jsou naše sladká tečka, ne hlavní produkt.\n\nHlavní claim (návrh): „Catering, na který budou hosté vzpomínat. Nabídka do pár minut.“\nPodclaim: „Firemní akce, svatby a oslavy v Praze a po celé ČR, od coffee breaku pro 15 lidí po svatbu pro 150 hostů.“\n\nProč oni (pilíře, každý musí mít na webu doklad):\n1) Šéfkuchařská kuchyně: Rudolf Nikolai (Kulinářský institut gastronomie, šéfkuchařem ve 24 letech), techniky z restaurací (sous-vide, terina z kachních jater, kachní rillettes, chobotnice v červeném víně) a vlivy z cest (Francie, Itálie, Indonésie…). Doklad jsou konkrétní ukázková menu a fotky jídla, ne přídavná jména.\n2) Rychlost a jasnost: AI agent pošle standardní nabídku podle schválené cateringové mapy do pár minut, místo dnešních až 72 hodin. Na webu budou orientační ceny „od … Kč/os.“ (rozpětí 300–2 000 Kč) a minimální počty osob, takže klient zná rozpočet ještě před poptávkou.\n3) Formát na míru akci: bufet, banket, sharing table (8–30 os.), coffee break, finger food a jednohubky, BBQ a live cooking, piknikový koš. Plný servis podle potřeby: obsluha, inventář, dekorace, prostory.\n4) Zážitek navíc, kterým se liší od konkurence: coffee break s kurzem vaření nebo rolováním sushi, teambuilding s vařením se šéfkuchařem, gentlemanský klub (rumy, whisky, doutníky) a sladký bar na svatbách, fresh a smoothie bar.\n5) Sladká tečka značky: vlastní americké cheesecaky (Daddy a Mummy, mini cheesecaky) na každé akci a k objednání i domů.\n6) Dosah: Praha jako základna, akce po celé ČR (Klášterec nad Ohří, Úštěk, Hradec Králové) a partnerské svatební statky.\n\nTón: hravý, rodinný a přátelský (Mummy a Daddy), ale věcný. Konkrétní položky, čísla a minima místo vaty. Dlouhý název „Mummies and Daddies delicious food and cheesecakes catering“ se v textech přestane opakovat. Značka zní „Mummies & Daddies“ a podtitul „catering“.",
+ "audiences": [
+  "Office manažeři, asistentky a HR (B2B, hlavní segment): opakované firemní obědy do kanceláře (od 4 os.), snídaně a coffee breaky na poradách a školeních (od 15 os.), firemní a vánoční večírky, teambuildingy (od 8 os.). Potřebují rychlou cenu za osobu, fakturu na IČO, spolehlivý čas dovozu, dietní varianty (vegetariánské, bezlepkové, bez laktózy) a co nejméně práce. Hlavní CTA pro ně: ‚Nabídka do pár minut‘ a v budoucnu opakovaná objednávka.",
+  "Marketing, event manažeři a eventové agentury (B2B, vyšší hodnota): konference, kongresy, veletrhy, uvedení produktu, opening a luxusní party (reference BVLGARI), roadshow, galavečery. Chtějí reference, kapacity, formáty servisu (raut, finger food, banket, mobilní bar), logistiku a plný servis, rychlou kalkulaci pro svého klienta a jednoho kontaktního člověka. Agentury dostanou partnerskou cestu: rychlá kalkulace a kontakt na event manažera.",
+  "Snoubenci (B2C, vysoká hodnota, dlouhý cyklus 6–12 měsíců): svatební hostina na míru podle příběhu páru, ochutnávka, prohlídka místa, plán B, sladký bar a svatební dort nebo cheesecake, catering i pro subdodavatele a na den po svatbě. Potřebují inspiraci (ukázková menu, reference Jitka & Rostislav, Katka & Jirka), partnerské prostory, cenové rozpětí a bezplatnou konzultaci.",
+  "Soukromé oslavy (B2C, nízký práh od 2 os.): narozeniny včetně prvních, křtiny, garden party, BBQ, piknik, jubilea, Silvestr. Chtějí jednoduché balíčky s cenou (piknikový koš, party box, finger food), rozvoz a cheesecake jako dort. Přirozeně navazuje e-shop cheesecaků a dárkové poukazy.",
+  "Sekundárně zákazníci cheesecaků a dárkových poukazů (B2C e-shop, doplněk) a firmy kupující vánoční dárky pro klienty (vánoční cheesecake, cukroví). Tuhle skupinu web obsluhuje, ale nestaví ji na první místo."
+ ],
+ "sitemap": [
+  {
+   "path": "/",
+   "title": "Catering Praha – firemní akce, svatby a oslavy | Mummies & Daddies",
+   "goal": "Během 5 vteřin ukázat, že jde o prémiový catering (jídlo jako hrdina), nasměrovat návštěvníka podle typu akce a dostat ho do poptávky s AI agentem.",
+   "sections": [
+    "Hero s fotkou rautu a CTA na nabídku",
+    "Rychlý start poptávky (typ akce, datum, počet osob)",
+    "Mřížka typů akcí na pastelových kartách",
+    "Proč my (4 pilíře)",
+    "Reference a čísla",
+    "Ukázka z kuchyně (signature jídla)",
+    "Jak to funguje (4 kroky)",
+    "Partnerské prostory (teaser)",
+    "Cheesecaky jako sladká tečka",
+    "Tým Ruda a Monika",
+    "FAQ (krátké)",
+    "Závěrečná poptávka a agent"
+   ],
+   "primaryCta": "Chci nabídku do pár minut → /poptavka"
+  },
+  {
+   "path": "/catering",
+   "title": "Cateringové služby – přehled formátů a cen",
+   "goal": "Rozcestník všech služeb s orientační cenou od/os. a minimem osob, aby si návštěvník vybral formát.",
+   "sections": [
+    "Mřížka služeb (stejné karty jako na homepage) s cenou od a minimem",
+    "Formáty servisu: bufet, raut studený a teplý, banket, sharing table, finger food, BBQ a live cooking (stručný průvodce)",
+    "Co je v ceně a co si lze přiobjednat (obsluha, inventář, dekorace, nápoje, mobilní bar)",
+    "Dietní varianty a alergeny",
+    "Oblast působnosti a doprava",
+    "CTA poptávka"
+   ],
+   "primaryCta": "Spočítat nabídku → /poptavka"
+  },
+  {
+   "path": "/catering/firemni",
+   "title": "Firemní catering Praha – do kanceláře, na konference i večírky",
+   "goal": "Pilířová B2B stránka (nejsilnější SEO a obchodní stránka). Slučuje CZ a bohatší EN corporate-catering, lunch a blog o firemních akcích.",
+   "sections": [
+    "Hero s fotkou firemního obědu nebo rautu",
+    "Typy firemních akcí (porady a board meetingy, kancelářské obědy, konference a kongresy, veletrhy, uvedení produktu, firemní večírky a výročí, roadshow a promo)",
+    "Balíčky s minimy a cenou od: Firemní obědy (4+), Porada a board meeting (4+), Konference, veletrhy, kongresy (15+), Uvedení produktu (10+), Teambuilding (8+)",
+    "Ukázková menu ke každému balíčku",
+    "Pravidelné firemní obědy a rozvoz po Praze",
+    "Reference (BVLGARI po schválení, loga)",
+    "Fakturace, platba, storno",
+    "FAQ pro office manažery",
+    "CTA poptávka (předvyplněný segment B2B)"
+   ],
+   "primaryCta": "Nabídka pro firmu do pár minut"
+  },
+  {
+   "path": "/catering/snidane",
+   "title": "Snídaňový catering – bufet, americká a zdravá snídaně",
+   "goal": "Prodat firemní snídaně a snídaně na školení.",
+   "sections": [
+    "Tři balíčky jako produktové karty: Snídaňový bufet (15+), Plná americká snídaně (10+), Zdravá snídaně (2+) s položkami a cenou od/os.",
+    "Doplňky: ovesné kaše, smoothie, ovocné mísy, čerstvé džusy",
+    "Fotky",
+    "CTA"
+   ],
+   "primaryCta": "Objednat snídani → /poptavka?typ=snidane"
+  },
+  {
+   "path": "/catering/coffee-break",
+   "title": "Coffee break catering na konference a školení",
+   "goal": "Prodat coffee breaky, včetně odlišující varianty s kurzem vaření.",
+   "sections": [
+    "Standardní coffee break (15+; 15–45 min; minisendviče, saláty, mini dezerty, mini cheesecaky, káva)",
+    "Ranní a odpolední varianta, celodenní balíček (snídaně + CB + oběd + CB)",
+    "Coffee break se zážitkem: rolování sushi, týmové vaření",
+    "Nápoje: káva, čaj, fresh a smoothie bar, kurkuma latte",
+    "Cena od/os.",
+    "CTA"
+   ],
+   "primaryCta": "Nabídka na coffee break"
+  },
+  {
+   "path": "/catering/obedy",
+   "title": "Obědy a firemní obědy s rozvozem po Praze",
+   "goal": "Zachytit obědové a pravidelné firemní objednávky (grab-and-go saláty, sendviče, bowly, teplá jídla).",
+   "sections": [
+    "Formy: obědový bufet / Šéfkuchařovo menu / boxy grab-and-go",
+    "Ukázkové týdenní menu",
+    "Minimum, rozvozová oblast a časy",
+    "Pravidelná objednávka pro firmy",
+    "CTA"
+   ],
+   "primaryCta": "Objednat oběd"
+  },
+  {
+   "path": "/catering/vecere-a-bankety",
+   "title": "Večeře, bankety a sharing table",
+   "goal": "Prodat večerní formáty pro firmy i soukromé akce.",
+   "sections": [
+    "Bufet teplý a studený (15+)",
+    "Banket a servírovaná večeře s párováním vín (10+)",
+    "Sharing table (8–30 os.)",
+    "Ukázková menu",
+    "Fotky a video",
+    "CTA"
+   ],
+   "primaryCta": "Nabídka na večeři"
+  },
+  {
+   "path": "/catering/spolecenske-akce",
+   "title": "Catering na společenské akce – raut, finger food, opening party",
+   "goal": "Prodat eventový catering agenturám a marketingu (luxusní akce, opening, galavečer, networking).",
+   "sections": [
+    "Formáty: studený a teplý raut, jednohubky a finger food (mini burgery, mini tatarák…), koktejlová party, Coupe de Champagne, afternoon tea networking",
+    "Mobilní bar, welcome drink, přípitek",
+    "Obsluha a personál",
+    "Reference BVLGARI (case study)",
+    "Minimum 15 os., cena od",
+    "CTA a sekce pro agentury"
+   ],
+   "primaryCta": "Kalkulace pro event"
+  },
+  {
+   "path": "/catering/teambuilding",
+   "title": "Teambuilding s cateringem a vařením se šéfkuchařem",
+   "goal": "Prodat unikátní zážitkový produkt (live cooking, kurz sushi, BBQ, koktejly z čerstvého ovoce).",
+   "sections": [
+    "Formáty: vaření se šéfkuchařem, sushi workshop, venkovní BBQ a garden party, food stations",
+    "Průběh akce",
+    "Cena od, minimum 8 os.",
+    "Fotky",
+    "CTA"
+   ],
+   "primaryCta": "Navrhnout teambuilding"
+  },
+  {
+   "path": "/catering/svatby",
+   "title": "Svatební catering – svatební hostina na míru",
+   "goal": "Hlavní B2C stránka s vysokou hodnotou. Inspiruje, buduje důvěru a vede na bezplatnou konzultaci nebo poptávku.",
+   "sections": [
+    "Hero s fotkou svatební tabule",
+    "‚Vaše sny, naše zkušenosti‘: menu podle příběhu páru",
+    "Ukázková svatební menu (2–3 úrovně s cenou od/os.)",
+    "Sladký bar, dort a cheesecaky, gentlemanský klub, welcome drink",
+    "Jak to u nás probíhá (8 kroků z článku Moniky: představa, rozpočet, výběr 6+ měsíců předem, ochutnávka, prohlídka místa, plán B, harmonogram, subdodavatelé, den po svatbě)",
+    "Reference svateb (Jitka & Rostislav, Katka & Jirka)",
+    "Partnerské prostory",
+    "FAQ",
+    "CTA konzultace zdarma a poptávka"
+   ],
+   "primaryCta": "Domluvit konzultaci zdarma / Poptat svatbu"
+  },
+  {
+   "path": "/catering/oslavy-a-piknik",
+   "title": "Catering na oslavy, narozeniny, garden party a piknik",
+   "goal": "Obsloužit soukromé oslavy s nízkým minimem (od 2 os.) jasnými balíčky.",
+   "sections": [
+    "Balíčky: piknikový koš, party box / finger food, garden party a BBQ",
+    "Příležitosti: narozeniny včetně prvních, křtiny, jubilea, zahradní párty, Silvestr",
+    "Ukázkové menu (sous-vide krkovice, špízy, hummus s crostini…)",
+    "Cheesecake jako dort (odkaz na e-shop)",
+    "Cena od",
+    "CTA"
+   ],
+   "primaryCta": "Objednat oslavu"
+  },
+  {
+   "path": "/poptavka",
+   "title": "Nezávazná poptávka – nabídka do pár minut",
+   "goal": "Hlavní konverzní stránka. Strukturovaně sebere poptávku pro AI agenta a CRM a u standardních případů vrátí nabídku hned.",
+   "sections": [
+    "Volba vstupu: chat s agentem / krátký formulář (stejná data)",
+    "Pole: typ akce, segment (firma/soukromá), datum a čas, místo (adresa/PSČ nebo hledám prostor), počet osob, formát servisu, rozpočet/os., dietní omezení, obsluha a inventář, nápoje, kontakt (jméno, e-mail, telefon, firma/IČO), poznámka, souhlas GDPR",
+    "Co bude dál (časová osa: okamžitě potvrzení, do pár minut nabídka, u nestandardních akcí ozve se Monika do 1 pracovního dne)",
+    "Kontakt na člověka (telefon)",
+    "Důvěra: reference a hodnocení"
+   ],
+   "primaryCta": "Odeslat a získat nabídku"
+  },
+  {
+   "path": "/reference",
+   "title": "Reference a realizované akce",
+   "goal": "Doložit kvalitu případovými studiemi (firemní i svatební).",
+   "sections": [
+    "Loga klientů (po schválení)",
+    "Karty případových studií s filtrem Firemní / Svatby / Oslavy",
+    "Citace a hodnocení (Google recenze)",
+    "CTA"
+   ],
+   "primaryCta": "Chci podobnou akci"
+  },
+  {
+   "path": "/reference/[slug]",
+   "title": "Případová studie (např. BVLGARI, Jitka & Rostislav, Katka & Jirka)",
+   "goal": "Detailní ukázka: zadání, počet hostů, místo, formát, menu, fotky a citace.",
+   "sections": [
+    "Shrnutí (typ akce, hosté, místo, datum)",
+    "Zadání a řešení",
+    "Menu",
+    "Galerie",
+    "Citace klienta",
+    "CTA ‚Chci podobnou‘ (agent dostane jako vzor)"
+   ],
+   "primaryCta": "Poptat podobnou akci"
+  },
+  {
+   "path": "/prostory",
+   "title": "Eventové a svatební prostory, kde vaříme",
+   "goal": "Pomoct těm, kdo nemají místo, a využít partnerství jako prodejní argument.",
+   "sections": [
+    "Karty prostorů: Hudlická Stodola, Statek Starý Týn (Úštěk), Statek U Dvou Stodol (Záchrašťany), Na Veselce Řitka (ověřit) s kapacitou, lokalitou, typem akcí, fotkou a odkazem",
+    "Pomůžeme najít prostor (pole v poptávce)",
+    "CTA"
+   ],
+   "primaryCta": "Poptat akci v tomto prostoru"
+  },
+  {
+   "path": "/cheesecaky",
+   "title": "Americké cheesecaky na objednávku Praha",
+   "goal": "Doplňkový e-shop: prodej celých a mini cheesecaků a zároveň upsell na catering (sladký bar, coffee break).",
+   "sections": [
+    "Úvod: americký recept ‚naše mantra‘, řady Daddy a Mummy vysvětlené",
+    "Produktové karty s fotkou, cenou, průměrem, porcemi a alergeny",
+    "Mini cheesecaky 10 ks i na akce",
+    "Vlastní příchuť a nápis na přání",
+    "Sezónní nabídka (vánoční pomerančový)",
+    "Doprava a vyzvednutí (Praha 300 Kč, +30 km 550 Kč, +70 km 750 Kč), objednací lhůta",
+    "Banner ‚Cheesecaky na vaši akci‘ → poptávka",
+    "Dárkový poukaz"
+   ],
+   "primaryCta": "Přidat do košíku"
+  },
+  {
+   "path": "/cheesecaky/[slug]",
+   "title": "Detail cheesecaku (Daddy vanilkový, Daddy pistáciovo-malinový, Daddy čokoládovo-lískooříškový, Daddy krémový vanilkovo-karamelový, Mummy vanilkovo-ovocný, Mummy vanilkovo-pomerančový vánoční, Mini cheesecaky mix 10 ks)",
+   "goal": "Prodej konkrétního produktu. Objednávka jde přímo do Cockpitu.",
+   "sections": [
+    "Fotka a galerie",
+    "Popis chuti",
+    "Parametry: průměr, hmotnost, počet porcí, alergeny, trvanlivost",
+    "Volba: příchuť (u mini), nápis do 25 znaků",
+    "Doprava a termín",
+    "Související produkty",
+    "Upsell ‚na akci‘"
+   ],
+   "primaryCta": "Přidat do košíku"
+  },
+  {
+   "path": "/kosik",
+   "title": "Košík a objednávka",
+   "goal": "Dokončit objednávku cheesecaků a poukazů (online platba nebo převod, zápis do Cockpitu).",
+   "sections": [
+    "Položky",
+    "Doručení / vyzvednutí a termín",
+    "Kontakt a fakturace (IČO volitelně)",
+    "Platba",
+    "Souhlas s obchodními podmínkami"
+   ],
+   "primaryCta": "Odeslat objednávku"
+  },
+  {
+   "path": "/darkovy-poukaz",
+   "title": "Dárkový poukaz",
+   "goal": "Jedna stránka poukazu místo dvou matoucích mechanismů.",
+   "sections": [
+    "Hodnoty 1 000 / 1 500 / 2 000 / 2 500 / 5 000 Kč a volitelně vlastní částka",
+    "Na co lze uplatnit (cheesecaky, catering)",
+    "Jméno obdarovaného, vzkaz, e-mail nebo tištěný",
+    "Platnost"
+   ],
+   "primaryCta": "Koupit poukaz"
+  },
+  {
+   "path": "/vanoce",
+   "title": "Vánoce: firemní večírky, vánoční raut, cukroví a cheesecaky",
+   "goal": "Sezónní landing (zapíná se zhruba od září do prosince) se silnou komerční hodnotou.",
+   "sections": [
+    "Firemní vánoční večírek a raut (balíčky)",
+    "Jak naplánovat firemní večírek (checklist)",
+    "Vánoční cukroví na objednávku",
+    "Vánoční cheesecake a firemní dárky",
+    "Uzávěrka objednávek",
+    "CTA"
+   ],
+   "primaryCta": "Rezervovat termín večírku"
+  },
+  {
+   "path": "/o-nas",
+   "title": "O nás – Ruda, Monika a kuchyně Mummies & Daddies",
+   "goal": "Vybudovat důvěru příběhem zakladatelů a hodnotami.",
+   "sections": [
+    "Příběh (od 2018, fine dining, 5* hotely, cestování a vlivy kuchyní)",
+    "Tým s fotkami (Rudolf Nikolai – šéfkuchař a majitel; Bc. Monika Jožková – role ověřit)",
+    "Hodnoty: čerstvé suroviny, kreativita, milý servis",
+    "Kuchyně a technologie (sous-vide…)",
+    "Čísla (akce/rok, hosté – dodá klient)",
+    "Kariéra (volitelně)"
+   ],
+   "primaryCta": "Poznejte naši kuchyni → /poptavka"
+  },
+  {
+   "path": "/blog",
+   "title": "Inspirace a rady k akcím",
+   "goal": "SEO kanál zaměřený na catering, s jasnými štítky a CTA na poptávku v každém článku.",
+   "sections": [
+    "Výpis s filtry štítků: Firemní akce, Svatby, Oslavy, Z kuchyně, Cheesecaky",
+    "Doporučené články",
+    "CTA"
+   ],
+   "primaryCta": "Poptat catering"
+  },
+  {
+   "path": "/blog/[slug]",
+   "title": "Článek blogu",
+   "goal": "Odpovědět na dotaz z vyhledávání a převést čtenáře na poptávku.",
+   "sections": [
+    "Článek",
+    "Box se související službou",
+    "Autor",
+    "CTA poptávka",
+    "Související články"
+   ],
+   "primaryCta": "Chci nabídku"
+  },
+  {
+   "path": "/caste-dotazy",
+   "title": "Časté dotazy – ceny, doprava, alergeny, storno",
+   "goal": "Odbavit opakované dotazy a sloužit jako znalostní báze pro AI agenta (stejný zdroj).",
+   "sections": [
+    "Ceny a co ovlivňuje cenu",
+    "Minimální počty osob",
+    "Doprava a oblast",
+    "Alergeny a diety",
+    "Obsluha, inventář a úklid",
+    "Platba, záloha a storno",
+    "Termíny (jak dlouho předem)",
+    "Cheesecaky: lhůty a doručení"
+   ],
+   "primaryCta": "Nenašli jste odpověď? Zeptejte se agenta"
+  },
+  {
+   "path": "/kontakt",
+   "title": "Kontakt",
+   "goal": "Přímý kontakt a fakturační údaje.",
+   "sections": [
+    "Telefony a e-maily lidí",
+    "Rychlá poptávka",
+    "Fakturační údaje (Mummies and Daddies s.r.o., Varšavská 715, 120 00 Praha 2, IČO, DIČ, spisová značka)",
+    "Provozovna a výdejní místo cheesecaků (dodá klient)",
+    "Sociální sítě"
+   ],
+   "primaryCta": "Zavolat / Poptat"
+  },
+  {
+   "path": "/obchodni-podminky, /ochrana-osobnich-udaju, /cookies",
+   "title": "Právní stránky (CZ, GDPR)",
+   "goal": "Splnit zákonné požadavky e-shopu a sběru poptávek (místo Wix ‚Do Not Sell My Personal Information‘).",
+   "sections": [
+    "Obchodní podmínky e-shopu a cateringu",
+    "Zpracování osobních údajů včetně informace o AI agentovi",
+    "Cookies lišta"
+   ],
+   "primaryCta": "—"
+  },
+  {
+   "path": "/en",
+   "title": "English (fáze 2)",
+   "goal": "Zkrácená EN verze pro expaty a mezinárodní firmy (homepage, firemní catering, svatby, poptávka, cheesecaky) s hreflang. Bez EN blogu.",
+   "sections": [
+    "Homepage EN",
+    "Corporate catering EN",
+    "Weddings EN",
+    "Request EN (agent odpovídá anglicky)"
+   ],
+   "primaryCta": "Get a quote in minutes"
+  },
+  {
+   "path": "/cockpit (za přihlášením, noindex)",
+   "title": "Interní Cockpit – CRM a agent",
+   "goal": "Interní systém: leady z webu a e-mailu, nabídky, objednávky cheesecaků a reporting. Není součástí veřejné navigace.",
+   "sections": [
+    "Leady a pipeline",
+    "Nabídky (standardní / ke schválení)",
+    "Objednávky e-shopu",
+    "Cateringová mapa (verze)",
+    "Reporting KPI"
+   ],
+   "primaryCta": "—"
+  }
+ ],
+ "homepage": "Vizuál podle reference: světlý, vzdušný, pastelový (pudrově růžová a mátová/šalvějová na krémovém podkladu), velké fotky jídla s měkkým denním světlem a stíny listí, serifový titulek verzálkami a čisté sans pro text. Produktem je JÍDLO NA AKCI, takže hrdinou je raut nebo talíř, ne cheesecake.\n\n0) Horní lišta (volitelná, tenká): „Nabídku cateringu dostanete do pár minut · +420 737 818 694“.\n\n1) Header (bílý, sticky): logo Mummies & Daddies vlevo. Navigace: Catering ▾ (Firemní, Snídaně, Coffee break, Obědy, Večeře a bankety, Společenské akce, Teambuilding, Oslavy a piknik) · Svatby · Reference · Prostory · Cheesecaky · O nás. Vpravo telefon a tlačítko „Chci nabídku“ (pill, stejné jako v referenci). Na mobilu hamburger a stále viditelné CTA.\n\n2) HERO (full-bleed, cca 85 vh): velká fotka rautu nebo servírované tabule na růžovém pozadí. Jídlo je vpravo a dole (jako dort v referenci), vlevo zůstává volné místo na text.\n- H1 serif verzálky: „CATERING, NA KTERÝ SE NEZAPOMÍNÁ.“\n- Perex: „Firemní akce, svatby a oslavy v Praze i po celé ČR. Šéfkuchařská kuchyně z fine diningu, milý servis a cheesecaky podle amerického receptu.“\n- Primární CTA (bílý pill): „Chci nabídku do pár minut“ → /poptavka. Sekundární textový odkaz: „Prohlédnout menu a ceny“ → /catering.\n- Mikrodůvěra pod CTA: „Od 2018 · stovky akcí (číslo dodá klient) · ceny od 300 Kč/os.“\n- Varianta: střídání 3 fotek (raut, svatební tabule, coffee break), bez auto-carouselu s textem.\n\n3) Rychlý start poptávky (karta, která překrývá spodní hranu hera): tři pole „Typ akce ▾ / Datum / Počet osob“ a tlačítko „Spočítat nabídku“. Pole předvyplní /poptavka a agenta, takže první krok trvá 5 vteřin.\n\n4) MŘÍŽKA TYPŮ AKCÍ (srdce stránky, 3 sloupce na desktopu, 2 na tabletu, 1 na mobilu, karty na výšku jako v referenci). Nadpis „Na jakou akci vaříme?“. Každá karta má pastelové pozadí (střídání růžová / mátová / krémová), fotku jídla typického pro akci, název, jednu větu, „od X Kč/os. · od N osob“ a celá je klikací:\n 1. Firemní catering (kanceláře, porady, konference) – od 4 os.\n 2. Snídaně – bufet, americká, zdravá – od 2 os.\n 3. Coffee break (i s kurzem vaření) – od 15 os.\n 4. Obědy s rozvozem – grab-and-go i bufet\n 5. Večeře a bankety, sharing table – od 8 os.\n 6. Společenské akce a raut, finger food – od 15 os.\n 7. Svatby – menu na míru\n 8. Oslavy, garden party a piknik – od 2 os.\n 9. Teambuilding s vařením se šéfkuchařem – od 8 os.\nPod mřížkou odkaz „Nevíte, který formát zvolit? Zeptejte se agenta“.\n\n5) PROČ MY (pás se 4 ikonami na krémovém pozadí): Šéfkuchařská kuchyně (5* hotely, fine dining) · Nabídka do pár minut, jasné ceny od · Plný servis od obsluhy po inventář a prostory · Zážitek navíc (live cooking, sushi, sladký bar, gentlemanský klub).\n\n6) DŮVĚRA A REFERENCE: řada log klientů (BVLGARI a další, po schválení klientem), 3 karty případových studií s velkou fotkou (Luxusní party BVLGARI v Pařížské · Svatba Jitka & Rostislav · Svatba Katka & Jirka, U Dvou Stodol), 2–3 citace nebo Google hodnocení s hvězdami, číselný pás (akce, hosté, roky; dodá klient). CTA „Všechny reference“.\n\n7) Z NAŠÍ KUCHYNĚ (jídlo jako hrdina podruhé): galerie 6 čtvercových fotek signature jídel s popiskem (sous-vide krkovice s bylinkami, chobotnice v červeném víně, kachní rillettes, grilované krevety v bazalkovém pestu, panna cotty a makronky ze sladkého baru, mini cheesecaky). Odkaz „Ukázková menu“.\n\n8) JAK TO FUNGUJE (4 kroky na vodorovné ose): 1) Řeknete nám o akci (formulář nebo chat, 2 minuty) → 2) Do pár minut máte nabídku s cenou (standardní akce) nebo vás kontaktuje Monika (akce na míru) → 3) Ochutnávka nebo prohlídka místa (svatby a velké akce) → 4) Den D: dovezeme, nachystáme, obsloužíme, uklidíme. CTA „Začít“.\n\n9) PARTNERSKÉ PROSTORY (užší pás): „Nemáte místo? Vaříme na krásných statcích“ se 3 kartami (Hudlická Stodola, Statek Starý Týn, U Dvou Stodol) → /prostory.\n\n10) CHEESECAKY JAKO SLADKÁ TEČKA (menší sekce, sekundární vizuální váha, vizuálně nejblíž referenci): nadpis „Sladká tečka každé akce“, krátký text o americkém receptu a řadách Daddy a Mummy, 3 produktové karty na pastelovém pozadí (Daddy vanilkový 790 Kč, Daddy pistáciovo-malinový 1 290 Kč, Mini cheesecaky 10 ks 575 Kč). Dvě CTA: „Objednat domů“ → /cheesecaky a „Přidat na akci“ → /poptavka (s předvyplněným sladkým barem). Sezónně se sekce mění na vánoční.\n\n11) TÝM: fotka Rudy a Moniky v kuchyni, 2 věty příběhu, podpis „Vaše Mummy & Daddy“ → /o-nas.\n\n12) FAQ (4–5 rozbalovacích otázek): Kolik stojí catering na osobu? · Jaký je minimální počet osob? · Vaříte i mimo Prahu? · Zvládnete bezlepkové a vegan menu? · Jak dlouho předem objednat?\n\n13) ZÁVĚREČNÁ POPTÁVKA (sytě růžový blok): „Popište nám svou akci a do pár minut máte nabídku.“ Vložené okno agenta (chat) a alternativa krátký formulář. Vedle telefon a e-mail na živého člověka.\n\n14) Patička: navigace služeb, kontakty, fakturační údaje (Mummies and Daddies s.r.o., Varšavská 715, 120 00 Praha 2, IČO 17957524, DIČ CZ17957524, C 379274 MS v Praze), sociální sítě, obchodní podmínky a GDPR, odkaz Cockpit (diskrétní, pro tým), © aktuální rok.\n\nTechnika: SEO title „Catering Praha – firemní akce, svatby a oslavy | Mummies & Daddies“, schema.org LocalBusiness/FoodEstablishment + Product (cheesecaky) + FAQPage. Hero obrázek v AVIF nebo WebP s prioritou načtení. Obsah je čitelný bez JS (žádná bot-check stránka jako na Wixu).",
+ "conversion": "Princip: každá stránka má jednu hlavní akci, a to poptávku do agenta. E-shop je samostatná a krátká cesta. Všechna CTA nesou kontext (?typ=svatba&osob=80&zdroj=/catering/svatby), agent se tak neptá na to, co už ví.\n\nCESTA 1 – Firma / office manažer / HR (B2B standard):\nGoogle („firemní catering Praha“, „coffee break školení“) → /catering/firemni nebo /catering/coffee-break → balíček s cenou od a minimem → „Nabídka do pár minut“ → /poptavka s předvyplněným typem → agent doptá datum, čas, adresu, počet osob, diety a IČO → pokud poptávka sedí na schválenou cateringovou mapu, agent během pár minut pošle standardní nabídku (PDF a odkaz, cena/os., co je v ceně, platnost) → klient potvrdí odkazem nebo odpovědí → lead „won“ v Cockpitu → follow-up po akci a nabídka pravidelných obědů.\n\nCESTA 2 – Event agentura / marketing (B2B nestandard):\nReference / Společenské akce → poptávka (často nad 50 os., luxusní formát, mimo Prahu, vlastní menu) → agent kvalifikuje, sebere brief a pošle okamžité potvrzení s orientačním rozpětím z mapy (bez závazné ceny) → eskalace na CSO (Monika) se shrnutím a návrhem nabídky → CSO schválí nebo upraví a odešle → follow-up podle cadence.\n\nCESTA 3 – Snoubenci:\n/catering/svatby (inspirace, ukázková menu, reference, prostory) → „Domluvit konzultaci zdarma“ nebo „Poptat svatbu“ → agent sebere datum, místo, počet hostů, styl kuchyně, rozpočet, sladký bar a nápoje a nabídne termín konzultace nebo ochutnávky (kalendář) → orientační nabídka z mapy svatebních balíčků → nestandardní varianty schvaluje CSO → dlouhý follow-up (6–12 měsíců): připomínka ochutnávky, finální počty hostů 14 dní předem, upsell na den po svatbě.\n\nCESTA 4 – Soukromá oslava / piknik:\n/catering/oslavy-a-piknik → balíček (piknikový koš, party box, BBQ) → krátká poptávka (datum, adresa, osoby) → agent pošle standardní nabídku hned → potvrzení a záloha → upsell cheesecaku jako dortu.\n\nCESTA 5 – Cheesecake e-shop:\n/cheesecaky → produkt → košík → doprava a termín (kontrola objednací lhůty) → platba nebo převod → objednávka přímo v Cockpitu (objednávky) → potvrzovací e-mail. Křížové cesty: na produktu „Chcete je na akci?“ vede do poptávky, u cateringu se jako upsell nabízí sladký bar a mini cheesecaky.\n\nSekundární vstupy: e-mail info@ a e-maily CEO/CSO (agent je čte a zpracuje stejně jako web), telefon (CSO zapíše lead ručně nebo diktátem), rezervace konzultace (nahrazuje Wix Bookings).\n\nROLE AI AGENTA (inbound MVP):\n1) Příjem: web chat, formulář a e-maily CEO/CSO. Data se ukládají do jednotné struktury (segment B2B/B2C, typ akce, datum, místo, osoby, formát, rozpočet, diety, servis, nápoje, kontakt).\n2) Doptání: agent se ptá jen na chybějící povinná pole, krátce a přátelsky v tónu značky. Odpovídá na dotazy ze znalostní báze (FAQ, menu, minima, doprava, alergeny), stejného zdroje jako /caste-dotazy.\n3) Klasifikace: standard (sedí na schválenou mapu: typ akce, minimum osob, oblast, termín ≥ X dní, bez speciálních požadavků) vs. nestandard (velká akce, mimo oblast, krátký termín, vlastní menu, svatba nad limit, nejasný segment) → review.\n4) Lead v CRM: automaticky založí lead (stage, owner, zdroj, next step, datum follow-upu, historie konverzace).\n5) Nabídka: standardní nabídku vytvoří z mapy a smí ji sám odeslat, ale až když je mapa ve schválené verzi. Dokud je verze „ilustrační“, odeslání je technicky blokované a nabídka jde CSO ke kliknutí „odeslat“. Nestandardní nabídku nikdy neodesílá sám, připraví podklad a eskaluje CSO.\n6) Follow-up: podle cadence (např. D+2, D+5, D+10) se stop pravidly (odpověď, won/lost, odhlášení).\n7) Reporting v Cockpitu: počet leadů, doba do první reakce (cíl < 1 min), doba do nabídky (cíl minuty místo 72 h), konverze lead → nabídka → won, automation rate, eskalace a jejich důvody, ušetřený čas CSO.\nKomunikace na webu: „Nabídka do pár minut. U akcí na míru se vám do 1 pracovního dne ozve Monika osobně.“ Agent se vždy představí jako digitální asistent a nabízí přepojení na člověka (telefon nebo zpětné zavolání). Ceny nikdy nevymýšlí mimo mapu.",
+ "redirects": [
+  "KANONICKÁ DOMÉNA: www.mummiesdaddies.com s češtinou v rootu (EN později pod /en). Celá subdoména cs.mummiesdaddies.com/* → 301 na odpovídající CZ URL na www (níže je mapa path → path, platí pro obě domény, není-li uvedeno jinak). Zachovat stejné cesty pro EN až po spuštění /en. Do té doby EN URL vedou na CZ ekvivalent.",
+  "/ (cs.) → /",
+  "/home → /",
+  "/catering-breakfast → /catering/snidane",
+  "/coffeebreak → /catering/coffee-break",
+  "/lunch → /catering/obedy",
+  "/dinner → /catering/vecere-a-bankety",
+  "/socialevents → /catering/spolecenske-akce",
+  "/corporate-catering → /catering/firemni",
+  "/wedding → /catering/svatby",
+  "/picnicparty → /catering/oslavy-a-piknik",
+  "/eventspace → /prostory",
+  "/non-binding → /poptavka",
+  "/book-online → /poptavka?typ=konzultace",
+  "/service-page/personal-or-online-meeting → /poptavka?typ=konzultace",
+  "/single-project → /reference/bvlgari-luxury-party (po schválení klientem, jinak /reference)",
+  "/jitka-rostislav-main → /reference/svatba-jitka-a-rostislav",
+  "/katka-jirka → /reference/svatba-katka-a-jirka",
+  "/shop → /cheesecaky",
+  "/product-page/daddy-vanilla-cheesecake → /cheesecaky/daddy-vanilkovy",
+  "/product-page/daddy-pistachio-raspberry-cheesecake → /cheesecaky/daddy-pistaciovo-malinovy",
+  "/product-page/daddy-chocolate-hazelnut-cheesecake → /cheesecaky/daddy-cokoladovo-liskooriskovy",
+  "/product-page/daddy-creamy-vanilla-caramel-cheesecake → /cheesecaky/daddy-vanilkovo-karamelovy",
+  "/product-page/mummy-vanilla-berries-cheesecake → /cheesecaky/mummy-vanilkovo-ovocny",
+  "/product-page/orangecheesecake → /cheesecaky/mummy-vanilkovo-pomerancovy-vanocni",
+  "/product-page/cheesecake → /cheesecaky/mini-cheesecaky-10-ks",
+  "/gift-card → /darkovy-poukaz",
+  "/gift-card-1 → /darkovy-poukaz",
+  "/blog → /blog",
+  "/blog/categories/* (catering-1, dezerty, event-inspiration, svatby, blog, catering, gastronomie, venkovní-catering, garden-party, grilování, buřty-nad-ohněm, catering-garden-party-gastronomie) → /blog (případně /blog?stitek=svatby u kategorie svatby a /blog?stitek=firemni-akce, pokud budou štítky indexovatelné)",
+  "/post/svatba-catering → /blog/jak-vybrat-svatebni-catering",
+  "/post/luxusní-večírek-ve-velkém-stylu → /blog/raut-banket-nebo-servirovana-vecere",
+  "/post/6-simple-steps-to-plan-a-fantastic-corporate-party → /blog/jak-naplanovat-firemni-vecirek",
+  "/post/firemní-akce-1 → /blog/catering-na-tiskovku-networking-a-roadshow",
+  "/post/teambuilding-1 → /catering/teambuilding",
+  "/post/garden-party-grilování-oslavy-narozenin → /blog/garden-party-a-grilovani",
+  "/post/spring-grilling-and-garden-party-how-to-prepare-the-perfect-outdoor-catering → /blog/garden-party-a-grilovani",
+  "CZ blog post ‚Jarní grilování a garden party…‘ (stávající slug /post/…) → /blog/garden-party-a-grilovani (sloučení 3 článků do jednoho)",
+  "/post/piknik-v-přírodě-dokonalá-záležitost → /catering/oslavy-a-piknik",
+  "/post/1-narozeniny-1 → /blog/catering-na-oslavu-narozenin",
+  "/post/novy_rok_2022 → /blog/finger-food-na-vecirek",
+  "/post/vánoce-vánoce-přicházejí → /vanoce",
+  "/post/ovoce-zdravá-svačina → /catering/snidane",
+  "/post/smoothie-obrovský-přísun-vitamínů-nebeské-osvěžení-a-vaše-budoucí-závislost → /catering/coffee-break",
+  "CZ posty ‚Sous-vide v praxi…‘, ‚Jak se dělá terina z kachních jater‘, ‚Cheesecake jako zážitek…‘ → /blog/sous-vide-v-praxi, /blog/terina-z-kachnich-jater, /blog/cheesecake-jako-zazitek (zachovat obsah, nové slugy bez diakritiky)",
+  "/post/trendy-catering-and-exceptional-recipes-not-only-for-2024 → /blog",
+  "/post/the-sweetest-juiciest-melon-season → /blog",
+  "/post/spring-easter → /blog",
+  "/post/zázračný-nápoj-zlaté-mléko-1 → /catering/coffee-break (článek se zdravotními tvrzeními se nepřenáší)",
+  "/post/halloween-a-dýňové-hody → /blog",
+  "/post/letní-šťavnaté-dezerty → /cheesecaky",
+  "/post/letní-žízeň → /blog",
+  "/post/o-bylinkách → /blog",
+  "/post/healhy-live-healthy-food → /catering/snidane",
+  "/post/2016/05/09/this-is-your-first-post-1 → /o-nas",
+  "/recipes → /blog",
+  "/challenges → / (nebo 410 Gone)",
+  "/members, /account/*, /plans-pricing → / (nebo 410 Gone)",
+  "/blank-5 → /",
+  "/privacy-policy → /ochrana-osobnich-udaju",
+  "Technicky: redirect mapu udržovat v jednom souboru (next.config redirects nebo middleware), URL s diakritikou zapsat v procentovém kódování i v původní podobě, po spuštění projít Google Search Console (oba domény jako property, změna adresy u cs.), nový sitemap.xml a hreflang až s /en."
+ ],
+ "dropOrMerge": [
+  "SLOUČIT: dva weby cs. a www. do jednoho webu na www.mummiesdaddies.com (CZ primárně, EN jako /en ve fáze 2 s hreflang). Žádný paralelní EN blog.",
+  "SLOUČIT: CZ a EN firemní catering do /catering/firemni, převzít bohatší EN verzi (teambuilding, rozpisy položek, board meetingy) a přeložit.",
+  "SLOUČIT: Oběd (lunch) a grab-and-go koncept z homepage do /catering/obedy, s provázáním na firemní catering.",
+  "SLOUČIT: tři články o grilování a garden party (CZ ‚Jarní grilování…‘, EN ‚Spring Grilling…‘, ‚Garden party, grilování, oslavy narozenin‘) do jednoho článku /blog/garden-party-a-grilovani. Menu z nich (BBQ stanice, sous-vide krkovice, chobotnice, hummus) použít na /catering/oslavy-a-piknik a /catering/teambuilding.",
+  "SLOUČIT: gift-card a gift-card-1 do jedné stránky /darkovy-poukaz s pevnými hodnotami a online platbou (odstranit placeholder ‚Nadpis 1‘).",
+  "SLOUČIT: book-online a service-page personal-or-online-meeting (Wix Bookings) do poptávky a agenta jako typ ‚konzultace/ochutnávka‘ s kalendářem napojeným na CRM.",
+  "SLOUČIT: nezávazná poptávka (všechna CTA ‚Nezávazná poptávka / žádost / I want catering / Non-binding request‘) do jediné /poptavka s jednotným CTA ‚Chci nabídku do pár minut‘.",
+  "PŘESUNOUT: příběh zakladatelů z hlavičky blogu, homepage a prvního postu Moniky na /o-nas (na blogu se přestane opakovat).",
+  "PŘESUNOUT: článek Moniky ‚Svatba catering‘ (8 kroků) na /catering/svatby jako sekci ‚Jak to u nás probíhá‘ a do znalostní báze agenta. Článek ‚Luxusní večírek ve velkém stylu‘ rozpadnout do formátů na /catering a /catering/spolecenske-akce a jako průvodce raut vs. banket.",
+  "PŘESUNOUT: ceník dopravy z vánočního cheesecaku do obecných podmínek (/caste-dotazy, /cheesecaky, obchodní podmínky).",
+  "PŘESUNOUT: položky z článků o ovoci, smoothie a kurkuma latte jen jako položky menu na snídani a coffee break (bez zdravotních tvrzení).",
+  "PŘESUNOUT: vánoční cukroví, vánoční cheesecake a firemní večírek na sezónní /vanoce.",
+  "ZRUŠIT: blank-5 (Fullscreen Page), challenges (Programs), members a Log In, plans-pricing, recipes, všechny stránky blogových kategorií a štítků jako samostatné indexované URL (zůstanou jen filtry), hashtag šum Wixu.",
+  "ZRUŠIT (nepřenášet): články ‚Zázračný nápoj Zlaté mléko‘ (rizikové zdravotní tvrzení podle nařízení EU 1924/2006) a ‚Smoothie‘ (tvrzení o hubnutí), melounový článek (stopa DeepL), velikonoční EN (špatný překlad), ‚Trendy catering 2024‘ (výplň), Halloween, letní dezerty, ‚this-is-your-first-post‘, nedostupné posty (healhy, letní žízeň, o bylinkách). Přesměrovat je podle mapy.",
+  "ZRUŠIT: Wix patičkový šum (‚Do Not Sell My Personal Information‘, ‚Czech Republic, Česko‘, ©2018), nahradit plnými fakturačními údaji a českým GDPR.",
+  "PŘEPSAT: všechny stránky služeb tak, aby měly ukázková menu, cenu od/os., minima a fotky. Odstranit strojové překlady (‚jednohubky a jednohubky‘, ‚S cateringem pro maminky a tatínky‘, ‚Tatínek tvarohový koláč‘, ‚Mumiin‘), překlepy a zastaralé ‚nově založená‘ a covidové pasáže.",
+  "SJEDNOTIT: produktové karty cheesecaků (název CZ, průměr, porce, alergeny, trvanlivost, lhůta, doprava), výčet příchutí mini cheesecaků a vysvětlení řad Daddy vs. Mummy. Doplnit chybějící popis u pistáciovo-malinového.",
+  "SJEDNOTIT: jméno Rudolf Nikolai (ne ‚Nikolaj‘), role Moniky, PSČ 120 00, oblast působnosti (Praha, ČR, na vyžádání Evropa).",
+  "ROZHODNOUT S KLIENTEM: veřejné recepty na signature cheesecaky na blogu (doporučení: stáhnout, chrání produkt)."
+ ],
+ "openQuestionsForClient": [
+  "Cateringová mapa a ceny: můžete schválit orientační ceny ‚od X Kč/os.‘ pro každý balíček (snídaně, coffee break, obědy, večeře, raut, svatba, oslavy, teambuilding) a pravidla standardní nabídky (minima, oblast, minimální předstih, co je v ceně)? Bez schválené verze mapy agent nabídky sám neodešle.",
+  "Co je pro vás ‚nestandardní‘ poptávka, kterou má vždy schválit Monika (např. nad 100 osob, mimo Prahu + X km, termín do 7 dní, vlastní menu, svatby)?",
+  "Oblast působnosti a doprava cateringu: kam jezdíte běžně, za kolik (platí ceník 300/550/750 Kč i pro catering?) a nabízíte opravdu i ‚celou Evropu‘?",
+  "Minimum osob u svatby: na webu je ‚minimálně 2 osoby‘. Jaké je skutečné minimum a typický rozsah svateb (počet hostů, cena/os.)?",
+  "Reference: smíme veřejně uvést BVLGARI (logo, fotky, text)? Které další firemní klienty a loga můžeme ukázat? Máte citace, Google recenze, počty akcí a hostů za rok? Je ‚Ladybug fairy tale Christmas party‘ vaše akce?",
+  "Fotky: máte profesionální fotky jídla z vlastních akcí (raut, svatební tabule, coffee break, signature jídla, cheesecaky)? Pokud ne, objednáme food focení. Pro hero a pastelové karty je to klíčové.",
+  "Partnerské prostory: které spolupráce trvají (Hudlická Stodola, Statek Starý Týn, U Dvou Stodol, Na Veselce Řitka)? Kapacity, lokality, kontakty a souhlas s uvedením?",
+  "Tým: kdo se má na webu ukázat (Rudolf Nikolai, Monika Jožková a role: generální ředitelka vs. obchod a marketing, event manažeři, autorky blogu Julie a Týna)? Máte jejich fotky?",
+  "Kdo bude ‚člověk za agentem‘ (eskalace a schvalování nabídek) a v jakých hodinách? Jaký čas odpovědi u nestandardních poptávek můžeme slíbit (1 pracovní den)?",
+  "Kanály pro agenta: které e-mailové schránky má agent číst (info@, rudolf.nikolai@, Monika)? Má odpovídat z info@ nebo jménem Moniky?",
+  "Koncept ‚grab-and-go‘ (saláty a sendviče): nabízíte stále pravidelné firemní obědy nebo boxy s rozvozem? Pokud ano, jaký je denní nebo týdenní model, objednací uzávěrka a minimum?",
+  "Coffee break s kurzem vaření a teambuilding se šéfkuchařem: nabízíte je aktivně? Cena, kapacita, kde se konají?",
+  "Plný servis: co přesně umíte dodat (obsluha, inventář, stany, ozvučení, dekorace, mobilní bar, alkohol a licence) a co přes partnery?",
+  "Dietní a alergenové možnosti: zvládnete garantovaně bezlepkové, vegan a bez laktózy? Jak značíte alergeny (14 alergenů EU)?",
+  "Platební a obchodní podmínky cateringu: záloha, splatnost, storno podmínky, finální počet hostů kolik dní předem?",
+  "E-shop cheesecaků: parametry každého produktu (průměr, hmotnost, porce, alergeny, trvanlivost), objednací lhůta, výdejní místo nebo provozovna pro osobní odběr, online platba (brána) nebo převod? Aktuální sortiment a ceny (Daddy čokoládovo-lískooříškový a vanilkovo-karamelový 1 290 Kč?), vysvětlení řad Daddy vs. Mummy, sezónní příchutě (dýňový, limetkový)?",
+  "Dárkové poukazy: na co je lze uplatnit (jen cheesecaky, nebo i catering), platnost, tištěná nebo elektronická forma?",
+  "Jazyk: potřebujete EN verzi hned při spuštění (expati, mezinárodní firmy), nebo stačí fáze 2? Má agent odpovídat i anglicky?",
+  "Doména a přechod: souhlasíte s kanonickou doménou www.mummiesdaddies.com (CZ v rootu) a zrušením cs. subdomény s 301 přesměrováním? Máte přístup do Google Search Console a Wixu kvůli exportu a ověření URL?",
+  "Recepty signature cheesecaků jsou dnes veřejně na blogu. Chcete je zachovat, nebo stáhnout?",
+  "Brand: zůstává plný název ‚Mummies and Daddies delicious food and cheesecakes‘, nebo přejdeme na kratší ‚Mummies & Daddies – catering‘? Máte logo ve vektoru a brand barvy (sedí pastelová růžová a mátová z reference)?",
+  "Sezónní nabídky: chcete na podzim spustit /vanoce (firemní večírky, cukroví, vánoční cheesecake)? Uzávěrky a kapacita?",
+  "Původní pole formuláře nezávazné poptávky (stránka se nestáhla): jaká data dnes sbíráte a co v nich nejčastěji chybí?",
+  "Provozovna: kde je kuchyně a výdej (sídlo Varšavská 715 je fakturační)? Smíme ji uvést na webu?"
+ ]
+}
