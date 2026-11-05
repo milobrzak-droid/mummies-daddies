@@ -1,0 +1,208 @@
+# Migrace databáze bez ručního SQL (postup v docs/PROVOZ.md).
+#
+# Spouští se ručně: Actions → Migrace databáze → Run workflow. Postup pro
+# vlastníka je v docs/PROVOZ.md, bod 1 (a–e).
+#
+# Vstupy:
+#   target  staging | production
+#   akce    plan     — jen plán (dry-run): vypíše, co by se pustilo; nic nemění
+#           apply    — aplikuje chybějící migrace (po plánu a potvrzení)
+#           baseline — zapíše do evidence schema_migration řádky BEZ spuštění
+#                      souborů, pro migrace, které už jsou na cíli aplikované
+#                      ručně (verze vyjmenuješ v poli „baseline“)
+#   baseline verze pro akci baseline, např. 0090,0092-0094 (jinak prázdné)
+#   confirm  pro apply a baseline: znovu napiš název cíle (staging / production)
+#
+# Dva joby:
+#   1. Plán — přečte schema_migration na cíli, porovná se soubory v repu
+#      (záměrné mezery 0076–0077 přeskočí) a vypíše plán. Nic nemění. Běží
+#      vždy. Když se evidence a soubory nesrovnávají (aplikovaná migrace chybí
+#      v repu, díra v evidenci, díra v číslování…), skončí chybou a NIC se
+#      dál nespustí.
+#   2. Provedení — jen když akce je apply/baseline, plán něco našel a confirm
+#      = název cíle. Provede PŘESNĚ to, co vypsal plán (--expect); když se
+#      mezitím stav změnil, neudělá nic. Je to samostatný job v prostředí cíle,
+#      takže povinné schválení prostředí (Required reviewers), pokud ho plán
+#      GitHubu nabízí, zastaví běh právě před ním.
+#
+# JEN Z VĚTVE main. Oba joby spouštějí skript a migrace z vybrané větve
+# a oba dostanou připojovací řetězec — z jiné větve by šly na databázi
+# neschválené soubory (a ledger by se rozešel s main). Proto:
+#   - oba joby samy odmítnou jinou větev než main (krok „Jen z main“,
+#     u Provedení navíc podmínka jobu);
+#   - OBA joby běží v GitHub prostředí stejného jména jako cíl. To je
+#     pojistka, kterou větev s upraveným workflow neobejde: v Settings →
+#     Environments → production → Deployment branches = main se job z jiné
+#     větve vůbec nespustí a tajemství prostředí nedostane. Povinné
+#     schválení (Required reviewers) pak platí pro oba joby — i plán drží
+#     produkční připojení.
+#   Bez placeného plánu GitHubu (prostředí u soukromého repozitáře) zůstává
+#   ruční potvrzení: pole confirm musí obsahovat název cíle.
+#
+# Tajemství: připojovací řetězce jsou jen v secrets, do skriptu jdou přes
+# proměnné prostředí (nikdy argumentem ani přes ${{ }} v příkazu). GitHub
+# secret v logu maskuje sám a skript navíc každý výstup filtruje (heslo,
+# host, uživatel, celé URL); vypisuje jen čísla verzí a názvy souborů.
+#
+# Secrets (Settings → Secrets and variables → Actions):
+#   STAGING_DB_URL   připojovací řetězec stagingu (Session pooler)
+#   SUPABASE_DB_URL  připojovací řetězec produkce ;
+#                    jako secret prostředí „production“ má přednost před
+#                    stejnojmenným secretem repozitáře (docs/PROVOZ.md 1a)
+# U produkce se čte i STAGING_DB_URL: když existuje, musí staging chybějící
+# migrace už mít (nejdřív staging, pak produkce). Neplatí pro baseline.
+name: Migrace databáze
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Cíl (vždy nejdřív staging, pak production)'
+        type: choice
+        options: [staging, production]
+        default: staging
+        required: true
+      action:
+        description: 'Co udělat: plan = jen plán (nic nemění), apply = aplikovat chybějící migrace, baseline = zapsat do evidence bez spuštění'
+        type: choice
+        options: [plan, apply, baseline]
+        default: plan
+        required: true
+      baseline:
+        description: 'Jen pro akci baseline: verze zapsané do evidence bez spuštění, např. 0090,0092-0094'
+        type: string
+        required: false
+        default: ''
+      confirm:
+        description: 'Pro apply a baseline napiš znovu název cíle (staging / production). U plan nech prázdné.'
+        type: string
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+# Nikdy dva běhy migrací najednou (v databázi to navíc hlídá advisory zámek).
+concurrency:
+  group: db-migrate
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    name: Plán (nanečisto)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Prostředí i tady: plán dostává tentýž připojovací řetězec jako
+    # provedení, takže musí projít stejnými pravidly prostředí (větev main).
+    environment: ${{ inputs.target }}
+    outputs:
+      pending: ${{ steps.plan.outputs.pending }}
+    steps:
+      - name: Jen z main
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          if [ "$REF" != "refs/heads/main" ]; then
+            echo "::error::Migrace se spouštějí jen z větve main (vybráno: $REF). Nejdřív merge, pak Run workflow s Branch = main."
+            exit 1
+          fi
+
+      - name: Kontrola vstupů
+        env:
+          TARGET: ${{ inputs.target }}
+          ACTION: ${{ inputs.action }}
+          BASELINE: ${{ inputs.baseline }}
+          CONFIRM: ${{ inputs.confirm }}
+        run: |
+          if [ "$ACTION" = "plan" ]; then
+            if [ -n "$CONFIRM" ] || [ -n "$BASELINE" ]; then
+              echo "::error::Akce plan nic nemění, potvrzení ani seznam baseline k ní nepatří. Nech pole prázdná, nebo vyber apply / baseline."
+              exit 1
+            fi
+          else
+            if [ "$CONFIRM" != "$TARGET" ]; then
+              echo "::error::Pro $ACTION napiš do pole confirm přesně název cíle: $TARGET. Pro jen plán vyber akci plan."
+              exit 1
+            fi
+          fi
+          if [ "$ACTION" = "baseline" ] && [ -z "$BASELINE" ]; then
+            echo "::error::Akce baseline potřebuje v poli baseline seznam verzí (např. 0090,0092-0094)."
+            exit 1
+          fi
+          if [ "$ACTION" != "baseline" ] && [ -n "$BASELINE" ]; then
+            echo "::error::Pole baseline patří jen k akci baseline."
+            exit 1
+          fi
+
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+          cache: npm
+
+      # --ignore-scripts: v jobu s připojením k databázi nesmí běžet
+      # instalační skripty závislostí. Běhač potřebuje jen `pg`.
+      - name: Instalace závislostí
+        run: npm ci --ignore-scripts
+
+      - name: Plán — co se pustí (nic se nemění)
+        id: plan
+        env:
+          TARGET: ${{ inputs.target }}
+          ACTION: ${{ inputs.action }}
+          BASELINE: ${{ inputs.baseline }}
+          STAGING_DB_URL: ${{ secrets.STAGING_DB_URL }}
+          # Produkční secret jen pro běh proti produkci.
+          SUPABASE_DB_URL: ${{ inputs.target == 'production' && secrets.SUPABASE_DB_URL || '' }}
+        run: |
+          args=(--target="$TARGET" --dry-run --github-output)
+          if [ "$ACTION" = "baseline" ]; then args+=(--baseline="$BASELINE"); fi
+          node scripts/migrate.mjs "${args[@]}"
+
+  apply:
+    name: Provedení (apply / baseline)
+    needs: plan
+    if: github.ref == 'refs/heads/main' && inputs.action != 'plan' && needs.plan.outputs.pending != '' && inputs.confirm == inputs.target
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Schválení prostředí (Required reviewers), je-li zapnuté, zastaví běh
+    # tady, až po vypsání plánu.
+    environment: ${{ inputs.target }}
+    steps:
+      - name: Jen z main
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          if [ "$REF" != "refs/heads/main" ]; then
+            echo "::error::Migrace se spouštějí jen z větve main (vybráno: $REF)."
+            exit 1
+          fi
+
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalace závislostí
+        run: npm ci --ignore-scripts
+
+      - name: Provedení přesně podle plánu
+        env:
+          TARGET: ${{ inputs.target }}
+          ACTION: ${{ inputs.action }}
+          BASELINE: ${{ inputs.baseline }}
+          EXPECTED: ${{ needs.plan.outputs.pending }}
+          STAGING_DB_URL: ${{ secrets.STAGING_DB_URL }}
+          SUPABASE_DB_URL: ${{ inputs.target == 'production' && secrets.SUPABASE_DB_URL || '' }}
+        run: |
+          args=(--target="$TARGET" --apply --expect="$EXPECTED" --github-output)
+          if [ "$ACTION" = "baseline" ]; then args+=(--baseline="$BASELINE"); fi
+          if [ "$TARGET" = "production" ]; then args+=(--yes-production); fi
+          node scripts/migrate.mjs "${args[@]}"

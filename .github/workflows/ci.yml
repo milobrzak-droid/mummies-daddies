@@ -1,0 +1,64 @@
+# Kontrola před nasazením.
+#
+# Doteď nic nestálo mezi commitem a produkcí: Vercel build zachytí typovou
+# chybu, ale logická regrese v server action nebo v RLS-závislém dotazu
+# dojela do produkce bez jediné brány. Protože se commituje přímo
+# do main, je tohle poslední místo, kde se dá chyba zachytit.
+#
+# Produkci zastavuje sama brána ve vercel.json (buildCommand = npm run
+# build:release) — viz docs/PROVOZ.md „Blokující CI“. Tenhle workflow je
+# tatáž brána na GitHubu, aby červená byla vidět už u commitu / PR.
+# Nepotřebuje žádné secrets.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+# Nový push do téhož PR zruší rozběhnutou kontrolu; na main se rozběhnutá
+# kontrola nikdy neruší.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      # Stejná verze, na které se vyvíjí a na které se všechno ověřovalo.
+      # `engines` v package.json schválně nenastavuji — to by mohlo změnit
+      # runtime, který si vybírá Vercel, a to je zásah do produkce, ne do CI.
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalace závislostí
+        run: npm ci
+
+      # Samostatně a první z testů, ať je v přehledu hned vidět, že neprošla
+      # migrace (číslování, RLS + AAL2, search_path, zápis do ledgeru,
+      # pravidla běhače scripts/migrate.mjs). Plná sada ji spustí znovu.
+      - name: Kontrola migrací
+        run: npx vitest run test/migrations-lint.test.ts test/migrate-lib.test.ts test/migrate-runner.test.ts
+
+      # Tytéž čtyři kroky, které běží jako buildCommand ve Vercelu
+      # (vercel.json → npm run build:release): tsc --noEmit, eslint, vitest
+      # run, next build. Jeden příkaz = CI a produkční build nemohou
+      # rozejít. Build schválně bez tajemství: ověřuje se, že se aplikace
+      # přeloží, ne že se připojí k databázi (hodnoty níže jsou zástupné).
+      - name: Celá brána (typy, lint, testy, build)
+        run: npm run build:release
+        env:
+          SUPABASE_URL: https://example.supabase.co
+          SUPABASE_PUBLISHABLE_KEY: sb_publishable_ci_placeholder
+          SUPABASE_SECRET_KEY: sb_secret_ci_placeholder

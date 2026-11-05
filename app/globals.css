@@ -1,0 +1,290 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* woff2 (o 40–60 % menší); původní ttf jen jako záloha. Preload v app/layout.tsx.
+   Nadpisy mají systémové písmo (CompanyConfig.brand.headingFont = null). */
+@font-face { font-family:'Fira Mono'; src:url('/fonts/FiraMono-Medium.woff2') format('woff2'), url('/fonts/FiraMono-Medium.ttf') format('truetype'); font-weight:500; font-display:swap; }
+
+/* Design systém (tokeny barev a typografie). Kontrast hlídá test/contrast-tokens.test.ts. */
+:root {
+  /* Jen světlý vzhled: tmavý režim zatím neděláme, prohlížeč nemá barvit
+     formuláře a posuvníky tmavě. */
+  color-scheme: light;
+  /* ── barvy značky (manuál, přesné hodnoty – netónovat) ─────────────────── */
+  --brand-graphite:#17202E; --brand-turquoise:#41E39E; --brand-blue:#6ECEFF;
+  --brand-violet:#B790FF; --brand-yellow:#F8E354; --brand-red:#FF848C; --brand-white:#FBFBFB;
+
+  /* ── neutrály ──────────────────────────────────────────────────────────── */
+  --c-navy:#17202E;        /* grafit: aktivní prvek, sekundární tlačítko, tmavé karty */
+  --c-ink:#17202E;         /* text */
+  --c-slate:#5A6472;       /* tichý text */
+  --c-slate-2:#8B94A1;     /* velmi tichý text, ikony; na text jen velký */
+  --c-line:#E5E8ED;        /* hrana karty */
+  --c-line-2:#EFF1F4;      /* dělicí čára uvnitř karty */
+  --c-soft:#F4F5F7;        /* jemná výplň, najetí na řádek */
+  --c-field-line:#7D8693;  /* rámeček vstupu: netextový prvek ≥3:1 (WCAG 1.4.11) */
+  --c-hatch-line:#C9CDD6;  /* obrys šrafovaného sloupce a prázdného místa (dekorace) */
+  --c-ink-2:#39414D;       /* sekundární text na barevných plochách a v kartách */
+
+  /* ── akce: jediný akcent ─────────────────────────────────────────────── */
+  --c-accent:#FF5A5F;      /* koral: jen hlavní tlačítko */
+  --c-accent-2:#EE474C;    /* koral při najetí */
+  --c-accent-soft:#FFECEC;
+  /* coral pro TEXT: samotný --c-accent má na světlém pozadí jen ~3:1 */
+  --c-accent-text:#C8373C;
+  /* fokusový rámeček: netextový prvek, ≥3:1 vůči okolí (WCAG 1.4.11) */
+  --focus-ring:var(--c-accent-2);
+
+  /* ── odvozené tóny značky (docs/PROVOZ.md §4) ─────────────────────
+     Každá barva značky má tři tóny se stejným odstínem (OKLCH, jen jas a sytost):
+       --p-*  plocha: štítky, podklad ikon, řádky (text na ní grafit nebo --t-*)
+       --d-*  datová barva: prstenec, pruh, tečka, čára; ≥ 3 : 1 vůči bílé, text v ní nikdy
+       --t-*  barva textu: ≥ 4,5 : 1 na bílé, na --bg, --c-soft i na vlastní --p-*;
+              bílý text na ní také ≥ 4,5 : 1 (plná značka s bílým písmem)
+     Hlídá test/contrast-tokens.test.ts. */
+  --p-turquoise:#D6FFE8; --d-turquoise:#079D68; --t-turquoise:#037B50;
+  --p-blue:#E7F6FF;      --d-blue:#2E94C3;      --t-blue:#04729C;
+  --p-violet:#F5F1FE;    --d-violet:#9D76E2;    --t-violet:#7C54BD;
+  --p-yellow:#FBF5CA;    --d-yellow:#9B8A08;    --t-yellow:#796B00;
+  --p-red:#FEEFEF;       --d-red:#DB646D;       --t-red:#B5414E;
+  --d-graphite:var(--brand-graphite);  /* tmavá datová barva (aktivní den, tmavá karta) */
+  --d-neutral:#7C8594;   /* fáze bez významu (kvalifikace, odloženo); ≥ 3 : 1 */
+  --d-track:#E4E7EE;     /* prázdná dráha pruhu a prstence */
+
+  /* ── stavy: jen tam, kde nesou význam (= tóny značky podle §4) ─────────── */
+  --c-pos:var(--t-turquoise);  --c-pos-soft:var(--p-turquoise);
+  --c-warn:var(--t-yellow);    --c-warn-soft:var(--p-yellow);
+  --c-neg:var(--t-red);        --c-neg-soft:var(--p-red);
+  --c-info:var(--t-blue);      --c-info-soft:var(--p-blue);
+
+  --c-white:#FBFBFB; --c-pure-white:#FFFFFF;
+  --bg:#F3F4F6;            /* plocha: plochá, bez přechodů – barva patří obsahu */
+  --fg:var(--c-ink); --surface:var(--c-pure-white);
+  --border:var(--c-line); --muted:var(--c-slate);
+  --cta-bg:var(--c-navy); --cta-fg:#FFFFFF;
+
+  /* ── typografie ───────────────────────────────────────────────────────── */
+  --font-heading:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-body:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, system-ui, sans-serif;
+  --font-mono:'Fira Mono', ui-monospace, Menlo, monospace;
+
+  /* ── rozestupy (8 bodů) ───────────────────────────────────────────────── */
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px; --space-6:32px; --space-7:48px;
+
+  /* ── zaoblení (soustředné) ────────────────────────────────────────────── */
+  --radius-xs:8px; --radius-sm:12px; --radius-md:16px; --radius-lg:22px;
+  --radius-btn:var(--radius-sm); --radius-tile:var(--radius-md); --radius-card:var(--radius-lg);
+
+  /* ── povrchy a stíny ──────────────────────────────────────────────────── */
+  --shadow-1: 0 1px 2px rgba(23,32,46,.04), 0 4px 16px -6px rgba(23,32,46,.07);
+  --shadow-2: 0 2px 4px rgba(23,32,46,.05), 0 14px 32px -10px rgba(23,32,46,.16);
+  --shadow-3: 0 0 0 1px rgba(23,32,46,.06), 0 24px 64px -16px rgba(23,32,46,.34);
+  --shadow-card: var(--shadow-1);
+  --shadow-card-hover: var(--shadow-2);
+
+  /* ── klávesy (web, zjemněné) ────────────────────────────────────── */
+  --key-edge:var(--brand-graphite);
+  --key-hair: inset 0 0 0 1px rgba(23,32,46,.12);
+  --key-travel:4px;        /* číselné klávesy (.keycap) */
+  --tile-travel:3px;       /* dlaždice-odkaz (a.tile) */
+
+  /* ── pohyb ────────────────────────────────────────────────────────────── */
+  --dur-press:120ms; --dur-fast:150ms; --dur-base:220ms;
+  --ease-standard:cubic-bezier(.2,0,0,1);
+  --ease-press:cubic-bezier(.3,.7,.3,1);
+
+  /* staré názvy ploch a datových barev (drží kompatibilitu volání; v novém kódu
+     používej --p-/--d-/--t- podle barvy značky). Oranžová ve značce není:
+     --d-orange je tmavá červená (bílý text na ní ≥ 4,5 : 1). */
+  --p-mint:var(--p-turquoise); --p-sky:var(--p-blue); --p-lav:var(--p-violet);
+  --p-sun:var(--p-yellow); --p-peach:var(--p-red); --p-pink:var(--p-red);
+  --d-green:var(--d-turquoise); --d-amber:var(--d-yellow); --d-orange:var(--t-red); --d-deep:var(--d-graphite);
+}
+
+@layer base {
+  body { background-color:var(--bg); color:var(--fg); font-family:var(--font-body); font-size:14px; line-height:1.5; font-weight:450;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; text-rendering:optimizeLegibility; }
+  ::selection { background:var(--brand-turquoise); color:var(--brand-graphite); }
+  h1 { font-family:var(--font-heading); font-weight:900; line-height:1.05; letter-spacing:-0.02em; color:var(--fg); text-wrap:balance; }
+  h2,h3,h4 { font-family:var(--font-heading); font-weight:700; line-height:1.2; letter-spacing:-0.01em; color:var(--fg); text-wrap:balance; }
+  p { text-wrap:pretty; }
+  a { color:inherit; text-decoration:none; transition:color var(--dur-fast) ease; }
+  /* Najetí na odkaz obarví jen odkaz bez vlastní barvy (nulová specifičnost):
+     navigace, karty a tlačítka si barvu drží, holý odkaz v textu zčervená. */
+  :where(a:hover) { color:var(--c-accent-text); }
+
+  input:not([type="checkbox"]):not([type="radio"]), select, textarea {
+    border:1px solid var(--c-field-line); border-radius:var(--radius-sm); padding:0.5rem 0.75rem; width:100%;
+    min-height:40px; background:var(--surface); color:var(--fg);
+    transition:border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease; }
+  textarea { min-height:88px; }
+  input::placeholder, textarea::placeholder { color:var(--c-slate-2); }
+  input:not([type="checkbox"]):not([type="radio"]):hover, select:hover, textarea:hover { border-color:var(--c-slate); }
+  input:focus, select:focus, textarea:focus { outline:none; border-color:var(--c-navy); box-shadow:0 0 0 3px rgba(23,32,46,.10); }
+  input:disabled, select:disabled, textarea:disabled { background:var(--c-soft); color:var(--c-slate); cursor:not-allowed; }
+  input[type="checkbox"], input[type="radio"] { accent-color:var(--c-navy); }
+
+  /* Fokus jen z klávesnice (:focus-visible). Tvar rámečku sleduje zaoblení
+     prvku (outline respektuje border-radius), proto ho tu nepřepisujeme. */
+  a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+  input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 1px;
+  }
+
+  /* Dotykové cíle: na zařízeních s hrubým ukazatelem (prst) mají ovládací
+     prvky aspoň 44 px na výšku. Na desktopu (myš) se vzhled nemění. */
+  @media (pointer: coarse) {
+    button, select, summary, [role="button"], .btn, .btn-coral, .pill-tab, .seg-item,
+    input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]) {
+      min-height: 44px;
+    }
+    input[type="checkbox"], input[type="radio"] { width: 20px; height: 20px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* ── tlačítka ─────────────────────────────────────────────────────────────
+     primary = koral, jedna na obrazovce; secondary = grafit; outline = obrys;
+     quiet = jen text; danger = nevratná akce. Tvar vždy pilulka. */
+  .btn, .btn-coral { display:inline-flex; align-items:center; justify-content:center; gap:.5rem; min-height:40px;
+    padding:0 1.125rem; border-radius:999px; font-size:14px; font-weight:650; line-height:1.1; white-space:nowrap;
+    text-decoration:none; cursor:pointer; user-select:none;
+    transition: background-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease, color var(--dur-fast) ease, transform var(--dur-press) var(--ease-press); }
+  .btn:active:not(:disabled), .btn-coral:active:not(:disabled) { transform:scale(.97); }
+  .btn:disabled, .btn[aria-disabled="true"], .btn-coral:disabled { opacity:.5; cursor:not-allowed; }
+  .btn-sm { min-height:32px; padding:0 .8rem; font-size:13px; }
+  .btn-lg { min-height:48px; padding:0 1.5rem; font-size:15px; }
+  .btn-icon { width:40px; padding:0; }
+  .btn-primary, .btn-coral { background:var(--c-accent); color:var(--c-navy); }
+  .btn-primary:hover, .btn-coral:hover { background:var(--c-accent-2); color:var(--c-navy); }
+  .btn-secondary { background:var(--c-navy); color:#fff; }
+  .btn-secondary:hover { background:#2A3444; color:#fff; }
+  .btn-outline { background:var(--surface); color:var(--c-ink); box-shadow:inset 0 0 0 1px var(--c-line), 0 1px 2px rgba(23,32,46,.04); }
+  .btn-outline:hover { background:var(--c-soft); color:var(--c-ink); }
+  .btn-quiet { background:transparent; color:var(--c-ink); }
+  .btn-quiet:hover { background:rgba(23,32,46,.06); color:var(--c-ink); }
+  .btn-danger { background:var(--surface); color:var(--c-neg); box-shadow:inset 0 0 0 1px var(--c-neg); }
+  .btn-danger:hover { background:var(--c-neg-soft); color:var(--c-neg); }
+
+  /* ── segmentový přepínač (záložky sekce) ─────────────────────────────── */
+  .seg { display:inline-flex; gap:2px; padding:3px; border-radius:999px; background:rgba(23,32,46,.06); max-width:100%; overflow-x:auto; scrollbar-width:none; }
+  .seg::-webkit-scrollbar { display:none; }
+  .seg-item { display:inline-flex; align-items:center; gap:.4rem; min-height:34px; padding:0 .95rem; border-radius:999px;
+    font-size:13.5px; font-weight:600; color:#39414D; white-space:nowrap; text-decoration:none;
+    transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease, box-shadow var(--dur-fast) ease; }
+  .seg-item:hover { color:var(--c-ink); background:rgba(255,255,255,.6); }
+  /* Aktivní segment: odkaz (aria-current) i přepínač (aria-pressed) vypadají stejně. */
+  .seg-item[aria-current="page"], .seg-item[aria-pressed="true"] { background:var(--surface); color:var(--c-ink); box-shadow:0 1px 2px rgba(23,32,46,.08), 0 2px 8px -2px rgba(23,32,46,.10); }
+  /* dráha se posouvá (overflow), rámeček fokusu proto drží uvnitř jejího odsazení */
+  .seg-item:focus-visible { outline-offset:0; }
+  .seg-count { border-radius:999px; background:rgba(23,32,46,.08); padding:0 .4rem; font-size:11px; font-weight:700; line-height:1.5; }
+
+  /* pilulková záložka / přepínač (Moje × Tým, filtry): klidný obrys, aktivní = grafit */
+  .pill-tab { display:inline-flex; align-items:center; gap:.4rem; min-height:36px; border:1px solid var(--c-line); background:var(--surface);
+    border-radius:999px; padding:0 1rem; font-size:13.5px; font-weight:600; color:#39414D; white-space:nowrap;
+    transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease; }
+  .pill-tab:hover { color:var(--c-ink); background:var(--c-soft); }
+  .pill-tab[aria-current="page"] { background:var(--c-navy); border-color:var(--c-navy); color:#fff; }
+
+  /* ── klávesy (jako na webu, assets/keys.css) ───────────────────────
+     Hrana pod čepičkou = „dá se zmáčknout“. Při najetí se čepička pootevře
+     (poloviční zdvih), při stisku sjede úplně do hrany. Plná barva značky jen
+     u klávesy, jejíž číslo něco říká (.keycap); ostatní dlaždice jsou bílé. */
+  .keycap { position:relative; display:flex; border-radius:var(--radius-lg); color:var(--brand-graphite); text-decoration:none;
+    box-shadow: var(--key-hair), var(--key-travel) var(--key-travel) 0 var(--key-edge);
+    transition: transform var(--dur-press) var(--ease-press), box-shadow var(--dur-press) var(--ease-press); }
+  a.keycap:hover, a.keycap:focus-visible { color:var(--brand-graphite); transform:translate(calc(var(--key-travel) / 2), calc(var(--key-travel) / 2));
+    box-shadow: var(--key-hair), calc(var(--key-travel) / 2) calc(var(--key-travel) / 2) 0 var(--key-edge); }
+  a.keycap:active { color:var(--brand-graphite); transform:translate(var(--key-travel), var(--key-travel)); box-shadow: var(--key-hair), 0 0 0 var(--key-edge); }
+  a.keycap:focus-visible { outline:2px solid var(--brand-graphite); outline-offset:4px; }
+  .keycap .text-muted, .keycap .eyebrow, .keycap small { color:var(--brand-graphite); }
+  .keycap-turquoise{background:var(--brand-turquoise)} .keycap-blue{background:var(--brand-blue)} .keycap-violet{background:var(--brand-violet)}
+  .keycap-yellow{background:var(--brand-yellow)} .keycap-red{background:var(--brand-red)} .keycap-white{background:var(--brand-white)}
+
+  /* ── dlaždice ────────────────────────────────────────────────────────────
+     Barva dlaždice = druh nebo stav věci (docs/PROVOZ.md §4). Samotná
+     třída barvy (bez .tile) je plná výplň – ikony v kroužku, štítky. */
+  .tile-peach{--tile:var(--brand-red); background:var(--tile)}
+  .tile-sky{--tile:var(--brand-blue); background:var(--tile)}
+  .tile-pink{--tile:var(--brand-white); --tile-hair:transparent; background:var(--tile)}
+  .tile-mint{--tile:var(--brand-turquoise); background:var(--tile)}
+  .tile-lav{--tile:var(--brand-violet); background:var(--tile)}
+  .tile-sun{--tile:var(--brand-yellow); background:var(--tile)}
+  /* .tile: bílá čepička, barva jen jako proužek nahoře (jako bílá klávesa webu).
+     Bez hrany – hranu má jen dlaždice, která je sama odkazem. */
+  .tile { position:relative; border-radius:var(--radius-lg); padding:1rem; color:var(--brand-graphite); background:var(--surface);
+    box-shadow: inset 0 4px 0 var(--tile-hair, var(--tile, transparent)), var(--key-hair);
+    transition: transform var(--dur-press) var(--ease-press), box-shadow var(--dur-press) var(--ease-press); }
+  a.tile { margin:0 var(--tile-travel) var(--tile-travel) 0;
+    box-shadow: inset 0 4px 0 var(--tile-hair, var(--tile, transparent)), var(--key-hair), var(--tile-travel) var(--tile-travel) 0 var(--key-edge); }
+  a.tile:hover, a.tile:focus-visible { color:var(--brand-graphite); transform:translate(1.5px,1.5px);
+    box-shadow: inset 0 4px 0 var(--tile-hair, var(--tile, transparent)), var(--key-hair), 1.5px 1.5px 0 var(--key-edge); }
+  a.tile:active { transform:translate(var(--tile-travel),var(--tile-travel));
+    box-shadow: inset 0 4px 0 var(--tile-hair, var(--tile, transparent)), var(--key-hair), 0 0 0 var(--key-edge); }
+  a.tile:focus-visible { outline:2px solid var(--brand-graphite); outline-offset:4px; }
+  /* plná barva, kde je barva hlavním sdělením (jedna na obrazovce) */
+  .tile.tile-solid { background:var(--tile, var(--surface)); box-shadow: var(--key-hair); }
+  .tile-solid .text-muted, .tile-solid .eyebrow, .tile-solid small { color:var(--brand-graphite); }
+  /* drobné čtvercové značky (verze, iniciály výsledků): plná barva, ploché */
+  .tile[class*="!p-0"] { margin:0; background:var(--tile, var(--c-soft)); box-shadow: var(--key-hair); border-radius:var(--radius-sm); }
+
+  /* ── velká čísla a popisky ───────────────────────────────────────────── */
+  .big-num { font-family:var(--font-heading); font-weight:900; letter-spacing:-.03em; line-height:1; font-variant-numeric:tabular-nums; }
+  .eyebrow { font-family:var(--font-mono); font-size:11px; line-height:1.3; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+  kbd, .kbd { display:inline-flex; align-items:center; justify-content:center; min-width:1.5em; height:1.5em; padding:0 .35em;
+    border-radius:6px; background:var(--surface); box-shadow:inset 0 0 0 1px var(--c-line), 0 1px 0 var(--c-line);
+    font-family:var(--font-mono); font-size:11px; line-height:1; color:var(--c-slate); }
+
+  /* ── pruhy ───────────────────────────────────────────────────────────── */
+  .bar { height:12px; border-radius:999px; background:var(--d-track); overflow:hidden; }
+  .bar > i { display:block; height:100%; border-radius:999px; background-color:var(--d-violet); background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.22) 0 2px,transparent 2px 5px); }
+  .bar.violet>i{background-color:var(--d-violet)} .bar.red>i{background-color:var(--d-red)} .bar.blue>i{background-color:var(--d-blue)}
+  .bar.turquoise>i, .bar.green>i{background-color:var(--d-turquoise)} .bar.yellow>i, .bar.amber>i{background-color:var(--d-yellow)}
+  .bar.orange>i{background-color:var(--d-orange)} .bar.navy>i{background-color:var(--c-navy)}
+  .bar.thin { height:8px; }
+  /* šrafované sloupce */
+  .hatch { display:flex; align-items:flex-end; gap:10px; height:140px; }
+  .hatch > i { flex:1; border-radius:16px; border:1px solid var(--c-hatch-line); background:repeating-linear-gradient(135deg,transparent 0 6px,rgba(20,25,34,.28) 6px 7px),#fff; min-height:18px; }
+  .hatch > i.hi { border-color:var(--c-navy); background:repeating-linear-gradient(135deg,transparent 0 6px,rgba(255,255,255,.35) 6px 7px),var(--c-navy); }
+
+  /* ── stavová pilulka s tečkou (stav vždy i slovem) ──────────────────── */
+  .st { display:inline-flex; align-items:center; gap:.4rem; border-radius:999px; padding:.2rem .65rem .2rem .5rem; font-size:12px; font-weight:650; line-height:1.4;
+    color:var(--c-ink); background:var(--surface); box-shadow:inset 0 0 0 1px var(--c-line); white-space:nowrap; }
+  .st::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--d-yellow); flex:none; }
+  .st.done::before{background:var(--d-turquoise)} .st.fail::before{background:var(--d-red)} .st.info::before{background:var(--d-blue)} .st.idle::before{background:var(--d-neutral)}
+
+  /* ── kulaté zaškrtnutí ──────────────────────────────────────────────── */
+  .chk { width:24px; height:24px; border-radius:50%; border:1.5px solid rgba(23,32,46,.30); display:inline-grid; place-items:center; color:transparent; background:var(--surface); flex:none;
+    transition: background-color var(--dur-fast) ease, border-color var(--dur-fast) ease, color var(--dur-fast) ease; }
+  button:hover > .chk:not(.done) { color:rgba(23,32,46,.45); border-color:rgba(23,32,46,.5); }
+  .chk.done { background:var(--c-pos); border-color:var(--c-pos); color:#fff; }
+
+  /* ── tmavá karta s vnořenými pilulkami ──────────────────────────────── */
+  .card-deep { background:var(--d-deep); color:#fff; border-radius:var(--radius-card); }
+  .in-pill { border-radius:999px; padding:.7rem 1rem; display:flex; justify-content:space-between; gap:1rem; font-weight:700; font-size:.875rem; background:rgba(255,255,255,.12); color:#fff; }
+  .in-pill.g { background:var(--brand-turquoise); color:var(--c-navy); } .in-pill.w { background:#fff; color:var(--c-navy); }
+
+  /* ── plovoucí vrstvy (paleta, toast) ────────────────────────────────── */
+  @keyframes float-in { from { opacity:0; transform:translateY(8px) scale(.98); } to { opacity:1; transform:none; } }
+  @keyframes fade-in { from { opacity:0; } to { opacity:1; } }
+  .float-in { animation: float-in var(--dur-base) var(--ease-standard) both; }
+  .fade-in { animation: fade-in var(--dur-base) var(--ease-standard) both; }
+}
+
+/* Formulář kontaktu (components/ContactForm.tsx): pole „Odkud / proč"
+   jen se zaškrtnutým „Nesouhlasí s oslovením" (0087) — bez stavu v Reactu. */
+.optout-group:not(:has(.optout-toggle:checked)) .optout-reason { display: none; }
