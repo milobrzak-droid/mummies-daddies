@@ -95,7 +95,7 @@ plán Pro, v *Database → Backups* je vidět denní záloha.
 
 ## 3. Založení databáze od nuly [Enter]
 
-Migrace jsou v `supabase/migrations/` (0001–0108, záměrné mezery 0076, 0077,
+Migrace jsou v `supabase/migrations/` (0001–0110, záměrné mezery 0076, 0077,
 0097). Spouští je vždy běhač `scripts/migrate.mjs` (každá migrace ve vlastní
 transakci, evidence v `schema_migration`).
 
@@ -117,7 +117,7 @@ tabulkách, uzly `obchod/eventy/vedeni` a enum obchodních linek proti
 
 ```bash
 node scripts/migrate.mjs --target=staging            # plán, nic nemění
-node scripts/migrate.mjs --target=staging --apply    # založí 0001–0108
+node scripts/migrate.mjs --target=staging --apply    # založí 0001–0110
 node scripts/db-bootstrap.mjs --target=staging --seed # ukázková data + kontrola
 ```
 
