@@ -57,6 +57,7 @@ const CLASSES: { match: (route: string) => boolean; label: string; guard: Guard;
   { label: '/api/ms/notifications', match: (r) => r === 'app/api/ms/notifications/route.ts', guard: MS_WEBHOOK, publicInProxy: true },
   { label: '/api/oauth/register', match: (r) => r === 'app/api/oauth/register/route.ts', guard: OPEN('DCR, redirect_uri jen z allowlistu, limit registrací'), publicInProxy: true },
   { label: '/api/oauth/token', match: (r) => r === 'app/api/oauth/token/route.ts', guard: OPEN('výměna kódu/refresh tokenu, ověřuje PKCE a hash'), publicInProxy: true },
+  { label: '/api/health', match: (r) => r === 'app/api/health/route.ts', guard: OPEN('uptime monitor bez session; veřejně jen stav, detail za HEALTH_TOKEN'), publicInProxy: true },
   { label: '/api/csp-report', match: (r) => r === 'app/api/csp-report/route.ts', guard: OPEN('prohlížeč posílá CSP hlášení bez session, jen se loguje'), publicInProxy: true },
   // Za přihlášením: proxy + brána v handleru (interní role, AAL2).
   { label: '/api/ares', match: (r) => r === 'app/api/ares/route.ts', guard: SESSION, publicInProxy: false },

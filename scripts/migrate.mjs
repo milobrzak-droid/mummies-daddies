@@ -24,7 +24,7 @@
 // PŘIPOJENÍ — připojovací řetězec Postgresu (Supabase → Connect → Session
 // pooler), jen z proměnné prostředí, nikdy z argumentu:
 //   staging:  STAGING_DB_URL
-//   produkce: SUPABASE_DB_URL   (tentýž secret, který používá noční záloha)
+//   produkce: SUPABASE_DB_URL   (GitHub secret prostředí production)
 // Lokálně se čte i .env.local; proměnné prostředí mají přednost.
 //
 // TLS — certifikát serveru se ověřuje včetně jména hostu (verify-full).
@@ -35,7 +35,7 @@
 // (šifruje, ale neověřuje; vypíše varování).
 //
 // Proč přímé spojení a ne Management API (předchozí verze): DB URL už
-// v GitHubu jako secret je (zálohy), kdežto management token dosahuje na
+// v GitHubu jako secret je, kdežto management token dosahuje na
 // všechny projekty účtu a plán ho doporučuje revokovat (ROZHODNUTI.md 1.3).
 // Přímé spojení navíc dává skutečnou transakci s kontrolou uvnitř.
 //
