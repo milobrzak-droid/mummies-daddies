@@ -1,7 +1,8 @@
 import { PDFDocument } from 'pdf-lib'
 import { describe, expect, test } from 'vitest'
 import { COMPANY } from '@/config'
-import { evaluateStandardOffer, type OfferQuote } from '@/core/standardOffer'
+import { evaluateStandardOffer, parseVatBreakdown, vatBreakdownLine, type OfferQuote } from '@/core/standardOffer'
+import { scopeText } from '@/domain/crm/inquiryAgent'
 import {
   czDay, formatMoney, offerDisclaimer, offerDocumentFromQuote, offerFooterText, offerPdfFileName, renderOfferDocumentPdf,
   renderOfferPdf, unitLabel,
@@ -103,5 +104,68 @@ describe('dokument nabídky z verze nabídky obchodu', () => {
   test('nahrazenou a odmítnutou verzi zákazníkovi netiskneme', () => {
     expect(['draft', 'sent', 'accepted', 'rejected', 'superseded'].filter((s) => canPrintScopeVersion({ status: s as never })))
       .toEqual(['draft', 'sent', 'accepted'])
+  })
+})
+
+// Revize integrace: nabídka s víc sazbami DPH (jídlo 12 %, doprava 21 %).
+// PDF dřív tisklo vážený průměr („DPH 13 %") a PDF verze nabídky od agenta
+// počítalo vše jednou sazbou — celkem s DPH pak nesedělo na e-mail.
+describe('víc sazeb DPH', () => {
+  function mixedQuote(): OfferQuote {
+    const r = evaluateStandardOffer(COMPANY.capabilities.standardOffer, {
+      segment: 'b2b', eventType: 'obed', eventDate: '2026-12-10', guests: 30, distanceKm: 60, extras: [], dietary: [],
+    }, '2026-11-05')
+    const q = r.kind === 'standard' ? r.quote : r.kind === 'escalate' ? r.draft : null
+    if (!q) throw new Error(JSON.stringify(r))
+    return q
+  }
+
+  test('nabídka z mapy má opravdu dvě sazby (předpoklad testu)', () => {
+    expect(mixedQuote().vatBreakdown.map((b) => b.rate)).toEqual([0.12, 0.21])
+  })
+
+  test('PDF z OfferQuote: rozpis po sazbách, žádná průměrná sazba', () => {
+    const q = mixedQuote()
+    const d = offerDocumentFromQuote(q)
+    expect(d.vatRate).toBeNull()
+    expect(d.vatBreakdown).toEqual(q.vatBreakdown)
+    expect(d.vat).toBe(q.vat)
+    expect(d.total).toBe(q.total)
+  })
+
+  test('PDF verze nabídky od agenta: DPH a celkem stejně jako e-mail', () => {
+    const q = mixedQuote()
+    const v: ScopeVersionForPdf = {
+      id: 56, deal_id: 13, version: 1, scope: scopeText(q), amount_one_time: String(q.subtotal), expected_mrr: '0',
+      currency: 'CZK', status: 'draft', sent_at: null, created_at: '2026-11-05T09:00:00Z',
+      deal: { id: 13, title: 'Oběd — Alfa', account: { id: 3, name: 'Alfa s.r.o.' }, primary_contact: null },
+    }
+    const d = offerDocumentFromScopeVersion(v, { today: '2026-11-05' })
+    expect(d.vat).toBe(q.vat)
+    expect(d.total).toBe(q.total)
+    expect(d.vatBreakdown).toEqual(q.vatBreakdown)
+    expect(d.vatRate).toBeNull()
+  })
+
+  test('ručně změněná částka verze (rozpis nesedí) = jedna sazba mapy', () => {
+    const q = mixedQuote()
+    const v: ScopeVersionForPdf = {
+      id: 57, deal_id: 13, version: 2, scope: scopeText(q), amount_one_time: String(q.subtotal + 1000), expected_mrr: '0',
+      currency: 'CZK', status: 'draft', sent_at: null, created_at: '2026-11-05T09:00:00Z', deal: null,
+    }
+    const d = offerDocumentFromScopeVersion(v, { today: '2026-11-05', vatRate: 0.12 })
+    expect(d.vat).toBe(Math.round((q.subtotal + 1000) * 0.12))
+    expect(d.vatBreakdown).toBeNull()
+  })
+
+  test('formát řádku DPH jde přečíst zpět', () => {
+    const b = [{ rate: 0.12, base: 49000, vat: 5880 }, { rate: 0.21, base: 1120, vat: 235 }]
+    expect(parseVatBreakdown(b.map(vatBreakdownLine).join('\n'))).toEqual(b)
+    expect(parseVatBreakdown('Bez rozpisu')).toBeNull()
+  })
+
+  test('PDF s rozpisem se vykreslí', async () => {
+    const pdf = await PDFDocument.load(await renderOfferPdf(mixedQuote()))
+    expect(pdf.getPageCount()).toBe(1)
   })
 })

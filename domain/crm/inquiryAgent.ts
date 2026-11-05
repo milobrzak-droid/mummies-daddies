@@ -20,7 +20,7 @@ import { composeReplyText } from '@/core/agents/inquiryReply'
 import type { OutboxEnqueue, OutboxMode } from '@/core/agents/outboxPort'
 import type { CaseProposalOutput, ProposalDraft } from '@/core/agents/template'
 import type { EvidenceRef } from '@/core/informationState'
-import { formatCzk, type MissingField, type OfferQuote, type OfferResult } from '@/core/standardOffer'
+import { formatCzk, vatBreakdownLine, type MissingField, type OfferQuote, type OfferResult } from '@/core/standardOffer'
 import { addBusinessDays, companyNameFromDomain, INTAKE_FREEMAIL, inDomainSet } from './autoIntake'
 
 export const INQUIRY_AGENT_ACTOR = 'inquiry_agent'
@@ -234,6 +234,9 @@ export function scopeText(q: OfferQuote): string {
   return [
     `${q.eventTypeLabel} — ${czDay(q.eventDate)}, ${q.guests} hostů, balíček ${q.package.label}`,
     ...q.lines.map((l) => `- ${l.label}: ${formatCzk(l.total)}`),
+    // Rozpis DPH po sazbách: z něj PDF verze nabídky (domain/crm/offerPdfSource.ts)
+    // spočítá stejnou DPH jako e-mail (jinak by počítalo jednou sazbou).
+    ...q.vatBreakdown.map(vatBreakdownLine),
     `Celkem bez DPH ${formatCzk(q.subtotal)}, s DPH ${formatCzk(q.total)}`,
     `Verze cenové mapy: ${q.mapVersion}`,
   ].join('\n').slice(0, 4000)

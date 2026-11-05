@@ -52,6 +52,11 @@ export type OfferPdfDocument = {
   vat: number
   /** Sazba DPH 0–1; null = neuvádět sazbu. */
   vatRate: number | null
+  /**
+   * DPH po sazbách (jídlo 12 %, doprava 21 % …). Je-li uvedený, tiskne se
+   * řádek za každou sazbu místo jedné sazby; součet `vat` = `vat`.
+   */
+  vatBreakdown?: readonly { rate: number; base: number; vat: number }[] | null
   total: number
   currency: OfferCurrency
 }
@@ -98,7 +103,13 @@ export function offerDocumentFromQuote(
 ): OfferPdfDocument {
   // Sazba se odvodí z čísel nabídky (DPH = round(základ × sazba)), ne z mapy firmy,
   // která se mezitím mohla změnit.
-  const vatRate = opts.vatRate ?? (quote.subtotal > 0 ? Math.round((quote.vat / quote.subtotal) * 100) / 100 : null)
+  // Víc sazeb (jídlo 12 %, doprava 21 %): vážený průměr by na PDF ukázal
+  // neexistující sazbu (např. „DPH 13 %") — tiskne se rozpis po sazbách.
+  const breakdown = quote.vatBreakdown ?? []
+  const vatRate = opts.vatRate !== undefined ? opts.vatRate
+    : breakdown.length > 1 ? null
+      : breakdown.length === 1 ? breakdown[0].rate
+        : quote.subtotal > 0 ? Math.round((quote.vat / quote.subtotal) * 100) / 100 : null
   return {
     title: 'Nabídka cateringu',
     subtitle: `${quote.eventTypeLabel} · ${czDay(quote.eventDate)} · ${quote.guests} ${GUESTS(quote.guests)}`,
@@ -122,6 +133,7 @@ export function offerDocumentFromQuote(
     subtotal: quote.subtotal,
     vat: quote.vat,
     vatRate,
+    vatBreakdown: breakdown.length > 1 ? breakdown : null,
     total: quote.total,
     currency: quote.currency,
   }
@@ -288,13 +300,20 @@ function drawLines(f: Flow, doc: OfferPdfDocument): void {
   f.y -= 10
 }
 
+/** Sazba v procentech pro tisk (0,12 → „12", 0,105 → „10,5"). */
+function vatPercent(rate: number): string {
+  return String(Math.round(rate * 1000) / 10).replace('.', ',')
+}
+
 function drawTotals(f: Flow, doc: OfferPdfDocument): void {
   ensure(f, 70)
   const right = f.width - M
   const labelX = right - 230
   const rows: [string, string, boolean][] = [
     ['Celkem bez DPH', formatMoney(doc.subtotal, doc.currency), false],
-    [doc.vatRate != null ? `DPH ${Math.round(doc.vatRate * 100)} %` : 'DPH', formatMoney(doc.vat, doc.currency), false],
+    ...(doc.vatBreakdown?.length
+      ? doc.vatBreakdown.map((b): [string, string, boolean] => [`DPH ${vatPercent(b.rate)} % ze ${formatMoney(b.base, doc.currency)}`, formatMoney(b.vat, doc.currency), false])
+      : [[doc.vatRate != null ? `DPH ${vatPercent(doc.vatRate)} %` : 'DPH', formatMoney(doc.vat, doc.currency), false] as [string, string, boolean]]),
     ['Celkem s DPH', formatMoney(doc.total, doc.currency), true],
   ]
   for (const [label, value, strong] of rows) {

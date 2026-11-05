@@ -366,6 +366,28 @@ const czkDec = new Intl.NumberFormat('cs-CZ', { minimumFractionDigits: 0, maximu
 const formatCzkDec = (n: number) => `${czkDec.format(Math.round(n * 100) / 100)} Kč`
 const pct = (rate: number) => `${czk.format(Math.round(rate * 1000) / 10)} %`
 
+/** Řádek DPH jedné sazby („DPH 12 % ze základu 49 000 Kč: 5 880 Kč") — e-mail i text verze nabídky. */
+export const vatBreakdownLine = (b: VatBreakdown) => `DPH ${pct(b.rate)} ze základu ${formatCzk(b.base)}: ${formatCzk(b.vat)}`
+
+const VAT_LINE_RE = /^[-\s]*DPH (\d{1,2}(?:,\d)?) % ze základu ([\d\s\u00a0]+) Kč: ([\d\s\u00a0]+) Kč\s*$/gmu
+const czkNumber = (s: string) => Number(s.replace(/[\s\u00a0]/g, ''))
+
+/**
+ * Rozpis DPH zpět z textu (řádky vatBreakdownLine), např. z verze nabídky,
+ * kterou zapsal agent. Bez řádků nebo s nečitelným číslem = null.
+ */
+export function parseVatBreakdown(text: string | null | undefined): VatBreakdown[] | null {
+  const out: VatBreakdown[] = []
+  for (const m of (text ?? '').matchAll(VAT_LINE_RE)) {
+    const rate = Number(m[1].replace(',', '.')) / 100
+    const base = czkNumber(m[2])
+    const vat = czkNumber(m[3])
+    if (!Number.isFinite(rate) || !Number.isFinite(base) || !Number.isFinite(vat)) return null
+    out.push({ rate, base, vat })
+  }
+  return out.length ? out : null
+}
+
 /**
  * Oslovení zákazníka: jméno z e-mailu nebo formuláře je nedůvěryhodný vstup.
  * Projde jen písmena (i s diakritikou), mezera, tečka, pomlčka a apostrof,
@@ -396,7 +418,7 @@ export function renderOfferEmail(
       ? `- ${l.label} (${l.quantity} %): ${total}`
       : `- ${l.label}: ${czk.format(l.quantity)} ${l.unit} × ${gross ? formatCzkDec(l.unitPrice * k) : formatCzk(l.unitPrice)} = ${total}`
   })
-  const vatRows = quote.vatBreakdown.map((b) => `DPH ${pct(b.rate)} ze základu ${formatCzk(b.base)}: ${formatCzk(b.vat)}`)
+  const vatRows = quote.vatBreakdown.map(vatBreakdownLine)
   const totals = gross
     ? [`Celkem včetně DPH: ${formatCzk(quote.total)}`, 'z toho:', ...vatRows.map((r) => `- ${r}`), `Cena bez DPH: ${formatCzk(quote.subtotal)}`]
     : [`Celkem bez DPH: ${formatCzk(quote.subtotal)}`, ...vatRows, `Celkem s DPH: ${formatCzk(quote.total)}`]

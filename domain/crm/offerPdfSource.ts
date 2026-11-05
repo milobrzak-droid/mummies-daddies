@@ -6,6 +6,7 @@
 import { COMPANY } from '@/config'
 import { addDaysToPragueDay, pragueDayOf } from '@/lib/pragueDate'
 import type { OfferPdfDocument } from '@/core/offerPdf'
+import { parseVatBreakdown } from '@/core/standardOffer'
 import { formatCzkText } from '@/lib/export/table'
 import type { ScopeVersionRow } from '@/domain/crm/scopeVersion'
 
@@ -40,7 +41,14 @@ export function offerDocumentFromScopeVersion(
   const recurring = mrr > 0
     ? `Pravidelná dodávka: ${currency === 'EUR' ? `${mrr.toFixed(2).replace('.', ',')} EUR` : formatCzkText(mrr)} měsíčně bez DPH (není součástí ceny výše).`
     : null
-  const vat = currency === 'CZK' ? Math.round(amount * vatRate) : Math.round(amount * vatRate * 100) / 100
+  // Verze od agenta poptávek nese v textu rozpis DPH po sazbách (stejný jako
+  // e-mail s nabídkou). Sedí-li jeho základy na částku verze, tiskne se on —
+  // jinak by PDF počítalo vše jednou sazbou a celkem s DPH by nesedělo na
+  // e-mail (např. doprava 21 % místo 12 %). Ručně změněná částka = jedna sazba.
+  const parsed = currency === 'CZK' ? parseVatBreakdown(v.scope) : null
+  const breakdown = parsed && parsed.reduce((s, b) => s + b.base, 0) === amount ? parsed : null
+  const vat = breakdown ? breakdown.reduce((s, b) => s + b.vat, 0)
+    : currency === 'CZK' ? Math.round(amount * vatRate) : Math.round(amount * vatRate * 100) / 100
   return {
     title: 'Nabídka',
     subtitle: [v.deal?.title, `verze ${v.version}`].filter(Boolean).join(' · '),
@@ -62,7 +70,8 @@ export function offerDocumentFromScopeVersion(
     lines,
     subtotal: amount,
     vat,
-    vatRate,
+    vatRate: breakdown && breakdown.length > 1 ? null : breakdown ? breakdown[0].rate : vatRate,
+    vatBreakdown: breakdown && breakdown.length > 1 ? breakdown : null,
     total: amount + vat,
     currency,
   }
