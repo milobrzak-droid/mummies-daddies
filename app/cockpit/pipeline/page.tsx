@@ -11,12 +11,9 @@ import { getSalesDeals } from '@/domain/crm/queries/sales'
 import { listTeamMembers } from '@/lib/queries/team'
 import { clientOwnerContext, loadOwnerChangeContext } from '@/lib/queries/ownerChange'
 import { buildSalesDashboard, OPEN_DEAL_STAGES, weightedValue } from '@/domain/crm/sales'
-import type { DealStage } from '@/lib/types'
-import { DEAL_STAGES, isDealKind } from '@/lib/domain'
 import { checkDealInvariant } from '@/domain/crm/dealInvariant'
-
-// Uzavřené fáze odvozené z DEAL_STAGES (open: false), v pořadí definice.
-const CLOSED_DEAL_STAGES: DealStage[] = DEAL_STAGES.filter((s) => !s.open).map((s) => s.key)
+import { filterPipelineDeals, parsePipelineParams, pipelineStages } from '@/domain/crm/pipelineFilter'
+import { ExportButtons } from '@/components/ExportButtons'
 import { canCurrentUserSeeSales } from '@/lib/queries/access'
 import { redirect } from 'next/navigation'
 import { pragueToday, PRAGUE_TZ } from '@/lib/pragueDate'
@@ -40,32 +37,13 @@ export default async function PipelinePage({
     // Kdo smí měnit vlastníka obchodu a koho jde vybrat (0093).
     loadOwnerChangeContext(),
   ])
-  const q = (params.q ?? '').trim().toLowerCase()
-  const owner = params.owner ?? 'all'
-  const allowedStates: string[] = ['open', 'all', ...CLOSED_DEAL_STAGES]
-  const state = allowedStates.includes(params.state ?? 'open')
-    ? (params.state ?? 'open')
-    : 'open'
-  // Typ obchodu (0052): workshop a implementace jsou oddělené obchody.
-  // 'none' = zatím neroztříděné (inventura); před nasazením 0052 jsou takové
-  // všechny (sloupec chybí).
-  const kind = params.kind === 'none' || isDealKind(params.kind) ? params.kind : 'all'
-  const scopedDeals = allDeals.filter((deal) => {
-    if (owner !== 'all' && deal.owner_id !== owner) return false
-    if (kind === 'none' && deal.deal_kind != null) return false
-    if (kind !== 'all' && kind !== 'none' && deal.deal_kind !== kind) return false
-    if (q && !`${deal.title} ${deal.account?.name ?? ''} ${deal.primary_contact?.full_name ?? ''}`.toLowerCase().includes(q)) return false
-    if (state === 'open') return OPEN_DEAL_STAGES.includes(deal.stage)
-    if (state === 'all') return true
-    return deal.stage === state
-  })
+  // Filtry stejné jako export (domain/crm/pipelineFilter.ts).
+  const filters = parsePipelineParams(params)
+  const { owner, state, kind } = filters
+  const scopedDeals = filterPipelineDeals(allDeals, filters)
   const open = allDeals.filter((deal) => OPEN_DEAL_STAGES.includes(deal.stage))
   const today = pragueToday()
-  const stages: DealStage[] = state === 'open'
-    ? OPEN_DEAL_STAGES
-    : state === 'all'
-      ? [...OPEN_DEAL_STAGES, ...CLOSED_DEAL_STAGES]
-      : [state as DealStage]
+  const stages = pipelineStages(state)
 
   const dashboard = buildSalesDashboard(allDeals, [], members)
   const openTotal = open.reduce((sum, deal) => sum + Number(deal.amount_one_time ?? 0), 0)
@@ -84,6 +62,7 @@ export default async function PipelinePage({
   return (
     <>
       <PageHeader title="Obchody" eyebrow="Přehled prodeje" subtitle={subtitle}>
+        <ExportButtons prehled="pipeline" params={{ q: params.q, owner, state, kind }} />
         <ButtonLink href="/cockpit/import/zakazky" variant="outline">Import zakázek</ButtonLink>
         <ButtonLink href="/cockpit/inventura" variant="outline">Inventura obchodů</ButtonLink>
         <ButtonLink href="/cockpit/pipeline/new" variant="primary">Založit obchod</ButtonLink>

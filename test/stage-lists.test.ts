@@ -46,7 +46,11 @@ describe('open deal stages — one source of truth', () => {
 
 describe('pipeline/clients pages — derived stage sets', () => {
   it('pipeline page has no hardcoded closed list and derives it from DEAL_STAGES', () => {
-    const code = src('app/cockpit/pipeline/page.tsx')
+    // Filtry tabule žijí od P9 v domain/crm/pipelineFilter.ts (sdílí je stránka i export).
+    const page = src('app/cockpit/pipeline/page.tsx')
+    expect(page).not.toMatch(/'vyhráno',\s*'prohráno'/)
+    expect(page).toContain("from '@/domain/crm/pipelineFilter'")
+    const code = src('domain/crm/pipelineFilter.ts')
     expect(code).not.toMatch(/'vyhráno',\s*'prohráno'/)
     expect(code).toContain('DEAL_STAGES.filter((s) => !s.open)')
   })

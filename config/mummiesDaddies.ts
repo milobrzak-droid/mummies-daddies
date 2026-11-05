@@ -450,6 +450,19 @@ export const MUMMIES_DADDIES = {
     tagline: 'Catering, eventy a cheesecaky s rodinnou péčí',
   },
 
+  // Fakturační údaje do PDF nabídky pro zákazníka (P9). Kontakt stejný jako
+  // v podpisu standardní nabídky. OVĚŘIT PSČ provozovny.
+  legalEntity: {
+    name: 'Mummies and Daddies s.r.o.',
+    street: 'Varšavská 715',
+    city: '120 00 Praha 2',
+    ico: '17957524',
+    dic: 'CZ17957524',
+    email: 'info@mummiesdaddies.com',
+    phone: '+420 737 818 694',
+    web: 'www.mummiesdaddies.com',
+  },
+
   // Klíče MUSÍ sedět s enumem revenue_line v 0001_base_schema.sql.
   revenueLines: [
     { key: 'catering_firemni', label: 'Firemní catering a akce', category: 'one_time' },

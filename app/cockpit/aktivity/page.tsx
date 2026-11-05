@@ -4,6 +4,7 @@ import { PageHeader } from '@/components/PageHeader'
 import { SectionTabs, WORK_TABS } from '@/components/SectionTabs'
 import { WorkKpiStrip } from '@/components/WorkUi'
 import { buttonClass } from '@/components/ui/Button'
+import { ExportButtons } from '@/components/ExportButtons'
 import { createSalesActivity } from '@/domain/crm/actions/sales'
 import { getAccountOption, getContacts } from '@/domain/crm/queries/accounts'
 import { getSalesActivities, getSalesDeals } from '@/domain/crm/queries/sales'
@@ -48,6 +49,7 @@ export default async function ActivitiesPage({
             : `Za posledních 7 dní ${recentTotal} ${recentTotal === 1 ? 'zápis' : recentTotal < 5 ? 'zápisy' : 'zápisů'}. Zapiš výsledek jednou větou, zbytek jen když ho tým využije.`
         }
       >
+        <ExportButtons prehled="aktivity" label="Stáhnout historii aktivit" />
         <a href="#nova-aktivita" className={buttonClass('primary')}>Zapsat aktivitu</a>
       </PageHeader>
       <SectionTabs tabs={WORK_TABS} label="Práce" />
