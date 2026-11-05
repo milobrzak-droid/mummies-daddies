@@ -11,6 +11,7 @@ import {
   toOfferInquiry,
 } from '@/core/agents/inquiryExtraction'
 import { decideInquiry, type InquiryDeps } from '@/core/agents/inquiryToOffer'
+import { REPLY_SUBJECT_MAX, replySubject } from '@/core/agents/inquiryReply'
 import type { StandardOfferConfig } from '@/core/tenant'
 import { UNTRUSTED_PREAMBLE } from '@/core/untrusted'
 import {
@@ -250,5 +251,42 @@ describe('rozhodnutí agenta', () => {
   test('newsletter → není poptávka', async () => {
     const d = await decideInquiry(mail, ctx, deps(modelJson({ is_catering_inquiry: false })))
     expect(d.kind).toBe('not_inquiry')
+  })
+
+  test('rozhodnutí agenta používá očištěný předmět', async () => {
+    const d = await decideInquiry({ ...mail, subject: 'Raut\nhttps://x.cz/a' }, ctx, deps(modelJson()))
+    expect(d.kind).toBe('send_offer')
+    if (d.kind === 'send_offer') expect(d.email.subject).toBe('Re: Raut [odkaz]')
+  })
+})
+
+describe('předmět odpovědi agenta', () => {
+  test('„Re: “ + předmět zákazníka; opakované předpony se sloučí', () => {
+    expect(replySubject('Poptávka rautu 3. 12.')).toBe('Re: Poptávka rautu 3. 12.')
+    expect(replySubject('RE: Fwd: Odp: Raut pro Alfa Tech s.r.o.')).toBe('Re: Raut pro Alfa Tech s.r.o.')
+    expect(replySubject('')).toBe('Re: Vaše poptávka')
+    expect(replySubject(null)).toBe('Re: Vaše poptávka')
+  })
+
+  test('řídicí a neviditelné znaky pryč (žádný konec řádku do hlavičky)', () => {
+    const s = replySubject('Raut\r\nBcc: utok@x.cz\u0000\u202e\u200b konec')
+    expect(s).not.toMatch(/[\u0000-\u001f\u007f\u200b\u202e]/)
+    expect(s).toBe('Re: Raut Bcc: [odkaz] konec')
+  })
+
+  test('odkazy a adresy se nahradí „[odkaz]“', () => {
+    expect(replySubject('Akce viz https://evil.example/login?x=1 a www.podvod.cz')).toBe('Re: Akce viz [odkaz] a [odkaz]')
+    expect(replySubject('Pište na jan@firma.cz nebo mailto:x@y.cz')).toBe('Re: Pište na [odkaz] nebo [odkaz]')
+    expect(replySubject('Klikněte na vyhra.com/cena hned')).toBe('Re: Klikněte na [odkaz] hned')
+    // Data a časy ani zkratky firem odkazem nejsou.
+    expect(replySubject('Raut 12.30 dne 3.12.2026, Beta a.s.')).toBe('Re: Raut 12.30 dne 3.12.2026, Beta a.s.')
+  })
+
+  test('nejvýš 120 znaků, oříznutí na hranici slova', () => {
+    const s = replySubject('Poptávka '.repeat(40))
+    expect(s.length).toBeLessThanOrEqual(REPLY_SUBJECT_MAX)
+    expect(s.startsWith('Re: Poptávka')).toBe(true)
+    expect(s.endsWith('…')).toBe(true)
+    expect(replySubject('x'.repeat(300)).length).toBe(REPLY_SUBJECT_MAX)
   })
 })
