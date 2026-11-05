@@ -201,11 +201,15 @@ export function cartCount(state: CartState): number {
 
 /** Položky pro kontrakt submitOrder (bez interního id). */
 export function toOrderItems(state: CartState): CartItem[] {
-  return state.lines.map(({ id: _id, ...item }) => ({
-    ...item,
-    inscription: item.inscription?.trim() ? item.inscription.trim() : null,
-    miniFlavors: item.miniFlavors ?? null,
-  }))
+  return state.lines.map((line) => {
+    const item: Omit<CartLine, 'id'> & { id?: string } = { ...line }
+    delete item.id
+    return {
+      ...item,
+      inscription: item.inscription?.trim() ? item.inscription.trim() : null,
+      miniFlavors: item.miniFlavors ?? null,
+    }
+  })
 }
 
 // ── napojení na React (useSyncExternalStore) ────────────────────────────────

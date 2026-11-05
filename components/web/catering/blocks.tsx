@@ -272,7 +272,8 @@ export function aspectFor(photo: Photo | null | undefined, fallback: PhotoAspect
 }
 
 /** Mřížka fotek (galerie, pás mezi sekcemi). Zástupce bez fotky vynechá. */
-export function PhotoGrid({ photos, tone = 'blush', className }: { photos: Photo[]; tone?: SurfaceTone; className?: string }) {
+// `tone` zůstává v typu kvůli volajícím (stejné rozhraní jako ostatní bloky); mřížka ho nepotřebuje.
+export function PhotoGrid({ photos, className }: { photos: Photo[]; tone?: SurfaceTone; className?: string }) {
   const real = photos.filter((p) => !p.placeholder && p.src)
   if (!real.length) return null
   const n = real.length

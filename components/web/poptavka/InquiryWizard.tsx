@@ -163,7 +163,13 @@ export function InquiryWizard({
   function update<K extends keyof InquiryDraft>(key: K, value: InquiryDraft[K]) {
     setDraft((d) => ({ ...d, [key]: value }))
     const field = DRAFT_FIELD[key]
-    if (field && errors[field]) setErrors(({ [field]: _gone, ...rest }) => rest)
+    if (field && errors[field]) {
+      setErrors((prev) => {
+        const rest = { ...prev }
+        delete rest[field]
+        return rest
+      })
+    }
     if (submitError) setSubmitError(null)
   }
 

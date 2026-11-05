@@ -8,10 +8,17 @@ const push = vi.fn()
 vi.mock('next/link', () => ({
   default: ({ href, children, ...rest }: { href: string; children: ReactNode }) => <a href={href} {...rest}>{children}</a>,
 }))
-vi.mock('next/image', () => {
-  const props = ({ src, alt, fill: _f, preload: _p, quality: _q, ...rest }: Record<string, unknown>) => ({ src, alt, srcSet: `${src} 1x`, ...rest })
+vi.mock('next/image', async () => {
+  const { createElement } = await import('react')
+  // Vlastnosti, které zná jen next/image, do <img> nepatří.
+  const props = (p: Record<string, unknown>) => {
+    const rest = { ...p }
+    for (const k of ['fill', 'preload', 'quality']) delete rest[k]
+    return { ...rest, srcSet: `${String(p.src)} 1x` }
+  }
   return {
-    default: (p: Record<string, unknown>) => <img {...(props(p) as object)} />,
+    // createElement: náhrada next/image musí vykreslit holý <img> (alt přichází v props).
+    default: (p: Record<string, unknown>) => createElement('img', props(p)),
     getImageProps: (p: Record<string, unknown>) => ({ props: props(p) }),
   }
 })
