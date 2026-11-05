@@ -6,6 +6,7 @@
 //
 // Vybírají se jen sloupce bez textu zpráv a bez kontaktních údajů.
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { isMissingRelation } from '@/core/loopQueries'
 import { logError } from '@/lib/log'
 import { pragueLocalToUtc, addDaysToPragueDay } from '@/lib/pragueDate'
@@ -71,10 +72,19 @@ export type AgentOverviewContext = {
   db?: Db
   /** Načíst i objednávky cheesecaků (modul shopOrders). */
   withShop?: boolean
+  /**
+   * Volající ověřil, že přihlášený vidí obchod (canSeeSales). Jen pak se čtou
+   * metadata odchozích e-mailů z mail_event — tu od 0069 čte jen service role
+   * (stejně jako loadEmails v queries/changes.ts), pod session by čtení vždy
+   * selhalo. Bere se jen firma, směr a čas, nikdy adresa ani obsah.
+   */
+  canSeeSales?: boolean
 }
 
 export async function loadAgentOverview(ctx: AgentOverviewContext): Promise<AgentOverview> {
   const s = ctx.db ?? await createClient()
+  // Testy podstrčí jednoho klienta pro všechno; jinak mail_event přes service role.
+  const mailDb = ctx.db ?? (ctx.canSeeSales ? createAdminClient() : null)
   const period = periodFor(ctx.today, ctx.days)
   const fromIso = pragueLocalToUtc(`${period.from}T00:00`).toISOString()
   const toIso = pragueLocalToUtc(`${addDaysToPragueDay(period.to, 1)}T00:00`).toISOString()
@@ -92,8 +102,10 @@ export async function loadAgentOverview(ctx: AgentOverviewContext): Promise<Agen
     // Obchody založené NEBO uzavřené v období (trychtýř a výhry/prohry).
     read<AgentDealRow>('deals', s.from('deal').select(DEAL_COLS)
       .or(`created_at.gte.${fromIso},closed_at.gte.${period.from}`).limit(ROW_LIMIT)),
-    read<AgentMailEventRow>('mail', s.from('mail_event').select(MAIL_COLS)
-      .eq('direction', 'outbound').gte('occurred_at', fromIso).not('account_id', 'is', null).limit(ROW_LIMIT * 2)),
+    mailDb
+      ? read<AgentMailEventRow>('mail', mailDb.from('mail_event').select(MAIL_COLS)
+          .eq('direction', 'outbound').gte('occurred_at', fromIso).not('account_id', 'is', null).limit(ROW_LIMIT * 2))
+      : Promise.resolve<Sourced<AgentMailEventRow>>({ rows: [], missing: false, failed: false }),
     ctx.withShop
       ? read<ShopOrderOverviewRow>('shop', s.from('shop_order').select(SHOP_COLS)
           .gte('received_at', fromIso).lt('received_at', toIso).order('received_at', { ascending: false }).limit(ROW_LIMIT))

@@ -92,10 +92,12 @@ export function Sidebar({ name, isAdmin = false, canSeeSales = false }:
   return (
     <>
     <aside aria-label="Navigace aplikace" className="fixed inset-x-0 bottom-0 z-40 flex h-auto w-full shrink-0 flex-col border-t border-border bg-surface/95 px-2 pt-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] shadow-[0_-8px_30px_rgba(20,25,34,.08)] backdrop-blur md:sticky md:top-4 md:m-4 md:mr-0 md:h-[calc(100vh-2rem)] md:w-[236px] md:rounded-card md:border md:border-t-0 md:p-4 md:shadow-card">
-      <div className="mb-5 hidden items-center gap-2.5 px-2 py-3 md:flex">
+      {/* Logo a „Cockpit" pod sebou: vedle sebe se do 236px panelu nevešly
+          a „Cockpit" přetékal přes okraj karty. */}
+      <div className="mb-5 hidden flex-col items-start gap-1.5 px-2 py-3 md:flex">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={BRAND_LOGO} alt={BRAND_ALT} className="h-[22px] w-auto" />
-        <span className="font-body text-sm text-muted border-l border-border pl-2.5 leading-none">Cockpit</span>
+        <img src={BRAND_LOGO} alt={BRAND_ALT} className="h-[22px] w-auto max-w-full" />
+        <span className="font-body text-xs font-semibold uppercase tracking-[0.12em] text-muted leading-none">Cockpit</span>
       </div>
       <button
         type="button"

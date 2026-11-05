@@ -42,7 +42,9 @@ export function QuickAddButton({
       >
         {label}
       </Button>
-      <p role="status" aria-live="polite" className="mt-3 min-h-0 font-copy text-small text-cocoa">
+      {/* Prázdný stav bez okraje: jinak by mt-3 posunul tlačítko nad šipkou karty
+          a obě by neseděla na jedné lince. */}
+      <p role="status" aria-live="polite" className="mt-3 min-h-0 font-copy text-small text-cocoa empty:mt-0">
         {done ? (
           <>
             <span className="font-semibold">{added}</span>{' '}

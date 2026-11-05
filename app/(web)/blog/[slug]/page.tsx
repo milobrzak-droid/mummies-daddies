@@ -4,7 +4,10 @@ import { BlogArticlePage, blogArticleMetadata, blogStaticParams } from '@/compon
 import { blogArticle } from '@/lib/web/duvera/blog'
 
 /** /blog/<slug>: článek podle šablony copy (/blog/[slug]). Neznámý slug → 404. */
-export const dynamicParams = false
+// Bez `dynamicParams = false`: v Next 16 se s ním předgenerované stránky
+// vyrenderovaly přes sourozenecký catch-all app/(web)/[...nenalezeno] a všechny
+// odpovídaly 404 (odkazy z úvodu a /catering/svatby vedly do prázdna, prefetch
+// RSC se točil v přesměrování). Neznámý slug dál končí notFound() níže.
 
 export function generateStaticParams() {
   return blogStaticParams()

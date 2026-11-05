@@ -430,13 +430,16 @@ function DealCard({
         </button>
       )}
 
-      <div className="flex items-center gap-2">
-        <Link href={`/cockpit/aktivity?account=${deal.account_id}&deal=${deal.id}`} className={buttonClass('outline', 'sm', 'min-w-0 flex-1')}>
+      {/* V úzkém sloupci tabule (4 sloupce od xl) se tlačítko a výběr fáze
+          nevejdou vedle sebe — zalomí se pod sebe na celou šířku karty
+          místo přetečení textu tlačítka přes okraj. */}
+      <div className="flex flex-wrap items-center gap-2">
+        <Link href={`/cockpit/aktivity?account=${deal.account_id}&deal=${deal.id}`} className={buttonClass('outline', 'sm', 'flex-1 basis-[8.5rem]')}>
           Zapsat aktivitu
         </Link>
         <select
           aria-label={`Fáze obchodu ${deal.title}`}
-          className="!w-auto max-w-[140px] !rounded-full text-footnote"
+          className="min-w-0 flex-1 basis-[8.5rem] !rounded-full text-footnote"
           value={deal.stage}
           disabled={saving}
           onChange={(event) => onStage(event.target.value as DealStage)}

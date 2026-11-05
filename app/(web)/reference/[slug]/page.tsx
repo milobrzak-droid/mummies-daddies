@@ -9,7 +9,10 @@ import { referenceCase } from '@/lib/web/duvera/references'
  * „Poptat podobnou“ s parametrem vzor). Jen tři studie ze strategie, jiné slugy → 404.
  * Studie bez souhlasu klienta s publikací ([DOPLNÍ KLIENT: souhlas …]) má noindex.
  */
-export const dynamicParams = false
+// Bez `dynamicParams = false`: v Next 16 se s ním předgenerované stránky
+// vyrenderovaly přes sourozenecký catch-all app/(web)/[...nenalezeno] a všechny
+// odpovídaly 404 (odkazy z úvodu a /catering/svatby vedly do prázdna, prefetch
+// RSC se točil v přesměrování). Neznámý slug dál končí notFound() níže.
 
 export function generateStaticParams() {
   return referenceStaticParams()

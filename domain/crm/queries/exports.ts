@@ -117,7 +117,7 @@ export async function loadExportDocument(prehled: ExportPrehled, raw: Raw, viewe
     case 'agent': {
       // Stejná data jako stránka /cockpit/agent (RLS přihlášeného, bez textů e-mailů a kontaktů).
       const days = parsePeriod(raw.obdobi)
-      const o = await loadAgentOverview({ today: pragueToday(now), days })
+      const o = await loadAgentOverview({ today: pragueToday(now), days, canSeeSales: viewer.canSeeSales })
       const attention = o.attention.map((a) => ({ id: a.id, kind: a.kind, status: a.status, stopReason: a.stopReason, day: a.day }))
       const filters = agentFilters(days)
       if (o.unavailable.length) filters.push({ label: 'Nenačteno', value: o.unavailable.join(', ') })

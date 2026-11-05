@@ -170,7 +170,8 @@ describe('/reference', () => {
 describe.each(REFERENCE_CASES.map((c) => [c.slug, c] as const))('/reference/%s', (slug, c) => {
   it('statické parametry a 404 pro neznámý slug', async () => {
     expect(ReferenceSlugRoute.generateStaticParams()).toContainEqual({ slug })
-    expect(ReferenceSlugRoute.dynamicParams).toBe(false)
+    // dynamicParams=false v Next 16 shodil i předgenerované slugy na 404 (catch-all webu).
+    expect((ReferenceSlugRoute as { dynamicParams?: boolean }).dynamicParams).toBeUndefined()
     await expect(ReferenceSlugRoute.default({ params: Promise.resolve({ slug: 'neexistuje' }) })).rejects.toThrow()
   })
 

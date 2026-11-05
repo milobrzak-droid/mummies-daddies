@@ -32,7 +32,7 @@ export default async function AgentPage({ searchParams }: { searchParams: Promis
   const days = parsePeriod((await searchParams).obdobi)
   const today = pragueToday()
   const withShop = isModuleOn(COMPANY.modules, 'shopOrders')
-  const o = await loadAgentOverview({ today, days, withShop })
+  const o = await loadAgentOverview({ today, days, withShop, canSeeSales: true })
   const { kpi } = o
 
   return (

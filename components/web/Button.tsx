@@ -14,8 +14,10 @@ import { cx } from './cx'
 export type ButtonVariant = 'primary' | 'white' | 'outline' | 'ghost'
 export type ButtonSize = 'sm' | 'md' | 'lg'
 
+// Na mobilu se dlouhé CTA („Nabídka pro firmu do 1 pracovního dne“) zalomí; text-center
+// a balance drží oba řádky vystředěné a podobně dlouhé, ne zarovnané doleva s osamoceným slovem.
 const BASE =
-  'inline-flex max-w-full items-center justify-center gap-2 whitespace-nowrap max-sm:whitespace-normal max-sm:py-2 rounded-pill font-copy font-semibold tracking-[0.01em] ' +
+  'inline-flex max-w-full items-center justify-center gap-2 whitespace-nowrap max-sm:whitespace-normal max-sm:py-2 text-center [text-wrap:balance] rounded-pill font-copy font-semibold tracking-[0.01em] ' +
   'transition-[background-color,color,box-shadow,transform] duration-quick ease-md-out motion-safe:active:scale-[0.98] ' +
   'disabled:cursor-not-allowed disabled:opacity-60'
 
