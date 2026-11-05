@@ -227,6 +227,33 @@ export function safeEventTitle(title: string | null | undefined): string | null 
   return t ? t.slice(0, 120) : null
 }
 
+/** Typy akcí ze schválené mapy nabídek (jediné názvy akce, které smí do textu zákazníkovi). */
+const PRICE_MAP_EVENT_LABELS: readonly string[] = (COMPANY.capabilities.standardOffer?.priceMap.segments ?? [])
+  .flatMap((s) => s.eventTypes.map((e) => e.label))
+
+/** Neutrální název akce, když z obchodu nejde poznat typ akce z mapy. */
+export const GENERIC_EVENT_LABEL = 'vaši akci'
+
+/**
+ * Název akce do připomínky ({akce}). Název obchodu je INTERNÍ údaj CRM
+ * (poznámky obchodu, „sleva kvůli konkurenci" …) a u obchodu od agenta
+ * poptávek nese jméno firmy nebo osoby z e-mailu / formuláře, tedy
+ * nedůvěryhodný text („Typ akce — Kdo, datum"). Zákazníkovi proto smí odejít
+ * jen typ akce ze schválené mapy (začátek názvu před „ — "), jinak neutrální
+ * „vaši akci".
+ */
+export function customerEventLabel(
+  title: string | null | undefined,
+  labels: readonly string[] = PRICE_MAP_EVENT_LABELS,
+): string {
+  const t = safeEventTitle(title)
+  if (!t) return GENERIC_EVENT_LABEL
+  const head = t.split(' — ')[0].trim()
+  const label = labels.find((l) => l === head)
+  // Uprostřed věty (k nabídce na oběd): první písmeno malé, zbytek beze změny (BBQ).
+  return label ? label[0].toLocaleLowerCase('cs') + label.slice(1) : GENERIC_EVENT_LABEL
+}
+
 /** 2026-12-11 → „11. 12. 2026". */
 export function czechDate(day: string | null | undefined): string | null {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(day ?? '')
@@ -329,7 +356,7 @@ function evaluate(
   if (!template) return skip('template_data_missing', dueDay)
   const rendered = renderFollowUpTemplate(template, {
     jmeno: safeFirstName(deal.contact.full_name),
-    akce: safeEventTitle(deal.title),
+    akce: customerEventLabel(deal.title),
     datum: czechDate(facts?.event_date),
   })
   if (!rendered.ok) return skip('template_data_missing', dueDay)

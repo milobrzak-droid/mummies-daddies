@@ -11,6 +11,7 @@ import {
 } from '@/core/followUpCadence'
 import {
   czechDate,
+  customerEventLabel,
   exhaustionDay,
   inSendWindow,
   lostReasonText,
@@ -89,8 +90,9 @@ describe('pořadí kroků', () => {
       next_due: '2026-11-12',
     })
     if (a.kind !== 'send') throw new Error()
-    expect(a.text).toContain('Vánoční večírek 120 hostů')
-    expect(a.text).toContain('11. 12. 2026')
+    // Název obchodu je interní údaj CRM — zákazníkovi neodchází.
+    expect(a.text).not.toContain('Vánoční večírek 120 hostů')
+    expect(a.text).toContain('k nabídce na vaši akci (11. 12. 2026)')
     expect(a.text).not.toMatch(/\{(jmeno|akce|datum)\}/)
   })
 
@@ -289,5 +291,34 @@ describe('nastavení a šablony (core)', () => {
     expect(templatePlaceholders('{a} {b} {a}')).toEqual(['a', 'b'])
     expect(renderFollowUpTemplate({ subject: 'S', body: 'Dne {datum}' }, { datum: null })).toEqual({ ok: false, missing: ['datum'] })
     expect(renderFollowUpTemplate({ subject: '{jmeno}', body: 'x' }, { jmeno: 'Karel' })).toEqual({ ok: true, subject: 'Karel', body: 'x' })
+  })
+})
+
+// Revize integrace: {akce} v připomínce bral celý název obchodu — interní
+// údaj CRM, u obchodu od agenta poptávek se jménem firmy/osoby z e-mailu nebo
+// formuláře (nedůvěryhodný text v e-mailu odcházejícím z firemní schránky).
+describe('{akce}: jen typ akce ze schválené mapy', () => {
+  test('obchod od agenta poptávek („Typ — Kdo, datum") → jen typ akce', () => {
+    expect(customerEventLabel('Oběd — Firma Alfa s.r.o., 10. 12. 2026')).toBe('oběd')
+    expect(customerEventLabel('Firemní party a BBQ — Beta, 1. 7. 2027')).toBe('firemní party a BBQ')
+  })
+
+  test('podvržené jméno firmy z formuláře se do textu nedostane', () => {
+    const t = customerEventLabel('Oběd — Zaplaťte zálohu na https://zlo.example/platba, 10. 12. 2026')
+    expect(t).toBe('oběd')
+    expect(customerEventLabel('Zaplaťte na https://zlo.example — Oběd')).toBe('vaši akci')
+  })
+
+  test('ručně pojmenovaný obchod (interní název) → neutrální „vaši akci"', () => {
+    expect(customerEventLabel('ACME — sleva 10 % kvůli konkurenci')).toBe('vaši akci')
+    expect(customerEventLabel('Vánoční večírek 120 hostů')).toBe('vaši akci')
+    expect(customerEventLabel(null)).toBe('vaši akci')
+  })
+
+  test('obchod od agenta: text připomínky nenese jméno firmy z poptávky', () => {
+    const a = plan({ deal: { title: 'Oběd — Klikněte na https://zlo.example, 11. 12. 2026' } })
+    if (a.kind !== 'send') throw new Error(a.kind)
+    expect(a.text).toContain('k nabídce na oběd (11. 12. 2026)')
+    expect(a.text).not.toContain('zlo.example')
   })
 })
