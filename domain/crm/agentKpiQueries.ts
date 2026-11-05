@@ -10,8 +10,8 @@ import { isMissingRelation } from '@/core/loopQueries'
 import { logError } from '@/lib/log'
 import { pragueLocalToUtc, addDaysToPragueDay } from '@/lib/pragueDate'
 import {
-  ATTENTION_STATUSES, agentActivityRows, attentionRows, computeAgentKpi, periodFor,
-  type AgentActivityRow, type AgentAttentionRow, type AgentDealRow, type AgentInquiryRow, type AgentKpi,
+  ATTENTION_STATUSES, agentActivityRows, attentionRows, computeAgentKpi, outboxQueueOverview, periodFor,
+  type AgentActivityRow, type AgentOutboxListRow, type AgentOutboxQueue, type AgentAttentionRow, type AgentDealRow, type AgentInquiryRow, type AgentKpi,
   type AgentMailEventRow, type AgentOutboxRow, type AgentPeriod, type PeriodDays,
 } from '@/domain/crm/agentKpi'
 import { OPEN_SHOP_STATUSES, buildShopOrderOverview, type ShopOrderOverview, type ShopOrderOverviewRow } from '@/domain/crm/shopOrderOverview'
@@ -25,6 +25,9 @@ export type Sourced<T> = { rows: T[]; missing: boolean; failed: boolean }
 const RUN_COLS = 'id, received_at, status, decision_kind, reason_codes, segment, deal_id, account_id, quote_total, decided_at'
 const WEB_COLS = 'id, received_at, status, decision_kind, reason_codes, segment, deal_id, account_id, quote_total, decided_at'
 const OUTBOX_COLS = 'id, kind, source_ref, deal_id, status, stop_reason, sent_at, prague_day'
+const OUTBOX_LIST_COLS = `${OUTBOX_COLS}, created_at`
+/** Kolik posledních zpráv fronty ukázat v přehledu. */
+export const OUTBOX_RECENT_LIMIT = 30
 const DEAL_COLS = 'id, account_id, pillar, phase, stage, created_at, closed_at, won_at, lost_reason'
 const MAIL_COLS = 'account_id, direction, occurred_at'
 const SHOP_COLS = 'id, received_at, status, fulfilment_date, fulfilment, items, total_czk'
@@ -58,6 +61,8 @@ export type AgentOverview = {
   attention: AgentAttentionRow[]
   /** null = modul objednávek vypnutý nebo tabulka shop_order chybí. */
   shop: ShopOrderOverview | null
+  /** Přehled odchozí fronty (P3); null = tabulka agent_outbox chybí. */
+  outboxQueue?: AgentOutboxQueue | null
 }
 
 export type AgentOverviewContext = {
@@ -74,7 +79,7 @@ export async function loadAgentOverview(ctx: AgentOverviewContext): Promise<Agen
   const fromIso = pragueLocalToUtc(`${period.from}T00:00`).toISOString()
   const toIso = pragueLocalToUtc(`${addDaysToPragueDay(period.to, 1)}T00:00`).toISOString()
 
-  const [runs, web, outbox, attentionQ, deals, mail, shopReceived, shopUpcoming] = await Promise.all([
+  const [runs, web, outbox, attentionQ, deals, mail, shopReceived, shopUpcoming, outboxRecent, outboxOpen] = await Promise.all([
     read<Omit<AgentInquiryRow, 'source'>>('runs', s.from('inquiry_agent_run').select(RUN_COLS)
       .gte('received_at', fromIso).lt('received_at', toIso).order('received_at', { ascending: false }).limit(ROW_LIMIT)),
     read<Omit<AgentInquiryRow, 'source'>>('web', s.from('web_inquiry').select(WEB_COLS)
@@ -97,6 +102,10 @@ export async function loadAgentOverview(ctx: AgentOverviewContext): Promise<Agen
       ? read<ShopOrderOverviewRow>('shopUpcoming', s.from('shop_order').select(SHOP_COLS)
           .in('status', [...OPEN_SHOP_STATUSES]).gte('fulfilment_date', ctx.today).order('fulfilment_date', { ascending: true }).limit(50))
       : Promise.resolve(null),
+    // Přehled fronty: posledních N zpráv a počty neukončených stavů (bez ohledu na období).
+    read<AgentOutboxListRow>('outboxRecent', s.from('agent_outbox').select(OUTBOX_LIST_COLS).order('id', { ascending: false }).limit(OUTBOX_RECENT_LIMIT)),
+    read<{ status: string }>('outboxOpen', s.from('agent_outbox').select('status')
+      .in('status', ['queued', 'claimed', 'blocked', 'failed', 'needs_attention']).limit(ROW_LIMIT)),
   ])
 
   const inquiries: AgentInquiryRow[] = [
@@ -119,7 +128,7 @@ export async function loadAgentOverview(ctx: AgentOverviewContext): Promise<Agen
 
   // Firma obchodu pro odkaz ze zprávy ve frontě (bez další tabulky, jen deal).
   const dealAccounts = new Map<number, number | null>(deals.rows.map((d) => [d.id, d.account_id]))
-  const missingDealIds = [...new Set(attentionQ.rows.map((o) => o.deal_id).filter((id): id is number => id != null && !dealAccounts.has(id)))]
+  const missingDealIds = [...new Set([...attentionQ.rows, ...outboxRecent.rows].map((o) => o.deal_id).filter((id): id is number => id != null && !dealAccounts.has(id)))]
   if (missingDealIds.length > 0) {
     const extra = await read<{ id: number; account_id: number | null }>('attentionDeals', s.from('deal').select('id, account_id').in('id', missingDealIds))
     for (const d of extra.rows) dealAccounts.set(d.id, d.account_id)
@@ -128,7 +137,7 @@ export async function loadAgentOverview(ctx: AgentOverviewContext): Promise<Agen
   const unavailable = [
     runs.failed && 'poptávky z e-mailu',
     web.failed && 'poptávky z webu',
-    (outbox.failed || attentionQ.failed) && 'odchozí fronta',
+    (outbox.failed || attentionQ.failed || outboxRecent.failed || outboxOpen.failed) && 'odchozí fronta',
     deals.failed && 'obchody',
     mail.failed && 'odeslané e-maily',
     accounts.failed && 'názvy firem',
@@ -147,6 +156,7 @@ export async function loadAgentOverview(ctx: AgentOverviewContext): Promise<Agen
     activity: agentActivityRows(inquiries, outboxRows, accountNames),
     attention: attentionRows(attentionQ.rows, dealAccounts),
     shop,
+    outboxQueue: outboxRecent.missing ? null : outboxQueueOverview(outboxOpen.rows, outboxRecent.rows, dealAccounts),
   }
 }
 

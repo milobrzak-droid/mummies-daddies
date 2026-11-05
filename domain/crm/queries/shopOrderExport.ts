@@ -1,5 +1,5 @@
-// Objednávky cheesecaků (shop_order, 0102) pro export. Stránku objednávek
-// v Cockpitu staví balík P6; export čte stejnou tabulku přes RLS
+// Objednávky cheesecaků (shop_order, 0102) pro export. Stránka objednávek
+// v Cockpitu je /cockpit/objednavky (P6); export čte stejnou tabulku přes RLS
 // přihlášeného uživatele (tým s AAL2), nikdy přes service roli.
 import { createClient } from '@/lib/supabase/server'
 import { isMissingRelation } from '@/core/loopQueries'
@@ -12,10 +12,11 @@ const SHOP_ORDER_EXPORT_COLUMNS = [
 ].join(', ')
 
 /** Objednávky podle termínu (nejbližší první); bez migrace 0102 prázdný seznam. */
-export async function listShopOrdersForExport(status: ShopOrderStatus | null = null): Promise<ShopOrderExportRow[]> {
+export async function listShopOrdersForExport(status: ShopOrderStatus | readonly ShopOrderStatus[] | null = null): Promise<ShopOrderExportRow[]> {
   const s = await createClient()
   let query = s.from('shop_order').select(SHOP_ORDER_EXPORT_COLUMNS)
-  if (status) query = query.eq('status', status)
+  if (typeof status === 'string') query = query.eq('status', status)
+  else if (status?.length) query = query.in('status', [...status])
   const { data, error } = await query
     .order('fulfilment_date', { ascending: true })
     .order('received_at', { ascending: true })

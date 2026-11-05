@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { PageHeader } from '@/components/PageHeader'
+import { ExportButtons } from '@/components/ExportButtons'
 import { SectionTabs, WORK_TABS } from '@/components/SectionTabs'
 import { CARD } from '@/components/ui/Card'
 import { EmptyState } from '@/components/ui/EmptyState'
@@ -123,7 +124,9 @@ export default async function ShopOrdersPage({
 
   return (
     <>
-      <PageHeader title="Objednávky" eyebrow="Práce" subtitle={subtitle} />
+      <PageHeader title="Objednávky" eyebrow="Práce" subtitle={subtitle}>
+        <ExportButtons prehled="objednavky" label="Stáhnout objednávky cheesecaků" params={{ stav: filter === 'vse' ? undefined : filter }} />
+      </PageHeader>
       <SectionTabs tabs={WORK_TABS} label="Práce" />
 
       <nav aria-label="Stav objednávek" className="mb-4">

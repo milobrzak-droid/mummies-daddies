@@ -17,10 +17,13 @@ import {
 import { filterPipelineDeals, parsePipelineParams } from '@/domain/crm/pipelineFilter'
 import { parseWeekChoice, weekWindow } from '@/domain/crm/changes'
 import {
-  ACTIVITY_COLUMNS, CONTACT_COLUMNS, OFFER_COLUMNS, SHOP_ORDER_COLUMNS,
-  clientColumns, clientFilters, clientRows, contactRows, exportDocument, offerFilters, pipelineFilters, pipelineTable,
-  shopOrderFilters, taskColumns, type ExportPrehled,
+  ACTIVITY_COLUMNS, CONTACT_COLUMNS, OFFER_COLUMNS, SHOP_ORDER_ACTIVE_FILTER, SHOP_ORDER_COLUMNS,
+  agentFilters, agentKpiTables, clientColumns, clientFilters, clientRows, contactRows, exportDocument, offerFilters, pipelineFilters, pipelineTable,
+  shopOrderFilterList, shopOrderFilters, taskColumns, type ExportPrehled,
 } from '@/domain/crm/exports'
+import { parsePeriod } from '@/domain/crm/agentKpi'
+import { loadAgentOverview } from '@/domain/crm/agentKpiQueries'
+import { ACTIVE_SHOP_ORDER_STATUSES } from '@/domain/web/shopOrders'
 import { buildWeeklyLeadershipReport, weeklyLeadershipDocument } from '@/domain/crm/weeklyLeadershipReport'
 import { toExportTable } from '@/lib/export/table'
 
@@ -101,9 +104,24 @@ export async function loadExportDocument(prehled: ExportPrehled, raw: Raw, viewe
     }
     case 'objednavky': {
       const status = first(raw.stav) ?? null
+      // Stejné filtry jako stránka /cockpit/objednavky: „K vyřízení" = nové, potvrzené, připravené.
+      if (status === SHOP_ORDER_ACTIVE_FILTER) {
+        const orders = await listShopOrdersForExport(ACTIVE_SHOP_ORDER_STATUSES)
+        return exportDocument('objednavky', [toExportTable('Objednávky', SHOP_ORDER_COLUMNS, orders, { emptyText: 'Nic nečeká na vyřízení.' })],
+          shopOrderFilterList(ACTIVE_SHOP_ORDER_STATUSES), meta)
+      }
       const valid = status && (SHOP_ORDER_STATUSES as readonly string[]).includes(status) ? (status as ShopOrderStatus) : null
       const orders = await listShopOrdersForExport(valid)
       return exportDocument('objednavky', [toExportTable('Objednávky', SHOP_ORDER_COLUMNS, orders, { emptyText: 'Žádné objednávky.' })], shopOrderFilters(valid), meta)
+    }
+    case 'agent': {
+      // Stejná data jako stránka /cockpit/agent (RLS přihlášeného, bez textů e-mailů a kontaktů).
+      const days = parsePeriod(raw.obdobi)
+      const o = await loadAgentOverview({ today: pragueToday(now), days })
+      const attention = o.attention.map((a) => ({ id: a.id, kind: a.kind, status: a.status, stopReason: a.stopReason, day: a.day }))
+      const filters = agentFilters(days)
+      if (o.unavailable.length) filters.push({ label: 'Nenačteno', value: o.unavailable.join(', ') })
+      return exportDocument('agent', agentKpiTables({ kpi: o.kpi, activity: o.activity, attention }), filters, meta)
     }
     case 'tydenni-prehled': {
       const today = pragueToday(now)

@@ -19,11 +19,15 @@ import {
 } from '@/domain/crm/accountList'
 import type { AccountListRow } from '@/domain/crm/queries/accountList'
 import { SHOP_ORDER_STATUS_LABELS, type ShopOrderStatus } from '@/core/cheesecakeOrder'
+import { OUTBOUND_SOURCE_LABELS } from '@/core/outbound/config'
+import {
+  formatDuration, outboxKindLabel, outboxStatusLabel, type AgentActivityRow, type AgentKpi, type CountRow, type FunnelStep,
+} from '@/domain/crm/agentKpi'
 
 // --- Přehledy ---------------------------------------------------------------
 
 export const EXPORT_PREHLEDY = [
-  'pipeline', 'klienti', 'aktivity', 'ukoly', 'nabidky', 'objednavky', 'tydenni-prehled',
+  'pipeline', 'klienti', 'aktivity', 'ukoly', 'nabidky', 'objednavky', 'tydenni-prehled', 'agent',
 ] as const
 export type ExportPrehled = (typeof EXPORT_PREHLEDY)[number]
 
@@ -44,6 +48,8 @@ export const EXPORT_ACCESS: Readonly<Record<ExportPrehled, 'sales' | 'team'>> = 
   nabidky: 'sales',
   objednavky: 'team',
   'tydenni-prehled': 'sales',
+  // Stejně jako stránka /cockpit/agent (canCurrentUserSeeSales).
+  agent: 'sales',
 }
 
 export const EXPORT_TITLES: Readonly<Record<ExportPrehled, string>> = {
@@ -54,6 +60,7 @@ export const EXPORT_TITLES: Readonly<Record<ExportPrehled, string>> = {
   nabidky: 'Nabídky',
   objednavky: 'Objednávky cheesecaků',
   'tydenni-prehled': 'Týdenní přehled pro vedení',
+  agent: 'Agent na poptávky – KPI',
 }
 
 export function exportDocument(
@@ -108,14 +115,36 @@ export function lostReasonText(reason: string | null | undefined): string {
 
 type DealSourceFields = Pick<SalesDealLike, 'sourced_by_partner' | 'source_pdf_path'> & {
   import_batch_id?: number | null
+  /** deal.source (0103 P2: 'email' | 'web'; 0107 P7: 'agent:outbound:<zdroj>'). */
+  source?: string | null
+}
+
+const DEAL_SOURCE_LABELS: Readonly<Record<string, string>> = {
+  email: 'E-mail (agent poptávek)',
+  web: 'Web (formulář poptávky)',
+}
+
+/** Popisek hodnoty deal.source; prázdná hodnota = null (rozhodne odvození níž). */
+export function dealSourceColumnLabel(source: string | null | undefined): string | null {
+  const v = (source ?? '').trim()
+  if (!v) return null
+  const outbound = /^agent:outbound:([a-z_]+)$/.exec(v)
+  if (outbound) {
+    const label = (OUTBOUND_SOURCE_LABELS as Readonly<Record<string, string>>)[outbound[1]]
+    return `Outbound agent (${label ?? outbound[1]})`
+  }
+  return DEAL_SOURCE_LABELS[v] ?? v
 }
 
 /**
- * Odkud obchod přišel. Samostatný sloupec „zdroj" obchod nemá; odvozuje se
- * z toho, čím vznikl: hromadný import (0098), nabídka v PDF (0015) nebo
+ * Odkud obchod přišel. Přednost má sloupec deal.source (agent poptávek P2,
+ * outbound agent P7); u starších obchodů bez něj se zdroj odvodí z toho,
+ * čím obchod vznikl: hromadný import (0098), nabídka v PDF (0015) nebo
  * doporučení partnera. Jinak „ručně v Cockpitu".
  */
 export function dealSourceLabel(deal: DealSourceFields): string {
+  const fromColumn = dealSourceColumnLabel(deal.source)
+  if (fromColumn) return fromColumn
   if (deal.import_batch_id != null) return 'Hromadný import'
   if (deal.source_pdf_path) return 'Nabídka v PDF'
   if (deal.sourced_by_partner != null) return 'Doporučení partnera'
@@ -379,4 +408,109 @@ export const SHOP_ORDER_COLUMNS: ExportColumn<ShopOrderExportRow>[] = [
 export function shopOrderFilters(status: string | null): ExportFilter[] {
   if (!status) return []
   return [{ label: 'Stav', value: SHOP_ORDER_STATUS_LABELS[status as ShopOrderStatus] ?? status }]
+}
+
+export const SHOP_ORDER_ACTIVE_FILTER = 'aktivni'
+
+export function shopOrderFilterList(statuses: readonly string[] | null): ExportFilter[] {
+  if (!statuses?.length) return []
+  return [{ label: 'Stav', value: statuses.map((x) => SHOP_ORDER_STATUS_LABELS[x as ShopOrderStatus] ?? x).join(', ') }]
+}
+
+// --- Agent na poptávky: KPI (P5, stránka /cockpit/agent) -------------------------
+// Jen počty, doby, kódy a názvy firem z CRM — žádný text e-mailu ani kontakt.
+
+type KpiLine = { group: string; label: string; value: number | string | null; unit: string }
+
+const pct = (v: number | null) => (v == null ? null : Math.round(v * 10) / 10)
+
+export function agentKpiLines(kpi: AgentKpi): KpiLine[] {
+  const d = (label: string, x: { medianMinutes: number | null; p90Minutes: number | null; measured: number; waiting: number }): KpiLine[] => [
+    { group: label, label: 'Medián', value: formatDuration(x.medianMinutes), unit: '' },
+    { group: label, label: '90. percentil', value: formatDuration(x.p90Minutes), unit: '' },
+    { group: label, label: 'Změřeno poptávek', value: x.measured, unit: 'počet' },
+    { group: label, label: 'Zatím bez reakce', value: x.waiting, unit: 'počet' },
+  ]
+  return [
+    { group: 'Poptávky', label: 'Přijato celkem', value: kpi.inquiries.received, unit: 'počet' },
+    { group: 'Poptávky', label: 'Skutečné poptávky', value: kpi.inquiries.real, unit: 'počet' },
+    { group: 'Poptávky', label: 'Z e-mailu', value: kpi.inquiries.email, unit: 'počet' },
+    { group: 'Poptávky', label: 'Z webu', value: kpi.inquiries.web, unit: 'počet' },
+    { group: 'Poptávky', label: 'Eskalováno na člověka', value: kpi.escalations.total, unit: 'počet' },
+    { group: 'Odchozí fronta', label: 'Odesláno', value: kpi.outbox.sent, unit: 'počet' },
+    { group: 'Odchozí fronta', label: 'Ve frontě', value: kpi.outbox.queued, unit: 'počet' },
+    { group: 'Odchozí fronta', label: 'Selhalo', value: kpi.outbox.failed, unit: 'počet' },
+    { group: 'Odchozí fronta', label: 'Potřebuje pozornost', value: kpi.outbox.needsAttention, unit: 'počet' },
+    { group: 'Odchozí fronta', label: 'Zablokováno', value: kpi.outbox.blocked, unit: 'počet' },
+    ...d('První reakce', kpi.firstResponse),
+    ...d('Nabídka zákazníkovi', kpi.offerSpeed),
+    { group: 'Automatizace', label: 'Vyřízeno agentem samostatně', value: kpi.autoShare.auto, unit: 'počet' },
+    { group: 'Automatizace', label: 'Z poptávek celkem', value: kpi.autoShare.total, unit: 'počet' },
+    { group: 'Automatizace', label: 'Podíl samostatně vyřízených', value: pct(kpi.autoShare.pct), unit: '%' },
+    { group: 'Výsledek obchodů', label: 'Vyhráno', value: kpi.outcome.won, unit: 'počet' },
+    { group: 'Výsledek obchodů', label: 'Prohráno', value: kpi.outcome.lost, unit: 'počet' },
+    { group: 'Výsledek obchodů', label: 'Otevřeno', value: kpi.outcome.open, unit: 'počet' },
+    { group: 'Výsledek obchodů', label: 'Úspěšnost', value: pct(kpi.outcome.winRatePct), unit: '%' },
+  ]
+}
+
+const KPI_COLUMNS: ExportColumn<KpiLine>[] = [
+  { header: 'Oblast', value: (r) => r.group },
+  { header: 'Ukazatel', value: (r) => r.label },
+  { header: 'Hodnota', value: (r) => (typeof r.value === 'number' ? r.value.toLocaleString('cs-CZ') : r.value ?? '—') },
+  { header: 'Jednotka', value: (r) => r.unit },
+]
+
+const countColumns = (what: string): ExportColumn<CountRow>[] => [
+  { header: what, value: (r) => r.label },
+  { header: 'Počet', type: 'number', total: true, value: (r) => r.count },
+]
+
+const FUNNEL_COLUMNS: ExportColumn<FunnelStep>[] = [
+  { header: 'Fáze', value: (r) => r.label },
+  { header: 'Obchodů', type: 'number', value: (r) => r.count },
+  { header: 'Z první fáze (%)', type: 'number', value: (r) => pct(r.pctOfFirst) },
+  { header: 'Z předchozí fáze (%)', type: 'number', value: (r) => pct(r.pctOfPrevious) },
+]
+
+const AGENT_ACTIVITY_COLUMNS: ExportColumn<AgentActivityRow>[] = [
+  { header: 'Přijato', type: 'datetime', value: (r) => r.receivedAt },
+  { header: 'Zdroj', value: (r) => (r.source === 'web' ? 'Web' : 'E-mail') },
+  { header: 'Klient', value: (r) => r.client ?? 'nespárováno' },
+  { header: 'Segment', value: (r) => r.segment },
+  { header: 'Rozhodnutí', value: (r) => r.decisionLabel },
+  { header: 'Důvody', value: (r) => r.reasons.join(', ') },
+  { header: 'Odeslání', value: (r) => r.sendLabel },
+]
+
+/** Fronta k řešení pro export (bez adres a textů). */
+export type AgentAttentionExportRow = { id: number; kind: string; status: string; stopReason: string | null; day: string | null }
+
+const AGENT_ATTENTION_COLUMNS: ExportColumn<AgentAttentionExportRow>[] = [
+  { header: 'Zpráva', value: (r) => `${outboxKindLabel(r.kind)} č. ${r.id}` },
+  { header: 'Stav', value: (r) => outboxStatusLabel(r.status) },
+  { header: 'Důvod zastavení', value: (r) => r.stopReason },
+  { header: 'Den', type: 'date', value: (r) => r.day },
+]
+
+export function agentKpiTables(o: {
+  kpi: AgentKpi
+  activity: readonly AgentActivityRow[]
+  attention: readonly AgentAttentionExportRow[]
+}): ExportTable[] {
+  const { kpi } = o
+  const note = `Období ${kpi.period.from} – ${kpi.period.to}`
+  return [
+    toExportTable('KPI', KPI_COLUMNS, agentKpiLines(kpi), { note }),
+    toExportTable('Rozhodnutí agenta', countColumns('Rozhodnutí'), kpi.inquiries.byDecision, { emptyText: 'Agent v období nic nerozhodoval.' }),
+    toExportTable('Důvody eskalace', countColumns('Důvod'), kpi.escalations.byReason, { emptyText: 'Agent v období nic neeskaloval.' }),
+    toExportTable('Trychtýř', FUNNEL_COLUMNS, kpi.funnel, { emptyText: 'V období žádné obchody.' }),
+    toExportTable('Důvody prohry', countColumns('Důvod'), kpi.lostReasons, { emptyText: 'V období žádný prohraný obchod.' }),
+    toExportTable('Čeká na člověka', AGENT_ATTENTION_COLUMNS, o.attention, { emptyText: 'Ve frontě nic nečeká na člověka.' }),
+    toExportTable('Poslední rozhodnutí', AGENT_ACTIVITY_COLUMNS, o.activity, { emptyText: 'Za období agent nic nerozhodoval.' }),
+  ]
+}
+
+export function agentFilters(days: number): ExportFilter[] {
+  return [{ label: 'Období', value: `posledních ${days} dní` }]
 }

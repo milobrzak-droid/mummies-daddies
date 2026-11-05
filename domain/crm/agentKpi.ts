@@ -12,6 +12,7 @@
 import { COMPANY } from '@/config'
 import { addDaysToPragueDay, pragueDayOf } from '@/lib/pragueDate'
 import { LOST_REASONS, parseLostReason, type LostReasonOption } from '@/domain/crm/lostReason'
+import { OUTBOX_REASON_LABELS } from '@/core/agents/outboxPolicy'
 
 // --- Vstupní řádky (sloupce, které čte agentKpiQueries) ---------------------
 
@@ -119,6 +120,7 @@ export const OUTBOX_KIND_LABELS: Readonly<Record<string, string>> = {
   offer: 'Nabídka',
   info_request: 'Doptání',
   follow_up: 'Připomínka',
+  outreach: 'Oslovení',
 }
 
 export function outboxKindLabel(kind: string): string {
@@ -488,8 +490,35 @@ export type AgentAttentionRow = {
   status: string
   statusLabel: string
   stopReason: string | null
+  /** Důvod zastavení česky (kód, když popisek chybí). */
+  stopReasonLabel: string | null
   day: string | null
   dealHref: string | null
+  /** Smí ji člověk uvolnit tlačítkem (agent_outbox_release)? Nabídka se schvaluje v Ke schválení. */
+  releasable: boolean
+}
+
+/** Stavy, ze kterých zprávu vrací do fronty agent_outbox_release (0104). */
+export const RELEASABLE_STATUSES = ['blocked', 'failed', 'needs_attention'] as const
+
+export function isReleasable(o: Pick<AgentOutboxRow, 'kind' | 'status' | 'stop_reason'>): boolean {
+  return (RELEASABLE_STATUSES as readonly string[]).includes(o.status) && o.kind !== 'offer' && o.stop_reason !== 'body_purged' && o.stop_reason !== 'gdpr_erased'
+}
+
+const EXTRA_STOP_LABELS: Readonly<Record<string, string>> = {
+  approval_required: 'čeká na schválení člověkem',
+  approval_rejected: 'schválení bylo zamítnuto',
+  approval_expired: 'žádost o schválení vypršela',
+  stale_claim: 'odesílání se nedokončilo — ověřit v Odeslané poště',
+  throttled: 'Gmail dočasně omezil odesílání',
+  gdpr_erased: 'údaje smazány na žádost (GDPR)',
+  missing_unsubscribe: 'oslovení bez odkazu na odhlášení',
+  outside_send_window: 'mimo okno odesílání',
+}
+
+export function outboxStopReasonLabel(code: string | null | undefined): string | null {
+  if (!code) return null
+  return (OUTBOX_REASON_LABELS as Readonly<Record<string, string>>)[code] ?? EXTRA_STOP_LABELS[code] ?? code
 }
 
 /** Fronta, která chce člověka (needs_attention, blocked) — nejstarší nahoře. */
@@ -507,7 +536,49 @@ export function attentionRows(
       status: o.status,
       statusLabel: outboxStatusLabel(o.status),
       stopReason: o.stop_reason,
+      stopReasonLabel: outboxStopReasonLabel(o.stop_reason),
       day: o.prague_day,
       dealHref: dealHref(o.deal_id, o.deal_id != null ? dealAccounts.get(o.deal_id) ?? null : null),
+      releasable: isReleasable(o),
     }))
+}
+
+// --- Přehled odchozí fronty (P3) -------------------------------------------------
+
+export type AgentOutboxListRow = AgentOutboxRow & { created_at: string }
+
+export type AgentOutboxQueueItem = Omit<AgentAttentionRow, 'day'> & { createdAt: string; sentAt: string | null }
+
+export type AgentOutboxQueue = {
+  /** Kolik zpráv je teď v jednotlivých neukončených stavech (bez ohledu na období). */
+  open: CountRow[]
+  /** Posledních N zpráv (nejnovější nahoře) — druh, stav, důvod; nikdy adresa ani text. */
+  recent: AgentOutboxQueueItem[]
+}
+
+const OPEN_OUTBOX_STATUSES = ['queued', 'claimed', 'blocked', 'failed', 'needs_attention'] as const
+
+export function outboxQueueOverview(
+  openStatuses: readonly { status: string }[],
+  recent: readonly AgentOutboxListRow[],
+  dealAccounts: ReadonlyMap<number, number | null>,
+): AgentOutboxQueue {
+  const counts = new Map<string, number>()
+  for (const r of openStatuses) counts.set(r.status, (counts.get(r.status) ?? 0) + 1)
+  return {
+    open: OPEN_OUTBOX_STATUSES.map((st) => ({ key: st, label: outboxStatusLabel(st), count: counts.get(st) ?? 0 })),
+    recent: recent.map((o) => ({
+      id: o.id,
+      kind: o.kind,
+      kindLabel: outboxKindLabel(o.kind),
+      status: o.status,
+      statusLabel: outboxStatusLabel(o.status),
+      stopReason: o.stop_reason,
+      stopReasonLabel: outboxStopReasonLabel(o.stop_reason),
+      createdAt: o.created_at,
+      sentAt: o.sent_at,
+      dealHref: dealHref(o.deal_id, o.deal_id != null ? dealAccounts.get(o.deal_id) ?? null : null),
+      releasable: isReleasable(o),
+    })),
+  }
 }

@@ -33,6 +33,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ prehled:
   const canSeeSales = memberSeesSales(member)
   if (EXPORT_ACCESS[prehled] === 'sales' && !canSeeSales) return exportError(403, 'Tenhle přehled je jen pro obchod a vedení.')
   if (prehled === 'objednavky' && !isModuleOn(COMPANY.modules, 'shopOrders')) return exportError(404, 'Modul objednávek je vypnutý.')
+  if (prehled === 'agent' && !isModuleOn(COMPANY.modules, 'agent')) return exportError(404, 'Modul agenta je vypnutý.')
 
   const raw: Record<string, string | string[]> = {}
   for (const key of new Set(url.searchParams.keys())) {

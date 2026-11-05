@@ -6,13 +6,15 @@ import { Card } from '@/components/ui/Card'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { AgentKpiTiles } from '@/components/AgentKpiTiles'
 import { AgentBreakdown, AgentFunnel } from '@/components/AgentFunnel'
-import { AgentActivityTable, AgentAttentionTable } from '@/components/AgentActivityTable'
+import { AgentActivityTable, AgentAttentionTable, AgentOutboxQueueTable } from '@/components/AgentActivityTable'
+import { ExportButtons } from '@/components/ExportButtons'
 import { ShopOrderOverviewCard } from '@/components/ShopOrderOverviewCard'
 import { requireModule } from '@/app/cockpit/moduleGuard'
 import { COMPANY } from '@/config'
 import { isModuleOn } from '@/core/modules'
 import { PERIOD_DAYS, parsePeriod } from '@/domain/crm/agentKpi'
 import { loadAgentOverview } from '@/domain/crm/agentKpiQueries'
+import { releaseOutboxMessage } from '@/domain/crm/actions/agentOutbox'
 import { canCurrentUserSeeSales } from '@/lib/queries/access'
 import { pragueToday } from '@/lib/pragueDate'
 
@@ -36,7 +38,9 @@ export default async function AgentPage({ searchParams }: { searchParams: Promis
   return (
     <>
       <PageHeader title="Agent na poptávky" eyebrow="Obchody"
-        subtitle="Co agent rozhodl, co čeká na člověka a jak rychle zákazník dostane odpověď a nabídku." />
+        subtitle="Co agent rozhodl, co čeká na člověka a jak rychle zákazník dostane odpověď a nabídku.">
+        <ExportButtons prehled="agent" label="Stáhnout KPI agenta" params={{ obdobi: String(days) }} />
+      </PageHeader>
       <DealsSectionTabs />
 
       <nav aria-label="Období" className="-mt-2 mb-6">
@@ -68,8 +72,19 @@ export default async function AgentPage({ searchParams }: { searchParams: Promis
         <p className="mb-4 mt-1 text-callout text-muted">
           Zprávy agenta, které potřebují kontrolu nebo je brána odeslání zastavila — bez ohledu na období.
         </p>
-        <AgentAttentionTable rows={o.attention} />
+        <AgentAttentionTable rows={o.attention} release={releaseOutboxMessage} />
       </section>
+
+      {o.outboxQueue && (
+        <section id="odchozi-fronta" aria-labelledby="odchozi-fronta-nadpis" className="mb-8">
+          <h2 id="odchozi-fronta-nadpis" className="m-0 font-heading text-title1 font-bold">Odchozí fronta</h2>
+          <p className="mb-4 mt-1 text-callout text-muted">
+            Jediná cesta e-mailu zákazníkovi (nabídka, doptání, připomínka, oslovení). Uvolněná zpráva odejde při dalším
+            běhu fronty — brány, okno odesílání a limity platí dál. Bez adres a textů zpráv.
+          </p>
+          <AgentOutboxQueueTable queue={o.outboxQueue} release={releaseOutboxMessage} />
+        </section>
+      )}
 
       <AgentKpiTiles kpi={kpi} />
 

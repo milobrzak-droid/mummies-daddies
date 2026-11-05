@@ -22,7 +22,7 @@ const members = new Map([[OWNER_JANA.id, OWNER_JANA.full_name], [OWNER_PETR.id, 
 
 describe('přehledy a oprávnění', () => {
   test('obchodní přehledy jen pro obchodní role', () => {
-    expect(EXPORT_PREHLEDY.filter((p) => EXPORT_ACCESS[p] === 'sales')).toEqual(['pipeline', 'aktivity', 'nabidky', 'tydenni-prehled'])
+    expect(EXPORT_PREHLEDY.filter((p) => EXPORT_ACCESS[p] === 'sales')).toEqual(['pipeline', 'aktivity', 'nabidky', 'tydenni-prehled', 'agent'])
     expect(isExportPrehled('pipeline')).toBe(true)
     expect(isExportPrehled('../etc')).toBe(false)
   })

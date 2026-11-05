@@ -67,8 +67,8 @@ describe('SectionTabs: záložky podle role', () => {
 // roli bez obchodu přesměruje, má záložku salesOnly, a naopak.
 describe('SectionTabs: příznak salesOnly odpovídá ochraně stránky', () => {
   const pageFile = (href: string) => join(ROOT, 'app', href, 'page.tsx')
-  // Stránky /cockpit/agent (P5) a /cockpit/objednavky (P6) dodají paralelní balíky.
-  const PENDING = new Set(['/cockpit/agent', '/cockpit/objednavky'])
+  // Po integraci existují všechny stránky záložek (/cockpit/agent z P5, /cockpit/objednavky z P6).
+  const PENDING = new Set<string>()
   const guarded = (src: string) => /if \(!await canCurrentUserSeeSales\(\)\) redirect\(/.test(src)
 
   for (const tab of [...WORK_TABS, ...TODAY_TABS, ...CLIENT_TABS, ...DEAL_TABS]) {
