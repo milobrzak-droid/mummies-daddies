@@ -373,8 +373,9 @@ export function replyMailboxMember(replyFrom: InquiryAgentConfig['replyFrom'], r
 /**
  * Režim odeslání: odpověď ve vlákně jde jen ze stejné schránky, kam zpráva
  * přišla (id zprávy v Gmailu platí jen v ní); P3 odpovídá vždy na From.
- * Jinak nová zpráva na adresu From (ověřenou) — P3 doplní In-Reply-To podle
- * inquiry_agent_run.internet_message_id (source_ref 'inquiry:<id>').
+ * Jinak nová zpráva na adresu From (ověřenou), mimo původní vlákno. (Navázání
+ * přes In-Reply-To podle inquiry_agent_run.internet_message_id by musel
+ * doplnit P3 — zatím ne.)
  */
 export function replyMode(a: { senderMemberId: string; receivingMemberId: string | null; gmailMessageId: string | null; replyAddress: string }): OutboxMode {
   if (a.gmailMessageId && a.receivingMemberId && a.receivingMemberId === a.senderMemberId) return { reply: a.gmailMessageId }

@@ -295,13 +295,8 @@ export const MUMMIES_DADDIES = {
         b2c: { pillar: 'b2c_oslavy', revenueLine: 'oslava_soukroma', eventTypeRevenueLines: { svatba: 'svatebni_hostina' } },
         '*': { pillar: 'b2b_akce', revenueLine: 'catering_firemni' },
       },
-      replyFooter: [
-        '—',
-        'Tuto odpověď připravil automatický systém Mummies and Daddies podle našeho standardního ceníku.',
-        'Kalkulace je nezávazná; objednávka vzniká až písemným potvrzením Mummies and Daddies s.r.o.',
-        'Informace o alergenech a storno podmínky Vám rádi zašleme s potvrzením objednávky.',
-        'Mummies and Daddies s.r.o., Varšavská 715, 120 00 Praha 2, IČO 17957524, C 379274 vedená u Městského soudu v Praze.',
-      ].join('\n'), // OVĚŘIT: odkaz na VOP a znění storno podmínek
+      // Patičku (údaje firmy, nezávaznost, VOP, upozornění na automat) připojí
+      // odchozí fronta při odeslání (P3, capabilities.agentOutbox) — tady žádná.
       dedupWindowDays: 14,
       maxMessageAgeDays: 3,
       modelDailyLimit: 100,

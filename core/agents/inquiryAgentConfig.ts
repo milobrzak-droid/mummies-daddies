@@ -55,7 +55,10 @@ export interface InquiryAgentConfig<N extends string = string> {
   inquiryAddresses?: readonly string[]
   /** Segment mapy → pilíř a obchodní linka nového leadu. Klíč '*' = segment neznámý. */
   leadMapping?: Readonly<Record<string, InquiryLeadMapping>>
-  /** Patička každé odpovědi agenta (údaje firmy, VOP, upozornění na automat). */
+  /**
+   * Volitelný dovětek k textu odpovědi ještě před frontou. Běžně prázdný:
+   * patičku firmy a obchodní podmínky připojuje odchozí fronta (P3) při odeslání.
+   */
   replyFooter?: string
   /** Okno (dny), ve kterém se další poptávka stejného kontaktu připojí k otevřenému obchodu. Výchozí 14. */
   dedupWindowDays?: number

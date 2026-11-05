@@ -105,7 +105,8 @@ describe('e-mail', () => {
     })
     expect(s.outbox[0]).toMatchObject({ kind: 'offer', source_ref: 'inquiry:7', deal_id: 13, scope_version_id: 14, mailbox_member_id: OWNER, mode: { reply: 'g1' } })
     expect(String(s.outbox[0].text)).toContain('Dobrý den, Jan Novák,')
-    expect(String(s.outbox[0].text)).toContain('IČO 17957524')
+    // Patičku firmy připojí až odchozí fronta (P3), ne agent poptávek — jinak by byla dvakrát.
+    expect(String(s.outbox[0].text)).not.toContain('IČO 17957524')
     expect(s.finishedRuns).toEqual([expect.objectContaining({ run_id: 7, status: 'enqueued', outbox_id: 99, reply_draft: null, decision_kind: 'send_offer', model_called: true })])
     // Text e-mailu nikdy ve statistikách ani v logu.
     expect(JSON.stringify(stats)).not.toContain('4711')
