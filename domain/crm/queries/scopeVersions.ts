@@ -15,7 +15,10 @@ import {
   isScopeVersionMissing,
   type ScopeCurrency,
   type ScopeVersionRow,
+  type ScopeVersionStatus,
 } from '@/domain/crm/scopeVersion'
+import type { OfferExportRow } from '@/domain/crm/exports'
+import type { ScopeVersionForPdf } from '@/domain/crm/offerPdfSource'
 
 export async function getDealScopeVersions(
   dealId: number,
@@ -93,4 +96,54 @@ export async function getOfferApprovalTargets(versionIds: readonly number[]): Pr
       account_id: deal?.account_id ?? null,
     }]
   }))
+}
+
+// --- Exporty (P9) -------------------------------------------------------------
+
+const OFFER_EXPORT_SELECT = `${SCOPE_VERSION_COLUMNS}, deal:deal!deal_scope_version_deal_id_fkey(id, title, account:account!deal_account_id_fkey(id, name))`
+const OFFER_PDF_SELECT = `${SCOPE_VERSION_COLUMNS}, deal:deal!deal_scope_version_deal_id_fkey(id, title, account:account!deal_account_id_fkey(id, name), primary_contact:contact!deal_primary_contact_id_fkey(id, full_name))`
+
+/** PostgREST vrací vnořený to-one embed jako objekt, výjimečně jako pole. */
+type Embed<T> = T | T[] | null | undefined
+function one<T>(v: Embed<T>): T | null {
+  return Array.isArray(v) ? (v[0] ?? null) : (v ?? null)
+}
+
+type Named = { id: number; name: string }
+type RawDeal = { id: number; title: string; account?: Embed<Named>; primary_contact?: Embed<{ id: number; full_name: string }> }
+type RawVersion = ScopeVersionRow & { deal: Embed<RawDeal> }
+
+/**
+ * Všechny verze nabídek s obchodem a klientem pro export „Nabídky"
+ * (nejnovější první). RLS sales_only: ne-obchodní role dostane prázdný
+ * seznam. Bez migrace 0072 také prázdný seznam.
+ */
+export async function listScopeVersionsForExport(status: ScopeVersionStatus | null = null): Promise<OfferExportRow[]> {
+  const s = await createClient()
+  let query = s.from('deal_scope_version').select(OFFER_EXPORT_SELECT)
+  if (status) query = query.eq('status', status)
+  const { data, error } = await query.order('created_at', { ascending: false }).order('id', { ascending: false }).limit(5000)
+  if (isScopeVersionMissing(error)) return []
+  if (error) throw error
+  return ((data ?? []) as unknown as RawVersion[]).map((r) => {
+    const deal = one(r.deal)
+    return { ...r, deal: deal ? { id: deal.id, title: deal.title, account: one(deal.account) } : null }
+  })
+}
+
+/** Jedna verze nabídky pro PDF zákazníkovi; null = neexistuje nebo ji RLS nevrátí. */
+export async function getScopeVersionForPdf(versionId: number): Promise<ScopeVersionForPdf | null> {
+  const s = await createClient()
+  const { data, error } = await s.from('deal_scope_version').select(OFFER_PDF_SELECT).eq('id', versionId).maybeSingle()
+  if (isScopeVersionMissing(error)) return null
+  if (error) throw error
+  if (!data) return null
+  const row = data as unknown as RawVersion
+  const deal = one(row.deal)
+  return {
+    ...row,
+    deal: deal
+      ? { id: deal.id, title: deal.title, account: one(deal.account), primary_contact: one(deal.primary_contact) }
+      : null,
+  }
 }

@@ -4,6 +4,7 @@ import { TaskBoard } from '@/components/TaskBoard'
 import { TaskForm, TASK_QUICK_ANCHOR } from '@/components/TaskForm'
 import { WorkSegNav } from '@/components/WorkUi'
 import { buttonClass } from '@/components/ui/Button'
+import { ExportButtons } from '@/components/ExportButtons'
 import { createTask, updateTaskDueOn, updateTaskStatus } from '@/domain/crm/actions/tasks'
 import { getMyTasks, getTasks, listAssignableMembers } from '@/domain/crm/queries/tasks'
 import { getSalesDeals } from '@/domain/crm/queries/sales'
@@ -46,6 +47,7 @@ export default async function TasksPage({
             { href: '/cockpit/tasks?view=team', label: 'Tým', active: view === 'team' },
           ]}
         />
+        <ExportButtons prehled="ukoly" label="Stáhnout úkoly" params={{ view }} />
         <a href={`#${TASK_QUICK_ANCHOR}`} className={buttonClass('primary')}>Založit úkol</a>
       </PageHeader>
       <SectionTabs tabs={WORK_TABS} label="Práce" />

@@ -7,7 +7,7 @@ import { DealsBar, DealsStageStrip, moneyParts } from '@/components/DealsVisuals
 import { PageHeader } from '@/components/PageHeader'
 import { Card } from '@/components/ui/Card'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { ButtonLink } from '@/components/ui/Button'
+import { ButtonLink, buttonClass } from '@/components/ui/Button'
 import { DealsNextStep, DealsNextStepButton } from '@/components/DealsNextStep'
 import { updateDealNextStep } from '@/domain/crm/actions/sales'
 import { DealsDetailTabs, type DealDetailTab } from '@/components/DealsDetailTabs'
@@ -33,6 +33,8 @@ import {
   draftDefaults, latestVersion, nextVersionNumber, scopeSendState, type ScopeVersionRow, type ScopeVersionStatus,
 } from '@/domain/crm/scopeVersion'
 import { NewScopeVersionForm, ScopeVersionButtons } from '@/components/ScopeVersionControls'
+import { canPrintScopeVersion } from '@/domain/crm/offerPdfSource'
+import { offerPdfHref } from '@/lib/export/href'
 import { checkDealInvariant } from '@/domain/crm/dealInvariant'
 import { OPEN_DEAL_STAGES, weightedValue } from '@/domain/crm/sales'
 
@@ -334,6 +336,13 @@ export default async function DealDetailPage({ params, searchParams }: {
                             status={v.status}
                             sendState={scopeSendState(v, pendingSend)}
                           />
+                          {canPrintScopeVersion(v) && (
+                            // Obyčejný odkaz (ne next/link): GET se záznamem do auditu se nepřednačítá.
+                            <a href={offerPdfHref(v.id)} download rel="nofollow" className={buttonClass('outline', 'sm')}
+                              aria-label={`PDF nabídky pro zákazníka — verze ${v.version}`}>
+                              PDF pro zákazníka
+                            </a>
+                          )}
                         </li>
                       )
                     })}

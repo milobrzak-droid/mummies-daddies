@@ -8,6 +8,7 @@ import { TodayNote } from '@/components/ui/TodayParts'
 import { Card } from '@/components/ui/Card'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { buttonClass } from '@/components/ui/Button'
+import { ExportButtons } from '@/components/ExportButtons'
 import { canCurrentUserSeeSales } from '@/lib/queries/access'
 import { getCurrentMember } from '@/lib/queries/currentMember'
 import { listTeamMembers } from '@/lib/queries/team'
@@ -90,6 +91,8 @@ export default async function PrehledTydnePage({
         eyebrow={`Týden ${isoWeek(today)} · obchody, dodávky, rozhodnutí, rizika`}
         subtitle="Provozní přehled firmy na jednom místě: co se změnilo, co čeká a kde hrozí riziko. Každá položka vede na svůj záznam."
       >
+        {/* Týdenní přehled pro vedení: pipeline podle fáze, leady, nabídky, výhry a prohry. */}
+        <ExportButtons prehled="tydenni-prehled" label="Stáhnout týdenní přehled pro vedení" params={{ tyden: week }} />
         {leadership && (preview ? (
           <Link href={`/cockpit/prehled-tydne?tyden=${week}`} className={buttonClass('outline')}>
             Zpět na přehled

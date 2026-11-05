@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { PageHeader } from '@/components/PageHeader'
+import { ExportButtons } from '@/components/ExportButtons'
 import { DealsSectionTabs } from '@/components/DealsSectionTabs'
 import { Card } from '@/components/ui/Card'
 import { DataTable } from '@/components/DataTable'
@@ -67,7 +68,10 @@ export default async function PipelineReportsPage() {
 
   return (
     <>
-      <PageHeader title="Reporty obchodů" eyebrow="Obchody" subtitle="Kde vzniká byznys: fáze, největší obchody, obchodníci a klienti." />
+      <PageHeader title="Reporty obchodů" eyebrow="Obchody" subtitle="Kde vzniká byznys: fáze, největší obchody, obchodníci a klienti.">
+        {/* Všechny verze nabídek (deal_scope_version) s klientem, stavem a částkou. */}
+        <ExportButtons prehled="nabidky" title="Nabídky" label="Stáhnout přehled nabídek" />
+      </PageHeader>
       <DealsSectionTabs />
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_300px]">

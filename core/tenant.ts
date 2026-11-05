@@ -361,6 +361,20 @@ export interface BrandConfig {
   tagline: string
 }
 
+/** Fakturační údaje firmy (hlavička PDF nabídky a exportů pro zákazníka). */
+export interface LegalEntityConfig {
+  /** Obchodní firma včetně právní formy („… s.r.o."). */
+  name: string
+  street: string
+  /** PSČ a obec („120 00 Praha 2"). */
+  city: string
+  ico: string
+  dic: string | null
+  email: string
+  phone: string
+  web: string | null
+}
+
 /** Obchodní linka (hodnota enumu revenue_line) a její kategorie. */
 export interface RevenueLineConfig {
   key: string
@@ -465,6 +479,8 @@ export interface CompanyConfig<N extends string = string, P extends string = str
   modules?: ModulesConfig
   /** Volitelné: chybí = výchozí logo Cockpitu. */
   brand?: BrandConfig
+  /** Volitelné (P9 exporty): fakturační údaje do PDF nabídky; chybí = jen jméno firmy. */
+  legalEntity?: LegalEntityConfig | null
   /** Obchodní linky (revenue_line); klíče MUSÍ sedět s enumem v 0001_base_schema.sql. */
   revenueLines?: readonly RevenueLineConfig[]
   /** Popisky fází obchodu (deal.stage); klíče enumu zůstávají, mění se jen popisek. */

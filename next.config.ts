@@ -173,6 +173,16 @@ const nextConfig: NextConfig = {
   experimental: {
     serverActions: { bodySizeLimit: "4mb" },
   },
+  // PDF exporty (lib/export/pdfKit.ts) čtou písmo s češtinou z disku za běhu
+  // (fs + process.cwd()), takže ho trasování souborů samo nenajde. Přibalí se
+  // k funkcím Cockpitu (exporty) a API (agent může PDF nabídky přiložit k e-mailu).
+  // exceljs je CommonJS s vlastními závislostmi (zip, streamy); na serveru se
+  // načítá přímo z node_modules, ne přes bundler.
+  serverExternalPackages: ["exceljs"],
+  outputFileTracingIncludes: {
+    "/cockpit/**": ["./lib/export/fonts/**/*"],
+    "/api/**": ["./lib/export/fonts/**/*"],
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

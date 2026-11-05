@@ -17,6 +17,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { ClientsSegments, type ClientsSegment } from '@/components/ui/ClientsSegments'
 import { ClientsTable, ClientsRowLink, type ClientsColumn } from '@/components/ui/ClientsTable'
 import { Pager } from '@/components/Pager'
+import { ExportButtons } from '@/components/ExportButtons'
 import { Avatar } from '@/components/Avatar'
 import { formatCzk, formatDate } from '@/lib/format'
 import { OPEN_DEAL_STAGES } from '@/domain/crm/sales'
@@ -182,6 +183,11 @@ export default async function ClientsPage({
   return (
     <>
       <PageHeader title="Klienti" eyebrow="Firmy" subtitle={`${subtitle}.`}>
+        {/* Export bere stejné filtry a řazení jako seznam, ale všechny stránky. */}
+        <ExportButtons prehled="klienti" label="Stáhnout klienty a kontakty" params={{
+          q: params.q, stav: params.status, obor: params.obor, region: params.region, vlastnik: params.owner,
+          bez_ico: params.bezIco ? '1' : null, sort: params.sort === 'nazev' ? null : params.sort,
+        }} />
         <ButtonLink href="/cockpit/clients/new" variant="primary">Založit klienta</ButtonLink>
       </PageHeader>
       <SectionTabs tabs={CLIENT_TABS} label="Klienti a partneři" />
