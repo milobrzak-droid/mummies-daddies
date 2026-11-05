@@ -1,0 +1,2147 @@
+{
+ "pages": [
+  {
+   "path": "/",
+   "metaTitle": "Catering Praha – firemní akce, svatby a oslavy | Mummies & Daddies",
+   "metaDescription": "Šéfkuchařský catering z Prahy pro firmy, svatby a oslavy po celé ČR. Snídaně, coffee breaky, rauty, bankety i piknik. Nabídku na standardní akci máte do pár minut.",
+   "sections": [
+    {
+     "id": "horni-lista",
+     "heading": "Horní lišta",
+     "body": "Nabídku cateringu dostanete do pár minut · +420 737 818 694"
+    },
+    {
+     "id": "hero",
+     "heading": "CATERING, NA KTERÝ SE NEZAPOMÍNÁ.",
+     "body": "Firemní akce, svatby a oslavy v Praze i po celé ČR. Šéfkuchařská kuchyně z fine diningu, milý servis a cheesecaky podle amerického receptu.",
+     "items": [
+      "Sekundární odkaz: Prohlédnout menu a ceny → /catering",
+      "Mikrodůvěra: Vaříme od roku 2018 · [DOPLNÍ KLIENT: počet akcí za rok] akcí ročně · catering obvykle 300–2 000 Kč/os."
+     ],
+     "cta": "Chci nabídku do pár minut → /poptavka"
+    },
+    {
+     "id": "rychly-start",
+     "heading": "Spočítejte si nabídku",
+     "body": "Tři údaje a jsme v obraze. Na zbytek se vás krátce doptá náš digitální asistent.",
+     "items": [
+      "Typ akce ▾ (Firemní catering, Snídaně, Coffee break, Oběd, Večeře a banket, Společenská akce, Teambuilding, Svatba, Oslava a piknik, Ještě nevím)",
+      "Datum akce",
+      "Počet osob"
+     ],
+     "cta": "Spočítat nabídku"
+    },
+    {
+     "id": "typy-akci",
+     "heading": "Na jakou akci vaříme?",
+     "body": "Vyberte typ akce. U každého najdete ukázková menu, orientační cenu a minimální počet osob.",
+     "items": [
+      "Firemní catering — Obědy do kanceláře, porady, konference i večírky. Od [DOPLNÍ KLIENT] Kč/os. · od 4 osob → /catering/firemni",
+      "Snídaně — Snídaňový bufet, plná americká nebo zdravá snídaně. Od [DOPLNÍ KLIENT] Kč/os. · od 2 osob → /catering/snidane",
+      "Coffee break — Minisendviče, mini dezerty, skvělá káva. A když chcete, i rolování sushi. Od [DOPLNÍ KLIENT] Kč/os. · od 15 osob → /catering/coffee-break",
+      "Obědy s rozvozem — Bufet, Šéfkuchařovo menu nebo saláty a sendviče grab-and-go. Od [DOPLNÍ KLIENT] Kč/os. · minimum podle objednávky → /catering/obedy",
+      "Večeře a bankety — Teplý a studený bufet, banket nebo sharing table. Od [DOPLNÍ KLIENT] Kč/os. · od 8 osob → /catering/vecere-a-bankety",
+      "Společenské akce — Raut, jednohubky a finger food na opening, galavečer i networking. Od [DOPLNÍ KLIENT] Kč/os. · od 15 osob → /catering/spolecenske-akce",
+      "Svatby — Svatební hostina podle vašeho příběhu. Konzultace zdarma. Od [DOPLNÍ KLIENT] Kč/os. → /catering/svatby",
+      "Oslavy a piknik — Narozeniny, křtiny, garden party, BBQ i piknikový koš. Od [DOPLNÍ KLIENT] Kč/os. · od 2 osob → /catering/oslavy-a-piknik",
+      "Teambuilding — Vaření se šéfkuchařem, sushi workshop, BBQ venku. Od [DOPLNÍ KLIENT] Kč/os. · od 8 osob → /catering/teambuilding"
+     ],
+     "cta": "Nevíte, který formát zvolit? Zeptejte se asistenta"
+    },
+    {
+     "id": "proc-my",
+     "heading": "Proč Mummies & Daddies",
+     "body": "Vaříme jako v dobré restauraci a staráme se jako doma.",
+     "items": [
+      "Šéfkuchařská kuchyně — Ruda a Monika léta vařili v top fine dining restauracích a 5* hotelech. Sous-vide, terina z kachních jater i chobotnice v červeném víně jsou u nás běžná práce.",
+      "Nabídka do pár minut — Standardní akci spočítáme hned. U každé služby vidíte cenu od a minimum osob dřív, než nám napíšete.",
+      "Plný servis — Obsluha, inventář, vybavení, ozvučení, dekorace i pronájem prostor. Domluvíte se s jedním člověkem.",
+      "Zážitek navíc — Live cooking, rolování sushi, sladký bar, fresh bar nebo gentlemanský klub s rumy, whisky a doutníky."
+     ]
+    },
+    {
+     "id": "reference",
+     "heading": "Vařili jsme pro…",
+     "body": "Luxusní party v Pařížské ulici, svatby na statcích i firemní akce. Pár ukázek:",
+     "items": [
+      "Luxusní party BVLGARI, Pařížská, Praha — jednohubky a finger food v showroomu značky. [DOPLNÍ KLIENT: souhlas s uvedením značky a fotek] → /reference/bvlgari-luxury-party",
+      "Svatba Jitka & Rostislav, Klášterec nad Ohří — bufet s tatarákem, kachními rillettes a sladký bar s pěti druhy panna cotty → /reference/svatba-jitka-a-rostislav",
+      "Svatba Katka & Jirka, U Dvou Stodol — Prosecco, svatební vývar, bufet a gentlemanský klub → /reference/svatba-katka-a-jirka",
+      "Loga klientů: [DOPLNÍ KLIENT: loga se souhlasem]",
+      "Citace a hodnocení: [DOPLNÍ KLIENT: 2–3 citace klientů nebo Google recenze]",
+      "Čísla: [DOPLNÍ KLIENT: akcí ročně] · [DOPLNÍ KLIENT: hostů ročně] · vaříme od roku 2018"
+     ],
+     "cta": "Všechny reference → /reference"
+    },
+    {
+     "id": "z-kuchyne",
+     "heading": "Z naší kuchyně",
+     "body": "Tohle u nás hosté ochutnají. Menu skládáme podle akce, sezóny a vašich chutí.",
+     "items": [
+      "Vepřová krkovice sous-vide marinovaná v česneku a bylinkách",
+      "Chobotnice v červeném víně s kořenovou zeleninou",
+      "Kachní rillettes",
+      "Grilované krevety v bazalkovém pestu",
+      "Panna cotty a makronky ze sladkého baru",
+      "Mini cheesecaky podle amerického receptu"
+     ],
+     "cta": "Ukázková menu → /catering"
+    },
+    {
+     "id": "jak-to-funguje",
+     "heading": "Jak to funguje",
+     "body": "Od první zprávy po poslední umytou sklenici.",
+     "items": [
+      "1. Řeknete nám o akci — formulář nebo chat, zabere to asi 2 minuty.",
+      "2. Dostanete nabídku — u standardní akce do pár minut s cenou. U akce na míru se vám ozve Monika osobně.",
+      "3. Ochutnáte a projdeme místo — u svateb a velkých akcí.",
+      "4. Den D — dovezeme, nachystáme, obsloužíme a uklidíme."
+     ],
+     "cta": "Začít → /poptavka"
+    },
+    {
+     "id": "prostory",
+     "heading": "Nemáte místo? Vaříme na krásných statcích",
+     "body": "Rádi vám doporučíme prostor, kde to známe a kde to funguje.",
+     "items": [
+      "Hudlická Stodola",
+      "Statek Starý Týn, Úštěk",
+      "Statek U Dvou Stodol, Záchrašťany u Hradce Králové"
+     ],
+     "cta": "Prohlédnout prostory → /prostory"
+    },
+    {
+     "id": "cheesecaky",
+     "heading": "Sladká tečka každé akce",
+     "body": "Cheesecaky pečeme podle originálního amerického receptu. Je to naše mantra. Řada Daddy a řada Mummy, od mini po velké dorty. Na akci, nebo domů. [DOPLNÍ KLIENT: jednou větou, čím se řady Daddy a Mummy liší]",
+     "items": [
+      "Daddy vanilkový — vanilka a máslové sušenky · 790 Kč",
+      "Daddy pistáciovo-malinový · 1 290 Kč",
+      "Mini cheesecaky mix, 10 ks · 575 Kč"
+     ],
+     "cta": "Objednat domů → /cheesecaky · Přidat na akci → /poptavka?doplnek=sladky-bar"
+    },
+    {
+     "id": "tym",
+     "heading": "Za každým talířem jsme my",
+     "body": "Ruda je šéfkuchař, Monika se postará, aby vše klaplo. Vaříme spolu od roku 2018 a do každé akce dáváme to, co jsme se naučili ve fine diningu i na cestách.",
+     "items": [
+      "Podpis: Vaše Mummy & Daddy"
+     ],
+     "cta": "Poznejte nás → /o-nas"
+    },
+    {
+     "id": "faq",
+     "heading": "Nejčastější otázky",
+     "body": "Krátce a k věci. Další odpovědi najdete v Častých dotazech.",
+     "items": [
+      "Kolik stojí catering na osobu? — Obvykle 300 až 2 000 Kč. Záleží na formátu, menu, počtu hostů, obsluze a dopravě. U každé služby najdete cenu od.",
+      "Jaký je minimální počet osob? — Zdravá snídaně a piknik od 2 osob, firemní obědy od 4, sharing table od 8, coffee break a raut od 15.",
+      "Vaříte i mimo Prahu? — Ano. Základnu máme v Praze a vaříme po celé ČR, například v Klášterci nad Ohří, Úštěku nebo u Hradce Králové.",
+      "Zvládnete bezlepkové a vegan menu? — Vegetariánské a bezlepkové pokrmy i varianty bez laktózy a mléčné bílkoviny připravujeme běžně. Vegan menu: [DOPLNÍ KLIENT: potvrdit].",
+      "Jak dlouho předem objednat? — Svatbu řešte aspoň půl roku předem. U ostatních akcí [DOPLNÍ KLIENT: minimální předstih]. Spěcháte? Napište, zkusíme to."
+     ],
+     "cta": "Všechny dotazy → /caste-dotazy"
+    },
+    {
+     "id": "zaverecna-poptavka",
+     "heading": "Popište nám svou akci a do pár minut máte nabídku.",
+     "body": "Napište asistentovi, nebo vyplňte krátký formulář. Raději mluvíte s člověkem? Zavolejte Monice.",
+     "items": [
+      "Chat s digitálním asistentem",
+      "Krátký formulář",
+      "+420 737 818 694",
+      "info@mummiesdaddies.com"
+     ],
+     "cta": "Chci nabídku do pár minut"
+    },
+    {
+     "id": "paticka",
+     "heading": "Patička",
+     "body": "Mummies & Daddies catering. Vaříme v Praze a po celé ČR.",
+     "items": [
+      "Služby: Firemní catering, Snídaně, Coffee break, Obědy, Večeře a bankety, Společenské akce, Teambuilding, Svatby, Oslavy a piknik",
+      "Další: Reference, Prostory, Cheesecaky, Dárkový poukaz, Blog, Časté dotazy, O nás, Kontakt",
+      "Kontakt: +420 737 818 694 · +420 737 301 679 · info@mummiesdaddies.com",
+      "Mummies and Daddies s.r.o., Varšavská 715, 120 00 Praha 2 · IČO 17957524 · DIČ CZ17957524 · zapsáno pod sp. zn. C 379274 u Městského soudu v Praze",
+      "Instagram · Facebook · LinkedIn",
+      "Obchodní podmínky · Ochrana osobních údajů · Cookies",
+      "Cockpit (pro tým)",
+      "© [aktuální rok] Mummies and Daddies s.r.o."
+     ]
+    }
+   ]
+  },
+  {
+   "path": "/catering",
+   "metaTitle": "Cateringové služby a ceny | Mummies & Daddies Praha",
+   "metaDescription": "Přehled cateringu Mummies & Daddies: snídaně, coffee break, obědy, večeře, raut, finger food, svatby, oslavy a teambuilding. Ceny od a minimální počty osob na jednom místě.",
+   "sections": [
+    {
+     "id": "uvod",
+     "heading": "Catering na každou akci",
+     "body": "Vyberte formát, který sedí vaší akci. U každého vidíte orientační cenu za osobu a minimální počet hostů. Přesnou nabídku spočítáme do pár minut."
+    },
+    {
+     "id": "sluzby",
+     "heading": "Naše služby",
+     "body": "Klikněte na službu a uvidíte ukázková menu.",
+     "items": [
+      "Firemní catering — od [DOPLNÍ KLIENT] Kč/os. · od 4 osob",
+      "Snídaně — od [DOPLNÍ KLIENT] Kč/os. · od 2 osob",
+      "Coffee break — od [DOPLNÍ KLIENT] Kč/os. · od 15 osob",
+      "Obědy s rozvozem — od [DOPLNÍ KLIENT] Kč/os. · minimum podle objednávky",
+      "Večeře a bankety — od [DOPLNÍ KLIENT] Kč/os. · od 8 osob",
+      "Společenské akce — od [DOPLNÍ KLIENT] Kč/os. · od 15 osob",
+      "Teambuilding — od [DOPLNÍ KLIENT] Kč/os. · od 8 osob",
+      "Svatby — od [DOPLNÍ KLIENT] Kč/os. · minimum [DOPLNÍ KLIENT]",
+      "Oslavy a piknik — od [DOPLNÍ KLIENT] Kč/os. · od 2 osob"
+     ]
+    },
+    {
+     "id": "formaty",
+     "heading": "Bufet, raut, banket? Malý průvodce",
+     "body": "Nevíte, jak jídlo podávat? Tady je rychlé srovnání.",
+     "items": [
+      "Bufet (teplý a studený) — hosté si berou sami, jídla je dost a výběr je pestrý. Od 15 osob.",
+      "Studený raut — chlebíčky, jednohubky, uzený losos, telecí tatarák, parmská šunka s fíkem, sýry z celého světa. Ideální na stání a networking.",
+      "Teplý raut se servisem — teplá jídla doplňuje a podává naše obsluha.",
+      "Banket a servírovaná večeře — chody u stolu, na přání s párováním vín. Od 10 osob.",
+      "Sharing table — velké mísy uprostřed stolu, každý ochutná všechno. 8 až 30 osob.",
+      "Finger food a jednohubky — malé porce do ruky: mini burgery, mini tatarák a další.",
+      "BBQ a live cooking — grilujeme a vaříme přímo před hosty."
+     ]
+    },
+    {
+     "id": "v-cene",
+     "heading": "Co je v ceně a co si přiobjednáte",
+     "body": "Cena za osobu zahrnuje jídlo podle menu. [DOPLNÍ KLIENT: co přesně je v základní ceně, např. doprava, inventář, příprava]. Další služby si přidáte podle potřeby.",
+     "items": [
+      "Obsluha a personál",
+      "Inventář a vybavení (nádobí, rautové stoly, ubrusy)",
+      "Ozvučení a dekorace podle tématu akce",
+      "Nápoje, welcome drink a přípitek",
+      "Mobilní bar s alkoholickými i nealkoholickými nápoji",
+      "Sladký bar a cheesecaky",
+      "Pronájem prostor u partnerů"
+     ]
+    },
+    {
+     "id": "diety",
+     "heading": "Diety a alergeny",
+     "body": "Běžně připravujeme vegetariánské a bezlepkové pokrmy a varianty pro hosty, kteří nesmějí laktózu nebo mléčnou bílkovinu. Doporučujeme poslat menu hostům předem, ať nás na alergie upozorní včas. Alergeny značíme [DOPLNÍ KLIENT: způsob značení 14 alergenů EU]."
+    },
+    {
+     "id": "oblast",
+     "heading": "Kde vaříme",
+     "body": "Základnu máme v Praze. Vaříme po celé ČR, třeba v Klášterci nad Ohří, Úštěku nebo u Hradce Králové. Akce v zahraničí řešíme individuálně. Doprava: [DOPLNÍ KLIENT: ceník dopravy cateringu]."
+    },
+    {
+     "id": "cta",
+     "heading": "Máte vybráno? Spočítáme to.",
+     "body": "Napište typ akce, datum a počet osob. Standardní nabídku máte do pár minut.",
+     "cta": "Spočítat nabídku → /poptavka"
+    }
+   ]
+  },
+  {
+   "path": "/catering/firemni",
+   "metaTitle": "Firemní catering Praha – kanceláře, konference, večírky | Mummies & Daddies",
+   "metaDescription": "Firemní catering v Praze a po ČR: obědy do kanceláře od 4 osob, porady, konference, uvedení produktu, teambuilding i večírky. Faktura na IČO, nabídka do pár minut.",
+   "sections": [
+    {
+     "id": "hero",
+     "heading": "Firemní catering, se kterým nemáte práci",
+     "body": "Obědy do kanceláře, snídaně na poradu, coffee breaky na školení i velký večírek. Vy řeknete kdy a pro kolik. My dovezeme, nachystáme a uklidíme.",
+     "cta": "Nabídka pro firmu do pár minut → /poptavka?segment=firma"
+    },
+    {
+     "id": "typy-akci",
+     "heading": "Pro jaké firemní akce vaříme",
+     "body": "Od porady pro čtyři po konferenci.",
+     "items": [
+      "Porady a board meetingy",
+      "Kancelářské a pracovní obědy",
+      "Konference a kongresy",
+      "Veletrhy a výstavy",
+      "Uvedení produktu a prezentace značky",
+      "Firemní večírky a výročí",
+      "Roadshow a promo akce",
+      "Teambuildingy"
+     ]
+    },
+    {
+     "id": "balicky",
+     "heading": "Balíčky pro firmy",
+     "body": "Orientační ceny a minimální počty osob. Přesnou cenu spočítáme podle vašeho termínu a místa.",
+     "items": [
+      "Firemní obědy — od 4 osob · od [DOPLNÍ KLIENT] Kč/os. Čerstvé sendviče a wrapy, saláty a bowly, teplá jídla, dezerty a pečivo. Dovezeme až do kanceláře.",
+      "Porada a board meeting — od 4 osob · od [DOPLNÍ KLIENT] Kč/os. Snídaně, kávový servis, lehký business oběd, prémiové dezerty a elegantní servírování.",
+      "Konference, veletrhy, kongresy — od 15 osob · od [DOPLNÍ KLIENT] Kč/os. Coffee breaky, business obědy, networkingové recepce, večerní program, dezerty a nápoje.",
+      "Uvedení produktu — od 10 osob · od [DOPLNÍ KLIENT] Kč/os. Jednohubky a finger food do showroomu, obchodního centra, firemních prostor i na venkovní promo akci.",
+      "Teambuilding — od 8 osob · od [DOPLNÍ KLIENT] Kč/os. Venkovní BBQ, garden party, food stations, bufet, drinky a koktejly. Více na /catering/teambuilding."
+     ]
+    },
+    {
+     "id": "ukazkova-menu",
+     "heading": "Ukázková menu",
+     "body": "Inspirace, ze které skládáme nabídku. Menu vždy upravíme podle vás. [DOPLNÍ KLIENT: konkrétní položky a ceny ke každému balíčku]",
+     "items": [
+      "Pracovní oběd: výběr sendvičů a wrapů, salátový bowl, teplé jídlo dne, dezert, pečivo",
+      "Board meeting: snídaně, káva a čaj, lehký oběd, prémiové dezerty a mini cheesecaky",
+      "Konference: ranní coffee break, business oběd, odpolední coffee break, networkingová recepce",
+      "Uvedení produktu: jednohubky a finger food, welcome drink, sladké minidezerty"
+     ]
+    },
+    {
+     "id": "pravidelne-obedy",
+     "heading": "Pravidelné obědy do kanceláře",
+     "body": "Chcete vařit pro tým každý den nebo jednou týdně? Domluvíme pravidelnou objednávku s rozvozem po Praze. [DOPLNÍ KLIENT: potvrdit nabídku pravidelných obědů, model (denní/týdenní), uzávěrku objednávek a minimum]",
+     "cta": "Domluvit pravidelné obědy → /catering/obedy"
+    },
+    {
+     "id": "reference",
+     "heading": "Reference",
+     "body": "Vařili jsme na luxusní party BVLGARI v Pařížské ulici v Praze. [DOPLNÍ KLIENT: souhlas s uvedením a další firemní klienti a loga]",
+     "cta": "Všechny reference → /reference"
+    },
+    {
+     "id": "fakturace",
+     "heading": "Fakturace, platba a storno",
+     "body": "Fakturujeme na IČO. Podmínky se dozvíte v nabídce předem, žádná překvapení.",
+     "items": [
+      "Faktura na firmu s IČO a DIČ",
+      "Záloha: [DOPLNÍ KLIENT]",
+      "Splatnost: [DOPLNÍ KLIENT]",
+      "Finální počet hostů nahlaste [DOPLNÍ KLIENT: kolik dní předem]",
+      "Storno podmínky: [DOPLNÍ KLIENT]"
+     ]
+    },
+    {
+     "id": "faq",
+     "heading": "Časté dotazy office manažerů",
+     "body": "To, na co se ptáte nejčastěji.",
+     "items": [
+      "Za jak dlouho dostanu nabídku? — U standardní akce do pár minut. Akci na míru projde Monika a ozve se osobně.",
+      "Zvládnete diety? — Vegetariánské, bezlepkové a bez laktózy připravujeme běžně. Stačí napsat počty.",
+      "Dovezete jídlo včas? — Čas dovozu domluvíme v nabídce. [DOPLNÍ KLIENT: časová okna rozvozu]",
+      "Kdo to nachystá a uklidí? — Podle domluvy to zařídíme my, včetně obsluhy a inventáře.",
+      "Můžeme objednat na poslední chvíli? — [DOPLNÍ KLIENT: minimální předstih]. Napište nám, zkusíme to."
+     ]
+    },
+    {
+     "id": "cta",
+     "heading": "Nabídka pro firmu do pár minut",
+     "body": "Typ akce, datum, místo a počet osob. Zbytek doptá náš asistent, fakturační údaje vyplníte jednou.",
+     "cta": "Chci nabídku pro firmu → /poptavka?segment=firma&zdroj=/catering/firemni"
+    }
+   ]
+  },
+  {
+   "path": "/catering/snidane",
+   "metaTitle": "Snídaňový catering Praha – bufet, americká a zdravá snídaně | Mummies & Daddies",
+   "metaDescription": "Firemní snídaně a snídaně na školení: snídaňový bufet od 15 osob, plná americká snídaně od 10 osob, zdravá snídaně už od 2 osob. Dovezeme v Praze i okolí.",
+   "sections": [
+    {
+     "id": "hero",
+     "heading": "Dobré ráno začíná snídaní",
+     "body": "Porada v osm, školení v devět? Snídani dovezeme a nachystáme, vy jen otevřete dveře.",
+     "cta": "Objednat snídani → /poptavka?typ=snidane"
+    },
+    {
+     "id": "balicky",
+     "heading": "Tři snídaně, vyberte si",
+     "body": "Každou připravujeme na míru, tohle jsou výchozí varianty.",
+     "items": [
+      "Snídaňový bufet — od 15 osob · od [DOPLNÍ KLIENT] Kč/os. Tradiční i moderní mezinárodní kuchyně: zeleninové koktejly, otevřené sendviče, rolované tramezzini, skleničky s müsli, medem, jogurtem a čerstvým ovocem.",
+      "Plná americká snídaně — od 10 osob · od [DOPLNÍ KLIENT] Kč/os. Vejce míchaná, pošírovaná nebo jako omeleta, slanina nebo klobásky, toast s máslem a marmeládou, hash browns, palačinky, cereálie, káva, čaj, pomerančový nebo grapefruitový džus.",
+      "Zdravá snídaně — od 2 osob · od [DOPLNÍ KLIENT] Kč/os. Čerstvý ovocný talíř, jogurtové mísy, sendvič s portobello, vejcem, holandskou omáčkou a rukolou, ovocné a zeleninové koktejly a čerstvé džusy."
+     ]
+    },
+    {
+     "id": "doplnky",
+     "heading": "Přidejte si",
+     "body": "Doplňky ke každé snídani.",
+     "items": [
+      "Ovesné kaše",
+      "Smoothie",
+      "Ovocné mísy, v sezóně i s melounem",
+      "Čerstvé džusy a ovocné limonády",
+      "Mini cheesecaky"
+     ]
+    },
+    {
+     "id": "fotky",
+     "heading": "Fotky",
+     "body": "[DOPLNÍ KLIENT: fotky snídaňového bufetu a zdravé snídaně z vlastních akcí]"
+    },
+    {
+     "id": "cta",
+     "heading": "Snídani spočítáme hned",
+     "body": "Napište datum, čas, adresu a počet osob.",
+     "cta": "Objednat snídani → /poptavka?typ=snidane"
+    }
+   ]
+  },
+  {
+   "path": "/catering/coffee-break",
+   "metaTitle": "Coffee break catering na konference a školení | Mummies & Daddies",
+   "metaDescription": "Coffee break pro 15 a více osob: minisendviče, saláty, mini dezerty, mini cheesecaky a skvělá káva. Nově i coffee break s rolováním sushi nebo týmovým vařením.",
+   "sections": [
+    {
+     "id": "hero",
+     "heading": "Pauza, na kterou se těší celý sál",
+     "body": "Celodenní program potřebuje přestávky. My je naplníme jídlem, které dodá energii a lidi u něj rádi zůstanou.",
+     "cta": "Nabídka na coffee break → /poptavka?typ=coffee-break"
+    },
+    {
+     "id": "standard",
+     "heading": "Standardní coffee break",
+     "body": "Krátká přestávka na 15 až 45 minut. Od 15 osob · od [DOPLNÍ KLIENT] Kč/os.",
+     "items": [
+      "Minisendviče a kanapky",
+      "Saláty",
+      "Mini dezerty a monoporce",
+      "Mini cheesecaky",
+      "Káva, překapávaná káva a čaj"
+     ]
+    },
+    {
+     "id": "varianty",
+     "heading": "Ráno, odpoledne, nebo celý den",
+     "body": "Ranní coffee break může být lehčí snídaně, odpolední spíš sladký. Na celodenní akci skládáme snídani, coffee break, oběd a další coffee break. [DOPLNÍ KLIENT: potvrdit celodenní balíček a jeho cenu]"
+    },
+    {
+     "id": "se-zazitkem",
+     "heading": "Coffee break se zážitkem",
+     "body": "Pauza, při které se lidé něco naučí a začnou spolu mluvit. Společné vaření zbavuje stresu a jídlo zlepšuje náladu.",
+     "items": [
+      "Rolování sushi — každý si srolí vlastní",
+      "Týmové vaření — každý má v přípravě jinou roli",
+      "Cena, kapacita a místo konání: [DOPLNÍ KLIENT]"
+     ]
+    },
+    {
+     "id": "napoje",
+     "heading": "Nápoje",
+     "body": "Káva je základ. Zbytek podle chuti.",
+     "items": [
+      "Káva a překapávaná káva",
+      "Čaj",
+      "Fresh a smoothie bar",
+      "Ovocné limonády",
+      "Kurkuma latte (zlaté mléko)"
+     ]
+    },
+    {
+     "id": "cta",
+     "heading": "Kolik lidí, kolik pauz?",
+     "body": "Napište program akce a počet osob. Standardní coffee break spočítáme do pár minut.",
+     "cta": "Nabídka na coffee break → /poptavka?typ=coffee-break"
+    }
+   ]
+  },
+  {
+   "path": "/catering/obedy",
+   "metaTitle": "Obědy a firemní obědy s rozvozem po Praze | Mummies & Daddies",
+   "metaDescription": "Obědový bufet, Šéfkuchařovo menu nebo saláty a sendviče grab-and-go. Dovezeme do kanceláře, na školení i na akci. Firemní obědy od 4 osob.",
+   "sections": [
+    {
+     "id": "hero",
+     "heading": "Oběd, který vás nakopne",
+     "body": "Bufet, menu od šéfkuchaře, nebo rychlé saláty a sendviče. Vždy čerstvé, vždy dovezené až k vám. A klidně s cheesecakem.",
+     "cta": "Objednat oběd → /poptavka?typ=obed"
+    },
+    {
+     "id": "formy",
+     "heading": "Tři způsoby obědu",
+     "body": "Vyberte podle toho, kolik máte času a jak chcete jíst.",
+     "items": [
+      "Obědový bufet — teplá i studená jídla, každý si vybere.",
+      "Šéfkuchařovo menu — jídlo z menu, které sestaví Ruda.",
+      "Grab-and-go — saláty, sendviče, wrapy a bowly do ruky, na pracovní oběd ideální."
+     ]
+    },
+    {
+     "id": "tydenni-menu",
+     "heading": "Ukázkové týdenní menu",
+     "body": "[DOPLNÍ KLIENT: ukázkové menu na 5 dní s cenami]"
+    },
+    {
+     "id": "podminky",
+     "heading": "Minimum, rozvoz a časy",
+     "body": "Firemní obědy vaříme od 4 osob. Minimum u ostatních obědů se řídí objednávkou.",
+     "items": [
+      "Rozvozová oblast: [DOPLNÍ KLIENT]",
+      "Časy dovozu: [DOPLNÍ KLIENT]",
+      "Uzávěrka objednávek: [DOPLNÍ KLIENT]"
+     ]
+    },
+    {
+     "id": "pravidelne",
+     "heading": "Pravidelná objednávka pro firmy",
+     "body": "Vaříte pro tým často? Domluvíme pravidelný rozvoz, ať nemusíte pokaždé objednávat znovu. [DOPLNÍ KLIENT: potvrdit, zda pravidelné obědy nabízíte]",
+     "cta": "Více o firemním cateringu → /catering/firemni"
+    },
+    {
+     "id": "cta",
+     "heading": "Kdy a pro kolik?",
+     "body": "Napište datum, adresu a počet strávníků.",
+     "cta": "Objednat oběd → /poptavka?typ=obed"
+    }
+   ]
+  },
+  {
+   "path": "/catering/vecere-a-bankety",
+   "metaTitle": "Večeře, bankety a sharing table – catering | Mummies & Daddies",
+   "metaDescription": "Teplý a studený bufet od 15 osob, banket a servírovaná večeře od 10 osob, sharing table pro 8 až 30 hostů. Catering na firemní i soukromé večery.",
+   "sections": [
+    {
+     "id": "hero",
+     "heading": "Večer, o kterém se bude mluvit",
+     "body": "Business banket, slavnostní večeře nebo dlouhé sezení u jednoho stolu. Vaříme pro firmy i pro rodinu a přátele.",
+     "cta": "Nabídka na večeři → /poptavka?typ=vecere"
+    },
+    {
+     "id": "bufet",
+     "heading": "Bufet teplý a studený",
+     "body": "Od 15 osob · od [DOPLNÍ KLIENT] Kč/os. Skvělé jídlo, čistota a milý personál. Plánování a starosti nechte na nás."
+    },
+    {
+     "id": "banket",
+     "heading": "Banket a servírovaná večeře",
+     "body": "Od 10 osob · od [DOPLNÍ KLIENT] Kč/os. Chody u stolu, na přání s párováním vín. Pro večery, kdy musí všechno klapnout a hosté mají odejít s wow pocitem."
+    },
+    {
+     "id": "sharing-table",
+     "heading": "Sharing table",
+     "body": "8 až 30 osob · od [DOPLNÍ KLIENT] Kč/os. Velké mísy uprostřed stolu a žádná etiketa navíc. Sundejte kravatu, dělte se a z kolegů se na chvíli stanou přátelé."
+    },
+    {
+     "id": "ukazkova-menu",
+     "heading": "Ukázková menu",
+     "body": "Z čeho večeře skládáme. Kompletní menu s cenou: [DOPLNÍ KLIENT: 2–3 ukázková večerní menu]",
+     "items": [
+      "Terina z kachních jater",
+      "Chobotnice v červeném víně s kořenovou zeleninou",
+      "Hovězí po burgundsku",
+      "Vepřová krkovice sous-vide s česnekem a bylinkami",
+      "Výběr sýrů",
+      "Panna cotta a cheesecake jako dezert"
+     ]
+    },
+    {
+     "id": "fotky",
+     "heading": "Fotky a video",
+     "body": "[DOPLNÍ KLIENT: fotky a video z večeří a banketů]"
+    },
+    {
+     "id": "cta",
+     "heading": "Navrhneme vám večeři",
+     "body": "Řekněte nám, kolik hostů čekáte a jak chcete jíst. Zbytek vymyslíme spolu.",
+     "cta": "Nabídka na večeři → /poptavka?typ=vecere"
+    }
+   ]
+  },
+  {
+   "path": "/catering/spolecenske-akce",
+   "metaTitle": "Catering na společenské akce – raut, finger food, opening | Mummies & Daddies",
+   "metaDescription": "Raut, jednohubky a finger food na opening, galavečer, tiskovku i networking. Mobilní bar, welcome drink a obsluha. Pro eventové agentury rychlá kalkulace. Od 15 osob.",
+   "sections": [
+    {
+     "id": "hero",
+     "heading": "Catering pro akce, na které se chodí",
+     "body": "Opening, galavečer, koktejlová party nebo networking. Postaráme se o jídlo, pití i obsluhu, vy o hosty.",
+     "cta": "Kalkulace pro event → /poptavka?typ=spolecenska-akce"
+    },
+    {
+     "id": "formaty",
+     "heading": "Formáty",
+     "body": "Od 15 osob · od [DOPLNÍ KLIENT] Kč/os.",
+     "items": [
+      "Studený raut — uzený losos, telecí tatarák, grilované krevety, parmská šunka s fíkem, prosciutto s melounem, sýry z celého světa",
+      "Teplý raut se servisem",
+      "Jednohubky a finger food — mini burgery, mini tatarák a další malé porce do ruky",
+      "Koktejlová party",
+      "Coupe de Champagne",
+      "Afternoon tea na networking"
+     ]
+    },
+    {
+     "id": "napoje",
+     "heading": "Bar a přípitek",
+     "body": "Hosté přijdou, dostanou sklenku a večer začíná.",
+     "items": [
+      "Mobilní bar s alkoholickými i nealkoholickými nápoji",
+      "Welcome drink",
+      "Přípitek",
+      "Fresh a smoothie bar"
+     ]
+    },
+    {
+     "id": "obsluha",
+     "heading": "Obsluha a personál",
+     "body": "Profesionální a usměvavá obsluha, která ví, kdy přijít a kdy zmizet. Dekorace a program přizpůsobíme tématu akce. [DOPLNÍ KLIENT: co zajišťujete sami a co přes partnery]"
+    },
+    {
+     "id": "bvlgari",
+     "heading": "Případová studie: BVLGARI",
+     "body": "Luxusní party v showroomu a prodejně BVLGARI v Pařížské ulici v Praze. Podávali jsme vybrané jednohubky a finger food. [DOPLNÍ KLIENT: souhlas s uvedením, počet hostů, fotky]",
+     "cta": "Celá reference → /reference/bvlgari-luxury-party"
+    },
+    {
+     "id": "agentury",
+     "heading": "Pro eventové agentury",
+     "body": "Potřebujete rychle kalkulaci pro svého klienta? Pošlete brief, dostanete orientační rozpětí hned a s finální nabídkou se ozve Monika. Jeden kontakt od kalkulace po úklid.",
+     "cta": "Poslat brief → /poptavka?segment=agentura"
+    },
+    {
+     "id": "cta",
+     "heading": "Kolik hostů a kde?",
+     "body": "Napište datum, místo, počet hostů a styl akce.",
+     "cta": "Kalkulace pro event → /poptavka?typ=spolecenska-akce"
+    }
+   ]
+  },
+  {
+   "path": "/catering/teambuilding",
+   "metaTitle": "Teambuilding s vařením se šéfkuchařem a cateringem | Mummies & Daddies",
+   "metaDescription": "Teambuilding od 8 osob: vaření se šéfkuchařem Rudolfem Nikolaiem, sushi workshop, venkovní BBQ, garden party, food stations a koktejly z čerstvého ovoce.",
+   "sections": [
+    {
+     "id": "hero",
+     "heading": "Zjistěte, že kolega Honza umí vařit",
+     "body": "Nejlíp se lidé poznají u jídla. A ještě líp, když ho vaří spolu.",
+     "cta": "Navrhnout teambuilding → /poptavka?typ=teambuilding"
+    },
+    {
+     "id": "formaty",
+     "heading": "Co si můžete vybrat",
+     "body": "Od 8 osob · od [DOPLNÍ KLIENT] Kč/os.",
+     "items": [
+      "Vaření se šéfkuchařem — staňte se pomocným kuchařem Rudolfa Nikolaie a uvařte jídlo pro sebe i kolegy",
+      "Sushi workshop — každý si srolí vlastní",
+      "Venkovní BBQ a garden party — grily, designová ohniště, BBQ stanice a live cooking",
+      "Food stations a bufet",
+      "Koktejly z čerstvého ovoce, které si namícháte sami"
+     ]
+    },
+    {
+     "id": "bbq-menu",
+     "heading": "Z grilu",
+     "body": "Ukázka, co u nás na BBQ bývá.",
+     "items": [
+      "Farmářské buřty a domácí klobásy",
+      "BBQ žebra a uzené speciality",
+      "Vegetariánská jídla z grilu",
+      "Kváskový chléb, domácí hořčice a kečup",
+      "Saláty, dipy a pečené brambory",
+      "Naše signature omáčky"
+     ]
+    },
+    {
+     "id": "prubeh",
+     "heading": "Jak to probíhá",
+     "body": "[DOPLNÍ KLIENT: průběh a délka programu, kde se konají workshopy, kapacita]",
+     "items": [
+      "Domluvíme cíl, místo a počet lidí",
+      "Navrhneme program a menu",
+      "Na místě vše připravíme",
+      "Vaříme, jíme, uklidíme"
+     ]
+    },
+    {
+     "id": "fotky",
+     "heading": "Fotky",
+     "body": "[DOPLNÍ KLIENT: fotky z teambuildingů a workshopů]"
+    },
+    {
+     "id": "cta",
+     "heading": "Navrhneme vám program",
+     "body": "Napište počet lidí, termín a jestli chcete vařit, nebo jen dobře jíst.",
+     "cta": "Navrhnout teambuilding → /poptavka?typ=teambuilding"
+    }
+   ]
+  },
+  {
+   "path": "/catering/svatby",
+   "metaTitle": "Svatební catering – svatební hostina na míru | Mummies & Daddies",
+   "metaDescription": "Svatební hostina podle vašeho příběhu. Ukázková menu, sladký bar, gentlemanský klub, ochutnávka a prohlídka místa. Vaříme po celé ČR. Konzultace zdarma.",
+   "sections": [
+    {
+     "id": "hero",
+     "heading": "Vaše sny, naše zkušenosti",
+     "body": "Svatební jídlo má chutnat hlavně vám. Uvaříme menu, které vypráví váš příběh.",
+     "cta": "Domluvit konzultaci zdarma → /poptavka?typ=konzultace"
+    },
+    {
+     "id": "pribeh",
+     "heading": "Menu podle vašeho příběhu",
+     "body": "Koktejl, do kterého jste se zamilovali na cestách. Babiččin recept. Itálie, Francie, Španělsko. Řekněte nám, co máte rádi, a postavíme menu na míru. Všem se nezavděčíte, tak ať je to den podle vás."
+    },
+    {
+     "id": "menu",
+     "heading": "Ukázková svatební menu",
+     "body": "Inspirace z našich svateb. Každé menu upravíme podle vás.",
+     "items": [
+      "Bufet v duchu Katky a Jirky — Prosecco na uvítanou, hovězí vývar s játrovými knedlíčky, quiche Lorraine, grilované krevety v rajčatové salse, carpaccio z červené řepy s fetou, hummus, hovězí po burgundsku, výběr českých sýrů, ovoce, sladký bar a dort. Od [DOPLNÍ KLIENT] Kč/os.",
+      "Bohatý bufet v duchu Jitky a Rostislava — domácí crostini, quiche ze 4 sýrů, hovězí tatarák, roastbeef s dijonskou majonézou, krevety v bazalkovém pestu, kachní rillettes, uzený losos, trhaný hovězí steak na majoránkovém másle a velký sladký bar. Od [DOPLNÍ KLIENT] Kč/os.",
+      "Servírovaná hostina u stolu — [DOPLNÍ KLIENT: menu a cena od]"
+     ]
+    },
+    {
+     "id": "extra",
+     "heading": "Sladký bar, dort a další radosti",
+     "body": "Malé věci, které si hosté pamatují.",
+     "items": [
+      "Sladký bar — makronky, tartaletky, panna cotty, lízátka, cupcaky a cheesecaky",
+      "Svatební dort nebo cheesecake místo dortu",
+      "Gentlemanský klub — výběr rumů, whisky a doutníků",
+      "Welcome drink a přípitek"
+     ]
+    },
+    {
+     "id": "jak-to-probiha",
+     "heading": "Jak to u nás probíhá",
+     "body": "Osm kroků, které s vámi projde Monika.",
+     "items": [
+      "1. Představa — řekněte nám, jakou kuchyni máte rádi.",
+      "2. Rozpočet — počítejte s cenou, jakou byste dali za stejné jídlo v restauraci. Pak vás nic nepřekvapí.",
+      "3. Včas — catering vybírejte aspoň půl roku před svatbou.",
+      "4. Ochutnávka — vše ochutnáte a schválíte.",
+      "5. Prohlídka místa — projdeme spolu zázemí, vybavení a příjezd. V den D nechcete slyšet: to jste nám neřekli.",
+      "6. Plán B — pro déšť, zpoždění i jiné nečekané věci.",
+      "7. Harmonogram — příprava, průběh a úklid podle času obřadu.",
+      "8. Subdodavatelé a den po svatbě — nakrmíme i kapelu a techniky, a když chcete, uvaříme i na první den manželský."
+     ]
+    },
+    {
+     "id": "reference",
+     "heading": "Svatby, které jsme vařili",
+     "body": "Jitka & Rostislav v Klášterci nad Ohří. Katka & Jirka na statku U Dvou Stodol.",
+     "items": [
+      "Svatba Jitka & Rostislav → /reference/svatba-jitka-a-rostislav",
+      "Svatba Katka & Jirka → /reference/svatba-katka-a-jirka"
+     ]
+    },
+    {
+     "id": "prostory",
+     "heading": "Hledáte místo?",
+     "body": "Vaříme na statcích, které známe: Statek Starý Týn u Úštěku pro svatby od 50 hostů, U Dvou Stodol u Hradce Králové a Hudlická Stodola.",
+     "cta": "Prohlédnout prostory → /prostory"
+    },
+    {
+     "id": "faq",
+     "heading": "Časté dotazy ke svatbě",
+     "body": "",
+     "items": [
+      "Kolik hostů zvládnete? — Minimum a typický rozsah: [DOPLNÍ KLIENT]",
+      "Kolik stojí svatební catering? — Záleží na menu a počtu hostů. Orientační ceny najdete u ukázkových menu.",
+      "Jak dlouho předem se ozvat? — Ideálně aspoň půl roku před svatbou.",
+      "Je konzultace opravdu zdarma? — Ano. Osobně nebo online.",
+      "Kdy nahlásit finální počet hostů? — [DOPLNÍ KLIENT]"
+     ]
+    },
+    {
+     "id": "cta",
+     "heading": "Pojďme si o vaší svatbě popovídat",
+     "body": "Konzultace s Monikou je zdarma. Nebo rovnou pošlete poptávku a dostanete orientační nabídku.",
+     "cta": "Domluvit konzultaci zdarma → /poptavka?typ=konzultace · Poptat svatbu → /poptavka?typ=svatba"
+    }
+   ]
+  },
+  {
+   "path": "/catering/oslavy-a-piknik",
+   "metaTitle": "Catering na oslavy, narozeniny, garden party a piknik | Mummies & Daddies",
+   "metaDescription": "Catering na narozeniny, křtiny, jubilea, garden party a Silvestr už od 2 osob. Piknikový koš, party box, finger food a BBQ. Cheesecake jako dort.",
+   "sections": [
+    {
+     "id": "hero",
+     "heading": "Slavte. Vaření nechte na nás.",
+     "body": "Narozeniny, křtiny nebo piknik s nejbližšími. Neztrácejte čas nákupy a vařením, užijte si svůj den.",
+     "cta": "Objednat oslavu → /poptavka?typ=oslava"
+    },
+    {
+     "id": "balicky",
+     "heading": "Balíčky",
+     "body": "Od 2 osob.",
+     "items": [
+      "Piknikový koš — připravíme jídlo i koš: mini sendviče, obložené pečivo, slané a sladké štrůdly, saláty, kuřecí řízečky, minipizzy, muffiny, cupcaky, ovoce a smoothie. Od [DOPLNÍ KLIENT] Kč/os.",
+      "Party box a finger food — malé porce na stůl i do ruky. Od [DOPLNÍ KLIENT] Kč/os.",
+      "Garden party a BBQ — gril, špízy, krkovice a saláty. Od [DOPLNÍ KLIENT] Kč/os."
+     ]
+    },
+    {
+     "id": "prilezitosti",
+     "heading": "Na co vaříme",
+     "body": "",
+     "items": [
+      "Narozeniny, i ty první",
+      "Křtiny",
+      "Jubilea",
+      "Zahradní párty",
+      "Silvestr"
+     ]
+    },
+    {
+     "id": "ukazkove-menu",
+     "heading": "Ukázkové menu z garden party",
+     "body": "Takhle jsme vařili na garden party pro děti i dospělé.",
+     "items": [
+      "Kuřecí špízy z grilu",
+      "Vepřová krkovice marinovaná v česneku a bylinkách, sous-vide, aby byla krásně měkká",
+      "Chobotnice v červeném víně s kořenovou zeleninou",
+      "Tři druhy hummusu s domácími crostini",
+      "Mini cheesecaky"
+     ]
+    },
+    {
+     "id": "cheesecake-dort",
+     "heading": "Cheesecake místo dortu",
+     "body": "Celý cheesecake s nápisem na přání je hezčí dort, než si myslíte.",
+     "cta": "Vybrat cheesecake → /cheesecaky"
+    },
+    {
+     "id": "cta",
+     "heading": "Kdy a kde slavíte?",
+     "body": "Datum, adresa a počet lidí. Standardní nabídku pošleme do pár minut.",
+     "cta": "Objednat oslavu → /poptavka?typ=oslava"
+    }
+   ]
+  },
+  {
+   "path": "/poptavka",
+   "metaTitle": "Nezávazná poptávka cateringu – nabídka do pár minut | Mummies & Daddies",
+   "metaDescription": "Popište svou akci v chatu nebo krátkém formuláři. Standardní nabídku s cenou dostanete do pár minut, u akcí na míru se ozve Monika osobně.",
+   "sections": [
+    {
+     "id": "uvod",
+     "heading": "Řekněte nám o své akci",
+     "body": "Dvě minuty a máme vše, co potřebujeme. U standardní akce vám nabídku s cenou pošleme do pár minut. U akcí na míru se vám ozve Monika osobně."
+    },
+    {
+     "id": "volba",
+     "heading": "Jak chcete začít?",
+     "body": "Obojí vede ke stejné nabídce. Vyberte, co je vám příjemnější.",
+     "items": [
+      "Napsat asistentovi — zeptá se jen na to, co chybí",
+      "Vyplnit krátký formulář"
+     ]
+    },
+    {
+     "id": "formular",
+     "heading": "Poptávkový formulář",
+     "body": "Pole s hvězdičkou jsou povinná.",
+     "items": [
+      "Typ akce*",
+      "Firma, nebo soukromá akce?*",
+      "Datum a čas*",
+      "Místo — adresa nebo PSČ, nebo zaškrtněte Hledám prostor*",
+      "Počet osob*",
+      "Formát servisu (bufet, raut, banket, sharing table, finger food, BBQ, zatím nevím)",
+      "Rozpočet na osobu",
+      "Diety a alergie",
+      "Obsluha a inventář",
+      "Nápoje",
+      "Jméno a příjmení*",
+      "E-mail*",
+      "Telefon*",
+      "Firma a IČO",
+      "Poznámka",
+      "Souhlas se zpracováním osobních údajů*"
+     ],
+     "cta": "Odeslat a získat nabídku"
+    },
+    {
+     "id": "co-bude-dal",
+     "heading": "Co bude dál",
+     "body": "Bez čekání na tři dny.",
+     "items": [
+      "Hned — potvrzení na e-mail se shrnutím poptávky",
+      "Do pár minut — standardní nabídka s cenou za osobu, tím, co je v ceně, a platností",
+      "Akce na míru — ozve se vám Monika osobně, obvykle do 1 pracovního dne [DOPLNÍ KLIENT: potvrdit lhůtu]"
+     ]
+    },
+    {
+     "id": "clovek",
+     "heading": "Raději s člověkem?",
+     "body": "Zavolejte Monice na +420 737 818 694 nebo napište na info@mummiesdaddies.com. Rádi vám také zavoláme zpět."
+    },
+    {
+     "id": "duvera",
+     "heading": "Vařili jsme pro…",
+     "body": "Luxusní party BVLGARI v Pařížské, svatby v Klášterci nad Ohří a U Dvou Stodol. [DOPLNÍ KLIENT: hodnocení a citace klientů]"
+    }
+   ]
+  },
+  {
+   "path": "/reference",
+   "metaTitle": "Reference a realizované akce | Mummies & Daddies catering",
+   "metaDescription": "Podívejte se, pro koho jsme vařili: luxusní party BVLGARI v Pařížské, svatby v Klášterci nad Ohří a na statku U Dvou Stodol. Menu, fotky a příběhy akcí.",
+   "sections": [
+    {
+     "id": "uvod",
+     "heading": "Akce, na které jsme hrdí",
+     "body": "Nejlíp o nás mluví jídlo, které jsme uvařili. Tady jsou příběhy, menu a fotky."
+    },
+    {
+     "id": "loga",
+     "heading": "Vařili jsme pro",
+     "body": "[DOPLNÍ KLIENT: loga klientů se souhlasem]"
+    },
+    {
+     "id": "pripadovky",
+     "heading": "Případové studie",
+     "body": "Filtr: Vše · Firemní · Svatby · Oslavy",
+     "items": [
+      "Firemní · Luxusní party BVLGARI, Pařížská, Praha → /reference/bvlgari-luxury-party",
+      "Svatby · Jitka & Rostislav, Klášterec nad Ohří → /reference/svatba-jitka-a-rostislav",
+      "Svatby · Katka & Jirka, U Dvou Stodol → /reference/svatba-katka-a-jirka",
+      "Oslavy · Garden party pro rodiny s dětmi [DOPLNÍ KLIENT: podklady a souhlas]"
+     ]
+    },
+    {
+     "id": "hodnoceni",
+     "heading": "Co o nás říkají",
+     "body": "[DOPLNÍ KLIENT: citace klientů a Google recenze s hvězdami]"
+    },
+    {
+     "id": "cta",
+     "heading": "Chcete podobnou akci?",
+     "body": "Napište nám a vyjdeme z toho, co se osvědčilo.",
+     "cta": "Chci podobnou akci → /poptavka"
+    }
+   ]
+  },
+  {
+   "path": "/reference/bvlgari-luxury-party",
+   "metaTitle": "Reference: luxusní party BVLGARI v Pařížské | Mummies & Daddies",
+   "metaDescription": "Jednohubky a finger food pro luxusní party značky BVLGARI v showroomu v Pařížské ulici v Praze. Případová studie cateringu Mummies & Daddies.",
+   "sections": [
+    {
+     "id": "shrnuti",
+     "heading": "Luxusní party BVLGARI",
+     "body": "[DOPLNÍ KLIENT: souhlas klienta s publikací]",
+     "items": [
+      "Typ akce: luxusní party",
+      "Místo: showroom a prodejna BVLGARI, Pařížská ulice, Praha",
+      "Formát: jednohubky a finger food",
+      "Hosté: [DOPLNÍ KLIENT]",
+      "Datum: [DOPLNÍ KLIENT]"
+     ]
+    },
+    {
+     "id": "zadani",
+     "heading": "Zadání a řešení",
+     "body": "Elegantní večer ve showroomu luxusní značky. Jídlo muselo být malé, krásné a nesmělo hostům zabírat ruce na dlouho. Připravili jsme výběr jednohubek a finger food. [DOPLNÍ KLIENT: detaily zadání a průběhu]"
+    },
+    {
+     "id": "menu",
+     "heading": "Menu",
+     "body": "[DOPLNÍ KLIENT: seznam podávaných jednohubek a finger food]"
+    },
+    {
+     "id": "galerie",
+     "heading": "Galerie",
+     "body": "[DOPLNÍ KLIENT: fotky se souhlasem]"
+    },
+    {
+     "id": "citace",
+     "heading": "Slovo klienta",
+     "body": "[DOPLNÍ KLIENT: citace]"
+    },
+    {
+     "id": "cta",
+     "heading": "Chystáte podobnou akci?",
+     "body": "Pošlete nám datum a počet hostů. Vezmeme tuhle akci jako vzor.",
+     "cta": "Poptat podobnou akci → /poptavka?typ=spolecenska-akce&vzor=bvlgari-luxury-party"
+    }
+   ]
+  },
+  {
+   "path": "/reference/svatba-jitka-a-rostislav",
+   "metaTitle": "Svatba Jitka & Rostislav, Klášterec nad Ohří | Mummies & Daddies",
+   "metaDescription": "Svatební bufet s tatarákem, kachními rillettes a krevetami a sladký bar s pěti druhy panna cotty a cheesecaky Daddy a Mummy. Reference svatebního cateringu.",
+   "sections": [
+    {
+     "id": "shrnuti",
+     "heading": "Jitka & Rostislav",
+     "body": "Svatba v Klášterci nad Ohří s bohatým bufetem a sladkým barem, ze kterého nic nezbylo.",
+     "items": [
+      "Typ akce: svatba",
+      "Místo: Klášterec nad Ohří",
+      "Formát: welcome snacky, studený a teplý bufet, sladký bar",
+      "Hosté: [DOPLNÍ KLIENT]",
+      "Datum: [DOPLNÍ KLIENT]"
+     ]
+    },
+    {
+     "id": "zadani",
+     "heading": "Zadání a řešení",
+     "body": "[DOPLNÍ KLIENT: co si pár přál a jak jsme to vyřešili]"
+    },
+    {
+     "id": "menu",
+     "heading": "Menu",
+     "body": "Na uvítanou, bufet a sladký bar.",
+     "items": [
+      "Na uvítanou: domácí crostini, pražené mandle, mix pražených ořechů, variace z listového těsta",
+      "Bufet: variace francouzských a českých klobás, quiche ze 4 druhů sýrů, hovězí tatarák s topinkou, kuřecí galantina, krůtí plátky v koriandrovém pestu, roastbeef s dijonskou majonézou, grilované krevety v bazalkovém pestu, kachní rillettes, venkovská paštika, uzený losos s koprovým dipem a grissini, vepřové a kuřecí mini steaky, trhaný hovězí steak na majoránkovém másle, pikantní kuřecí křidélka sweet & chili",
+      "Sladký bar: lízátka s čokoládovou a pistáciovou náplní, cupcaky s čokoládou a s arašídovým máslem, makronky jahodové, malinové a Toffifee, tartaletky s višní v hořké čokoládě, se slaným karamelem a mandlemi a jablečné, 5 druhů panna cotty, cheesecaky Daddy čokoládovo-arašídový a Mummy vanilkovo-ovocný"
+     ]
+    },
+    {
+     "id": "galerie",
+     "heading": "Galerie",
+     "body": "[DOPLNÍ KLIENT: fotky se souhlasem páru]"
+    },
+    {
+     "id": "citace",
+     "heading": "Slovo novomanželů",
+     "body": "[DOPLNÍ KLIENT: citace]"
+    },
+    {
+     "id": "cta",
+     "heading": "Chcete podobnou svatbu?",
+     "body": "Vezmeme tohle menu jako výchozí a upravíme ho podle vás.",
+     "cta": "Poptat podobnou svatbu → /poptavka?typ=svatba&vzor=svatba-jitka-a-rostislav"
+    }
+   ]
+  },
+  {
+   "path": "/reference/svatba-katka-a-jirka",
+   "metaTitle": "Svatba Katka & Jirka, statek U Dvou Stodol | Mummies & Daddies",
+   "metaDescription": "Prosecco, gentlemanský klub s rumy, whisky a doutníky, svatební vývar, bufet a české sýry. Reference svatebního cateringu na statku U Dvou Stodol.",
+   "sections": [
+    {
+     "id": "shrnuti",
+     "heading": "Katka & Jirka",
+     "body": "Svatba na statku U Dvou Stodol se svatební polévkou, bufetem a gentlemanským klubem.",
+     "items": [
+      "Typ akce: svatba",
+      "Místo: Statek U Dvou Stodol, Záchrašťany u Hradce Králové",
+      "Formát: welcome drink, svatební polévka, bufet, sladký bar, gentlemanský klub",
+      "Hosté: [DOPLNÍ KLIENT]",
+      "Datum: [DOPLNÍ KLIENT]"
+     ]
+    },
+    {
+     "id": "zadani",
+     "heading": "Zadání a řešení",
+     "body": "[DOPLNÍ KLIENT: co si pár přál a jak jsme to vyřešili]"
+    },
+    {
+     "id": "menu",
+     "heading": "Menu",
+     "body": "",
+     "items": [
+      "Uvítací nápoj: extra suché Prosecco",
+      "Gentlemanský klub: výběr rumů a whisky, doutníky",
+      "Svatební polévka: hovězí vývar s játrovými knedlíčky",
+      "Bufet: variace francouzských a českých klobás, quiche Lorraine, grilované krevety v rajčatové salse, venkovská paštika v zapékací misce, carpaccio z marinované červené řepy s mátovou fetou, hummus s čerstvou zeleninou, sekaný salát s fetou a citronem, trhaný salát s výběrem olivových olejů a octů, vepřové a kuřecí mini steaky, hovězí po burgundsku, penne pomodoro s parmazánem",
+      "Na závěr: výběr českých sýrů, čerstvě krájené ovoce, sladký bar, svatební dort"
+     ]
+    },
+    {
+     "id": "galerie",
+     "heading": "Galerie",
+     "body": "[DOPLNÍ KLIENT: fotky se souhlasem páru]"
+    },
+    {
+     "id": "citace",
+     "heading": "Slovo novomanželů",
+     "body": "[DOPLNÍ KLIENT: citace]"
+    },
+    {
+     "id": "cta",
+     "heading": "Chcete podobnou svatbu?",
+     "body": "Vezmeme tohle menu jako výchozí a upravíme ho podle vás.",
+     "cta": "Poptat podobnou svatbu → /poptavka?typ=svatba&vzor=svatba-katka-a-jirka"
+    }
+   ]
+  },
+  {
+   "path": "/prostory",
+   "metaTitle": "Eventové a svatební prostory, kde vaříme | Mummies & Daddies",
+   "metaDescription": "Nemáte místo na svatbu nebo firemní akci? Vaříme na statcích, které známe: Hudlická Stodola, Statek Starý Týn u Úštěku a U Dvou Stodol u Hradce Králové.",
+   "sections": [
+    {
+     "id": "uvod",
+     "heading": "Krásná místa, kde to známe",
+     "body": "Nemáte prostor? Doporučíme vám místo, kde víme, kde je kuchyně, kudy se nosí jídlo a kde stojí bar."
+    },
+    {
+     "id": "prostory",
+     "heading": "Naše prostory",
+     "body": "Kapacity a podmínky ověřte vždy přímo s námi.",
+     "items": [
+      "Hudlická Stodola — místo s láskou vytvořené majiteli Markem a Veronikou. Svatby, večírky, narozeniny a další akce. Kapacita a lokalita: [DOPLNÍ KLIENT]",
+      "Statek Starý Týn, Úštěk — svatby pro 50 a více hostů. Zahrada 1 800 m², stodola 230 m² pro obřad nebo party za deště a přespání až 20 osob, hlavní budova 210 m² s kuchyní a barem, plně vybavený bar s výčepem, profesionální kuchyně, soukromé zázemí pro nevěstu a ženicha.",
+      "Statek U Dvou Stodol, Záchrašťany u Hradce Králové — romantické svatební místo vybudované s láskou majitelů, moderní a přitom přírodní. Kapacita: [DOPLNÍ KLIENT]",
+      "Na Veselce, Řitka — [DOPLNÍ KLIENT: potvrdit spolupráci a doplnit údaje]"
+     ]
+    },
+    {
+     "id": "pomuzeme",
+     "heading": "Pomůžeme vám najít prostor",
+     "body": "V poptávce zaškrtněte Hledám prostor a napište, kolik hostů a jaký typ místa hledáte."
+    },
+    {
+     "id": "cta",
+     "heading": "Máte vybráno?",
+     "body": "",
+     "cta": "Poptat akci v tomto prostoru → /poptavka?prostor="
+    }
+   ]
+  },
+  {
+   "path": "/cheesecaky",
+   "metaTitle": "Americké cheesecaky na objednávku Praha | Mummies & Daddies",
+   "metaDescription": "Pečené cheesecaky podle originálního amerického receptu. Řady Daddy a Mummy, mini cheesecaky 10 ks, nápis na přání. Doprava po Praze 300 Kč.",
+   "sections": [
+    {
+     "id": "uvod",
+     "heading": "Cheesecaky podle amerického receptu",
+     "body": "Americký pečený cheesecake je naše mantra. Pečeme ho od mini velikosti po velké dorty a příchuť vám uděláme i na míru. [DOPLNÍ KLIENT: vysvětlení řad Daddy a Mummy]"
+    },
+    {
+     "id": "produkty",
+     "heading": "Vyberte si",
+     "body": "Průměr, porce a alergeny najdete u každého produktu.",
+     "items": [
+      "Daddy vanilkový — vanilka a máslové sušenky · 790 Kč",
+      "Daddy pistáciovo-malinový — 1 290 Kč",
+      "Daddy čokoládovo-lískooříškový — s ostružinami a borůvkami · 1 290 Kč",
+      "Daddy krémový vanilkovo-karamelový — 1 290 Kč [DOPLNÍ KLIENT: potvrdit cenu]",
+      "Mummy vanilkovo-ovocný — s lesními plody · 1 090 Kč",
+      "Mini cheesecaky mix, 10 ks — 575 Kč"
+     ]
+    },
+    {
+     "id": "mini",
+     "heading": "Mini cheesecaky",
+     "body": "Deset kousků, vy vyberete příchutě: jahoda, pomeranč-vanilka, pistácie, čokoláda, karamel, čokoláda-oříšek, borůvka. Hodí se domů i na coffee break."
+    },
+    {
+     "id": "na-prani",
+     "heading": "Vlastní příchuť a nápis",
+     "body": "Na Daddy vanilkový cheesecake napíšeme věnování až do 25 znaků. Chcete vlastní příchuť? Napište nám. [DOPLNÍ KLIENT: podmínky a lhůta]"
+    },
+    {
+     "id": "sezona",
+     "heading": "Sezónní nabídka",
+     "body": "Na Vánoce pečeme Mummy vanilkovo-pomerančový cheesecake z madagaskarské vanilky a pomerančového džusu. 1 290 Kč."
+    },
+    {
+     "id": "doprava",
+     "heading": "Doprava a vyzvednutí",
+     "body": "Objednávejte [DOPLNÍ KLIENT: objednací lhůta] předem.",
+     "items": [
+      "Praha — 300 Kč",
+      "Praha + 30 km — 550 Kč",
+      "Praha + 70 km — 750 Kč",
+      "Osobní vyzvednutí: [DOPLNÍ KLIENT: adresa výdejního místa a časy]"
+     ]
+    },
+    {
+     "id": "na-akci",
+     "heading": "Cheesecaky na vaši akci",
+     "body": "Sladký bar, coffee break nebo cheesecake místo svatebního dortu. Přidáme je k cateringu.",
+     "cta": "Chci cheesecaky na akci → /poptavka?doplnek=cheesecaky"
+    },
+    {
+     "id": "poukaz",
+     "heading": "Darujte cheesecake",
+     "body": "Dárkový poukaz od 1 000 Kč.",
+     "cta": "Koupit poukaz → /darkovy-poukaz"
+    }
+   ]
+  },
+  {
+   "path": "/cheesecaky/daddy-vanilkovy",
+   "metaTitle": "Daddy vanilkový cheesecake – 790 Kč | Mummies & Daddies",
+   "metaDescription": "Americký pečený cheesecake s plnou chutí vanilky a máslových sušenek. Nápis na přání až 25 znaků. Doprava po Praze 300 Kč.",
+   "sections": [
+    {
+     "id": "popis",
+     "heading": "Daddy vanilkový cheesecake",
+     "body": "Plná chuť vanilky a máslových sušenek. Poctivá, přírodní chuť, která se rozplývá na jazyku. Vypadá jednoduše, ale jeho plnost vás překvapí. 790 Kč."
+    },
+    {
+     "id": "parametry",
+     "heading": "Parametry",
+     "body": "",
+     "items": [
+      "Průměr: [DOPLNÍ KLIENT]",
+      "Hmotnost: [DOPLNÍ KLIENT]",
+      "Porce: [DOPLNÍ KLIENT]",
+      "Alergeny: [DOPLNÍ KLIENT]",
+      "Trvanlivost a skladování: [DOPLNÍ KLIENT]"
+     ]
+    },
+    {
+     "id": "volby",
+     "heading": "Nápis na přání",
+     "body": "Napíšeme vzkaz až do 25 znaků. Třeba Všechno nejlepší, Jano."
+    },
+    {
+     "id": "doprava",
+     "heading": "Doprava a termín",
+     "body": "Praha 300 Kč, Praha + 30 km 550 Kč, Praha + 70 km 750 Kč. Objednávejte [DOPLNÍ KLIENT: lhůta] předem."
+    },
+    {
+     "id": "souvisejici",
+     "heading": "Mohlo by vám chutnat",
+     "body": "",
+     "items": [
+      "Mummy vanilkovo-ovocný",
+      "Mini cheesecaky mix, 10 ks"
+     ]
+    },
+    {
+     "id": "na-akci",
+     "heading": "Chcete ho na akci?",
+     "body": "Přidáme ho ke cateringu nebo na sladký bar.",
+     "cta": "Přidat na akci → /poptavka?doplnek=cheesecaky"
+    }
+   ],
+   "cta": "Přidat do košíku"
+  },
+  {
+   "path": "/cheesecaky/daddy-pistaciovo-malinovy",
+   "metaTitle": "Daddy pistáciovo-malinový cheesecake – 1 290 Kč | Mummies & Daddies",
+   "metaDescription": "Americký pečený cheesecake z řady Daddy s pistáciemi a malinami. Na objednávku v Praze, doprava od 300 Kč.",
+   "sections": [
+    {
+     "id": "popis",
+     "heading": "Daddy pistáciovo-malinový cheesecake",
+     "body": "Pistácie a maliny v americkém pečeném cheesecaku z řady Daddy. 1 290 Kč. [DOPLNÍ KLIENT: popis chuti a složení]"
+    },
+    {
+     "id": "parametry",
+     "heading": "Parametry",
+     "body": "",
+     "items": [
+      "Průměr: [DOPLNÍ KLIENT]",
+      "Hmotnost: [DOPLNÍ KLIENT]",
+      "Porce: [DOPLNÍ KLIENT]",
+      "Alergeny: [DOPLNÍ KLIENT]",
+      "Trvanlivost a skladování: [DOPLNÍ KLIENT]"
+     ]
+    },
+    {
+     "id": "doprava",
+     "heading": "Doprava a termín",
+     "body": "Praha 300 Kč, Praha + 30 km 550 Kč, Praha + 70 km 750 Kč. Objednávejte [DOPLNÍ KLIENT: lhůta] předem."
+    },
+    {
+     "id": "souvisejici",
+     "heading": "Mohlo by vám chutnat",
+     "body": "",
+     "items": [
+      "Daddy čokoládovo-lískooříškový",
+      "Mini cheesecaky mix, 10 ks"
+     ]
+    },
+    {
+     "id": "na-akci",
+     "heading": "Chcete ho na akci?",
+     "body": "Přidáme ho ke cateringu nebo na sladký bar.",
+     "cta": "Přidat na akci → /poptavka?doplnek=cheesecaky"
+    }
+   ]
+  },
+  {
+   "path": "/cheesecaky/daddy-cokoladovo-liskooriskovy",
+   "metaTitle": "Daddy čokoládovo-lískooříškový cheesecake – 1 290 Kč | Mummies & Daddies",
+   "metaDescription": "Smetanově čokoládový cheesecake s lískovými oříšky, ostružinami a borůvkami. Americký recept, na objednávku v Praze.",
+   "sections": [
+    {
+     "id": "popis",
+     "heading": "Daddy čokoládovo-lískooříškový cheesecake",
+     "body": "Máte rádi čokoládu? A kdo ne. Smetanově čokoládová plnost, chuť lískových oříšků a navrch ostružiny a borůvky pro šťavnatost. 1 290 Kč."
+    },
+    {
+     "id": "parametry",
+     "heading": "Parametry",
+     "body": "",
+     "items": [
+      "Průměr: [DOPLNÍ KLIENT]",
+      "Hmotnost: [DOPLNÍ KLIENT]",
+      "Porce: [DOPLNÍ KLIENT]",
+      "Alergeny: [DOPLNÍ KLIENT]",
+      "Trvanlivost a skladování: [DOPLNÍ KLIENT]"
+     ]
+    },
+    {
+     "id": "doprava",
+     "heading": "Doprava a termín",
+     "body": "Praha 300 Kč, Praha + 30 km 550 Kč, Praha + 70 km 750 Kč. Objednávejte [DOPLNÍ KLIENT: lhůta] předem."
+    },
+    {
+     "id": "souvisejici",
+     "heading": "Mohlo by vám chutnat",
+     "body": "",
+     "items": [
+      "Daddy krémový vanilkovo-karamelový",
+      "Daddy pistáciovo-malinový"
+     ]
+    },
+    {
+     "id": "na-akci",
+     "heading": "Chcete ho na akci?",
+     "body": "Přidáme ho ke cateringu nebo na sladký bar.",
+     "cta": "Přidat na akci → /poptavka?doplnek=cheesecaky"
+    }
+   ]
+  },
+  {
+   "path": "/cheesecaky/daddy-vanilkovo-karamelovy",
+   "metaTitle": "Daddy krémový vanilkovo-karamelový cheesecake | Mummies & Daddies",
+   "metaDescription": "Krémový americký cheesecake z řady Daddy s vanilkou a karamelem. Na objednávku v Praze, doprava od 300 Kč.",
+   "sections": [
+    {
+     "id": "popis",
+     "heading": "Daddy krémový vanilkovo-karamelový cheesecake",
+     "body": "Krémová vanilka a karamel v americkém pečeném cheesecaku z řady Daddy. 1 290 Kč [DOPLNÍ KLIENT: potvrdit cenu]. [DOPLNÍ KLIENT: popis chuti a složení]"
+    },
+    {
+     "id": "parametry",
+     "heading": "Parametry",
+     "body": "",
+     "items": [
+      "Průměr: [DOPLNÍ KLIENT]",
+      "Hmotnost: [DOPLNÍ KLIENT]",
+      "Porce: [DOPLNÍ KLIENT]",
+      "Alergeny: [DOPLNÍ KLIENT]",
+      "Trvanlivost a skladování: [DOPLNÍ KLIENT]"
+     ]
+    },
+    {
+     "id": "doprava",
+     "heading": "Doprava a termín",
+     "body": "Praha 300 Kč, Praha + 30 km 550 Kč, Praha + 70 km 750 Kč. Objednávejte [DOPLNÍ KLIENT: lhůta] předem."
+    },
+    {
+     "id": "souvisejici",
+     "heading": "Mohlo by vám chutnat",
+     "body": "",
+     "items": [
+      "Daddy vanilkový",
+      "Daddy čokoládovo-lískooříškový"
+     ]
+    },
+    {
+     "id": "na-akci",
+     "heading": "Chcete ho na akci?",
+     "body": "Přidáme ho ke cateringu nebo na sladký bar.",
+     "cta": "Přidat na akci → /poptavka?doplnek=cheesecaky"
+    }
+   ]
+  },
+  {
+   "path": "/cheesecaky/mummy-vanilkovo-ovocny",
+   "metaTitle": "Mummy vanilkovo-ovocný cheesecake s lesním ovocem – 1 090 Kč | Mummies & Daddies",
+   "metaDescription": "Vanilkový americký cheesecake s čerstvým ovocem, hlavně lesními plody. Z řady Mummy, na objednávku v Praze.",
+   "sections": [
+    {
+     "id": "popis",
+     "heading": "Mummy vanilkovo-ovocný cheesecake",
+     "body": "Vanilkový cheesecake a čerstvé ovoce, hlavně lesní plody. Kombinace, která potěší i náročné jedlíky. Tuhle variantu prostě milujeme. 1 090 Kč."
+    },
+    {
+     "id": "parametry",
+     "heading": "Parametry",
+     "body": "",
+     "items": [
+      "Průměr: [DOPLNÍ KLIENT]",
+      "Hmotnost: [DOPLNÍ KLIENT]",
+      "Porce: [DOPLNÍ KLIENT]",
+      "Alergeny: [DOPLNÍ KLIENT]",
+      "Trvanlivost a skladování: [DOPLNÍ KLIENT]"
+     ]
+    },
+    {
+     "id": "doprava",
+     "heading": "Doprava a termín",
+     "body": "Praha 300 Kč, Praha + 30 km 550 Kč, Praha + 70 km 750 Kč. Objednávejte [DOPLNÍ KLIENT: lhůta] předem."
+    },
+    {
+     "id": "souvisejici",
+     "heading": "Mohlo by vám chutnat",
+     "body": "",
+     "items": [
+      "Daddy vanilkový",
+      "Mini cheesecaky mix, 10 ks"
+     ]
+    },
+    {
+     "id": "na-akci",
+     "heading": "Chcete ho na akci?",
+     "body": "Přidáme ho ke cateringu nebo na sladký bar.",
+     "cta": "Přidat na akci → /poptavka?doplnek=cheesecaky"
+    }
+   ]
+  },
+  {
+   "path": "/cheesecaky/mummy-vanilkovo-pomerancovy-vanocni",
+   "metaTitle": "Vánoční vanilkovo-pomerančový cheesecake – 1 290 Kč | Mummies & Daddies",
+   "metaDescription": "Sezónní vánoční cheesecake z madagaskarské vanilky a pomerančového džusu. Dárek i dezert na sváteční stůl. Objednávky do [uzávěrka].",
+   "sections": [
+    {
+     "id": "popis",
+     "heading": "Mummy vanilkovo-pomerančový vánoční cheesecake",
+     "body": "Madagaskarská vanilka, pomerančový džus a spousta lásky a trpělivosti. Vánoční dezert, který se nedrobí jako cukroví. 1 290 Kč. K dostání jen v sezóně."
+    },
+    {
+     "id": "parametry",
+     "heading": "Parametry",
+     "body": "",
+     "items": [
+      "Průměr: [DOPLNÍ KLIENT]",
+      "Hmotnost: [DOPLNÍ KLIENT]",
+      "Porce: [DOPLNÍ KLIENT]",
+      "Alergeny: [DOPLNÍ KLIENT]",
+      "Trvanlivost a skladování: [DOPLNÍ KLIENT]"
+     ]
+    },
+    {
+     "id": "doprava",
+     "heading": "Doprava a termín",
+     "body": "Praha 300 Kč, Praha + 30 km 550 Kč, Praha + 70 km 750 Kč. Uzávěrka vánočních objednávek: [DOPLNÍ KLIENT]."
+    },
+    {
+     "id": "firmy",
+     "heading": "Vánoční dárek pro klienty",
+     "body": "Objednáváte víc kusů pro firmu? Napište nám, domluvíme se.",
+     "cta": "Firemní objednávka → /vanoce"
+    },
+    {
+     "id": "souvisejici",
+     "heading": "Mohlo by vám chutnat",
+     "body": "",
+     "items": [
+      "Mummy vanilkovo-ovocný",
+      "Vánoční cukroví → /vanoce"
+     ]
+    }
+   ]
+  },
+  {
+   "path": "/cheesecaky/mini-cheesecaky-10-ks",
+   "metaTitle": "Mini cheesecaky mix 10 ks – 575 Kč | Mummies & Daddies",
+   "metaDescription": "Deset mini cheesecaků v příchutích podle vás: jahoda, pomeranč-vanilka, pistácie, čokoláda, karamel, čokoláda-oříšek, borůvka. Domů, do kanceláře i na akci.",
+   "sections": [
+    {
+     "id": "popis",
+     "heading": "Mini cheesecaky mix, 10 ks",
+     "body": "Deset malých cheesecaků a každý může být jiný. Na oslavu, do kanceláře nebo jen tak. 575 Kč."
+    },
+    {
+     "id": "volby",
+     "heading": "Vyberte příchutě",
+     "body": "Skládejte, jak chcete.",
+     "items": [
+      "Jahoda",
+      "Pomeranč-vanilka",
+      "Pistácie",
+      "Čokoláda",
+      "Karamel",
+      "Čokoláda-oříšek",
+      "Borůvka"
+     ]
+    },
+    {
+     "id": "parametry",
+     "heading": "Parametry",
+     "body": "",
+     "items": [
+      "Velikost jednoho kusu: [DOPLNÍ KLIENT]",
+      "Alergeny: [DOPLNÍ KLIENT]",
+      "Trvanlivost a skladování: [DOPLNÍ KLIENT]"
+     ]
+    },
+    {
+     "id": "doprava",
+     "heading": "Doprava a termín",
+     "body": "Praha 300 Kč, Praha + 30 km 550 Kč, Praha + 70 km 750 Kč. Objednávejte [DOPLNÍ KLIENT: lhůta] předem."
+    },
+    {
+     "id": "na-akci",
+     "heading": "Potřebujete jich víc?",
+     "body": "Mini cheesecaky jsou hvězdou našich coffee breaků a sladkých barů.",
+     "cta": "Mini cheesecaky na akci → /poptavka?doplnek=mini-cheesecaky"
+    }
+   ]
+  },
+  {
+   "path": "/kosik",
+   "metaTitle": "Košík | Mummies & Daddies",
+   "metaDescription": "Dokončete objednávku cheesecaků a dárkových poukazů.",
+   "sections": [
+    {
+     "id": "polozky",
+     "heading": "Váš košík",
+     "body": "Zkontrolujte položky, příchutě a nápisy."
+    },
+    {
+     "id": "doruceni",
+     "heading": "Doručení, nebo vyzvednutí",
+     "body": "Vyberte způsob a termín. Nejbližší možný termín vám ukážeme podle objednací lhůty.",
+     "items": [
+      "Doručení Praha — 300 Kč",
+      "Doručení Praha + 30 km — 550 Kč",
+      "Doručení Praha + 70 km — 750 Kč",
+      "Osobní vyzvednutí — [DOPLNÍ KLIENT: adresa]"
+     ]
+    },
+    {
+     "id": "kontakt",
+     "heading": "Kontakt a fakturace",
+     "body": "Kupujete na firmu? Vyplňte IČO a pošleme fakturu."
+    },
+    {
+     "id": "platba",
+     "heading": "Platba",
+     "body": "[DOPLNÍ KLIENT: online platba kartou / převod]"
+    },
+    {
+     "id": "souhlas",
+     "heading": "Souhlas",
+     "body": "Odesláním souhlasíte s obchodními podmínkami a berete na vědomí zpracování osobních údajů.",
+     "cta": "Odeslat objednávku"
+    }
+   ]
+  },
+  {
+   "path": "/darkovy-poukaz",
+   "metaTitle": "Dárkový poukaz na cheesecaky a catering | Mummies & Daddies",
+   "metaDescription": "Darujte cheesecake nebo dobré jídlo. Dárkový poukaz v hodnotě 1 000 až 5 000 Kč nebo vlastní částka, se vzkazem pro obdarovaného.",
+   "sections": [
+    {
+     "id": "uvod",
+     "heading": "Darujte něco dobrého",
+     "body": "Poukaz potěší každého, kdo má rád sladké. A to je skoro každý."
+    },
+    {
+     "id": "hodnoty",
+     "heading": "Vyberte hodnotu",
+     "body": "",
+     "items": [
+      "1 000 Kč",
+      "1 500 Kč",
+      "2 000 Kč",
+      "2 500 Kč",
+      "5 000 Kč",
+      "Vlastní částka"
+     ]
+    },
+    {
+     "id": "uplatneni",
+     "heading": "Na co platí",
+     "body": "[DOPLNÍ KLIENT: cheesecaky, catering, nebo obojí]"
+    },
+    {
+     "id": "personalizace",
+     "heading": "Pro koho je",
+     "body": "Vyplňte jméno obdarovaného a krátký vzkaz. Poukaz pošleme e-mailem [DOPLNÍ KLIENT: nebo tištěný]."
+    },
+    {
+     "id": "platnost",
+     "heading": "Platnost",
+     "body": "[DOPLNÍ KLIENT: platnost poukazu]",
+     "cta": "Koupit poukaz"
+    }
+   ]
+  },
+  {
+   "path": "/vanoce",
+   "metaTitle": "Vánoční večírek, raut, cukroví a cheesecaky | Mummies & Daddies",
+   "metaDescription": "Firemní vánoční večírek a raut, vánoční cukroví na objednávku a vánoční cheesecake pro rodinu i klienty. Rezervujte termín včas.",
+   "sections": [
+    {
+     "id": "hero",
+     "heading": "Vánoce bez stresu",
+     "body": "Večírek pro firmu, cukroví pro rodinu, cheesecake pro klienty. Vy si užijte svátky.",
+     "cta": "Rezervovat termín večírku → /poptavka?typ=vanocni-vecirek"
+    },
+    {
+     "id": "vecirek",
+     "heading": "Firemní vánoční večírek a raut",
+     "body": "Raut, bufet, finger food nebo banket. Od 15 osob · od [DOPLNÍ KLIENT] Kč/os. Prosince je málo, termíny se plní brzy. [DOPLNÍ KLIENT: vánoční balíčky]"
+    },
+    {
+     "id": "checklist",
+     "heading": "Jak naplánovat firemní večírek",
+     "body": "Šest věcí, na které nezapomeňte.",
+     "items": [
+      "Místo — dost velké pro všechny, s parkováním a zázemím",
+      "Téma — vánoční nebo podle vašeho týmu",
+      "Jídlo a pití — kvalitní catering a myslete na diety hostů",
+      "Program — živá hudba, DJ, karaoke",
+      "Dárky a ceny — malé poděkování potěší",
+      "Foto a video — vzpomínky i obsah na intranet"
+     ]
+    },
+    {
+     "id": "cukrovi",
+     "heading": "Vánoční cukroví na objednávku",
+     "body": "Klasika, kterou pečeme jako doma.",
+     "items": [
+      "Vanilkové rohlíčky",
+      "Vosí hnízda",
+      "Perníčky",
+      "Linecké",
+      "Pracny",
+      "Plněné ořechy",
+      "Cena a balení: [DOPLNÍ KLIENT]"
+     ]
+    },
+    {
+     "id": "cheesecake",
+     "heading": "Vánoční cheesecake a firemní dárky",
+     "body": "Mummy vanilkovo-pomerančový cheesecake z madagaskarské vanilky a pomerančového džusu za 1 290 Kč. Pro klienty i jako sladká tečka večírku.",
+     "cta": "Objednat vánoční cheesecake → /cheesecaky/mummy-vanilkovo-pomerancovy-vanocni"
+    },
+    {
+     "id": "uzaverka",
+     "heading": "Uzávěrka objednávek",
+     "body": "Večírky: [DOPLNÍ KLIENT]. Cukroví a cheesecaky: [DOPLNÍ KLIENT]."
+    },
+    {
+     "id": "cta",
+     "heading": "Zamluvte si termín",
+     "body": "Napište datum a počet hostů. Standardní nabídku pošleme do pár minut.",
+     "cta": "Rezervovat termín večírku → /poptavka?typ=vanocni-vecirek"
+    }
+   ]
+  },
+  {
+   "path": "/o-nas",
+   "metaTitle": "O nás – Ruda, Monika a kuchyně Mummies & Daddies",
+   "metaDescription": "Šéfkuchař Rudolf Nikolai a Monika Jožková vařili v top restauracích a 5* hotelech. Od roku 2018 vaří catering v Praze a po celé ČR. Poznejte nás.",
+   "sections": [
+    {
+     "id": "pribeh",
+     "heading": "Mummy & Daddy jsou skuteční",
+     "body": "Jsme Ruda a Monika. Roky jsme vařili v top fine dining restauracích a 5* hotelech, vařili jsme pro celebrity z Česka i ze světa. V roce 2018 jsme založili vlastní catering. Chtěli jsme jídlo na úrovni dobré restaurace a péči, jakou dáváte rodině. Hodně cestujeme a vozíme si chutě z Francie, Itálie, Švýcarska, Maďarska, Slovenska, Indonésie, Číny i Afriky."
+    },
+    {
+     "id": "tym",
+     "heading": "Kdo u nás vaří a kdo vám zvedne telefon",
+     "body": "[DOPLNÍ KLIENT: fotky týmu]",
+     "items": [
+      "Rudolf Nikolai — majitel, výkonný ředitel a šéfkuchař. Vystudoval Kulinářský institut gastronomie v Praze, obor hotelnictví a restaurace. Šéfkuchařem byl už ve 24 letech.",
+      "Bc. Monika Jožková — [DOPLNÍ KLIENT: role]. Připravuje nabídky, vede svatební konzultace a stará se, aby v den D vše klaplo.",
+      "[DOPLNÍ KLIENT: další členové týmu, event manažeři, autorky blogu]"
+     ]
+    },
+    {
+     "id": "hodnoty",
+     "heading": "Na čem stavíme",
+     "body": "Všechno, co děláme, děláme pro vás.",
+     "items": [
+      "Nejčerstvější suroviny",
+      "Kreativní jídla",
+      "Profesionální a milá obsluha",
+      "Cheesecaky, na které se nezapomíná"
+     ]
+    },
+    {
+     "id": "kuchyne",
+     "heading": "Kuchyně a technologie",
+     "body": "Používáme postupy z restaurací. Sous-vide, díky kterému je krkovice krásně měkká. Francouzskou klasiku jako terinu z kachních jater. Chobotnici v červeném víně. A americký pečený cheesecake. [DOPLNÍ KLIENT: kde je kuchyně, smíme ji uvést]"
+    },
+    {
+     "id": "cisla",
+     "heading": "V číslech",
+     "body": "[DOPLNÍ KLIENT: akcí ročně, hostů ročně] · vaříme od roku 2018"
+    },
+    {
+     "id": "kariera",
+     "heading": "Přidejte se k nám",
+     "body": "[DOPLNÍ KLIENT: volitelně, otevřené pozice]"
+    },
+    {
+     "id": "cta",
+     "heading": "Ochutnejte, jak vaříme",
+     "body": "",
+     "cta": "Poznejte naši kuchyni → /poptavka"
+    }
+   ]
+  },
+  {
+   "path": "/blog",
+   "metaTitle": "Inspirace a rady k akcím | Blog Mummies & Daddies",
+   "metaDescription": "Jak vybrat svatební catering, naplánovat firemní večírek nebo garden party. Rady z kuchyně, sous-vide a cheesecaky. Blog cateringu Mummies & Daddies.",
+   "sections": [
+    {
+     "id": "uvod",
+     "heading": "Inspirace a rady k akcím",
+     "body": "Píšeme o tom, co umíme: jak naplánovat akci, aby se povedla, a co se děje v naší kuchyni."
+    },
+    {
+     "id": "stitky",
+     "heading": "Témata",
+     "body": "",
+     "items": [
+      "Firemní akce",
+      "Svatby",
+      "Oslavy",
+      "Z kuchyně",
+      "Cheesecaky"
+     ]
+    },
+    {
+     "id": "doporucene",
+     "heading": "Doporučené články",
+     "body": "",
+     "items": [
+      "Jak vybrat svatební catering → /blog/jak-vybrat-svatebni-catering",
+      "Raut, banket, nebo servírovaná večeře? → /blog/raut-banket-nebo-servirovana-vecere",
+      "Jak naplánovat firemní večírek → /blog/jak-naplanovat-firemni-vecirek",
+      "Catering na tiskovku, networking a roadshow → /blog/catering-na-tiskovku-networking-a-roadshow",
+      "Garden party a grilování → /blog/garden-party-a-grilovani",
+      "Catering na oslavu narozenin → /blog/catering-na-oslavu-narozenin",
+      "Finger food na večírek → /blog/finger-food-na-vecirek",
+      "Sous-vide v praxi → /blog/sous-vide-v-praxi",
+      "Jak se dělá terina z kachních jater → /blog/terina-z-kachnich-jater",
+      "Cheesecake jako zážitek → /blog/cheesecake-jako-zazitek"
+     ]
+    },
+    {
+     "id": "cta",
+     "heading": "Chcete to rovnou s námi?",
+     "body": "",
+     "cta": "Poptat catering → /poptavka"
+    }
+   ]
+  },
+  {
+   "path": "/blog/[slug]",
+   "metaTitle": "[Název článku] | Blog Mummies & Daddies",
+   "metaDescription": "[Shrnutí článku do 155 znaků s hlavním klíčovým slovem]",
+   "sections": [
+    {
+     "id": "clanek",
+     "heading": "[Název článku]",
+     "body": "[Text článku]"
+    },
+    {
+     "id": "sluzba",
+     "heading": "Hodí se k tomu",
+     "body": "Box se související službou, např.: Svatební catering — menu na míru, ochutnávka a konzultace zdarma.",
+     "cta": "Zobrazit službu"
+    },
+    {
+     "id": "autor",
+     "heading": "Autor",
+     "body": "[Jméno a role autora, např. Rudolf Nikolai, šéfkuchař]"
+    },
+    {
+     "id": "cta",
+     "heading": "Plánujete akci?",
+     "body": "Napište nám typ akce, datum a počet osob. Standardní nabídku máte do pár minut.",
+     "cta": "Chci nabídku → /poptavka?zdroj=blog"
+    },
+    {
+     "id": "souvisejici",
+     "heading": "Mohlo by vás zajímat",
+     "body": "[3 související články se stejným štítkem]"
+    }
+   ]
+  },
+  {
+   "path": "/caste-dotazy",
+   "metaTitle": "Časté dotazy – ceny, doprava, alergeny, storno | Mummies & Daddies",
+   "metaDescription": "Kolik stojí catering na osobu, jaká jsou minima, kam jezdíme, jak řešíme alergeny, obsluhu a storno. A jak objednat cheesecake.",
+   "sections": [
+    {
+     "id": "ceny",
+     "heading": "Ceny",
+     "body": "",
+     "items": [
+      "Kolik stojí catering na osobu? — Obvykle 300 až 2 000 Kč. U každé služby najdete cenu od.",
+      "Co ovlivňuje cenu? — Formát servisu, menu, počet hostů, obsluha, inventář, nápoje, místo a doprava.",
+      "Dostanu cenu hned? — U standardní akce pošleme nabídku s cenou do pár minut. Akci na míru spočítá Monika."
+     ]
+    },
+    {
+     "id": "minima",
+     "heading": "Minimální počty osob",
+     "body": "",
+     "items": [
+      "Zdravá snídaně, piknik a oslavy — od 2 osob",
+      "Firemní obědy a porady — od 4 osob",
+      "Sharing table — 8 až 30 osob",
+      "Teambuilding — od 8 osob",
+      "Plná americká snídaně, banket, uvedení produktu — od 10 osob",
+      "Snídaňový bufet, coffee break, večerní bufet, společenské akce, konference — od 15 osob",
+      "Svatby — [DOPLNÍ KLIENT]"
+     ]
+    },
+    {
+     "id": "doprava",
+     "heading": "Doprava a oblast",
+     "body": "",
+     "items": [
+      "Kde vaříte? — Základnu máme v Praze, vaříme po celé ČR. Akce v zahraničí řešíme individuálně.",
+      "Kolik stojí doprava cateringu? — [DOPLNÍ KLIENT]",
+      "Kolik stojí doprava cheesecaků? — Praha 300 Kč, Praha + 30 km 550 Kč, Praha + 70 km 750 Kč."
+     ]
+    },
+    {
+     "id": "alergeny",
+     "heading": "Alergeny a diety",
+     "body": "",
+     "items": [
+      "Zvládnete diety? — Vegetariánské a bezlepkové pokrmy a varianty bez laktózy a mléčné bílkoviny připravujeme běžně. Vegan: [DOPLNÍ KLIENT].",
+      "Jak značíte alergeny? — [DOPLNÍ KLIENT]",
+      "Tip — pošlete menu hostům předem, ať nám alergie nahlásí včas."
+     ]
+    },
+    {
+     "id": "servis",
+     "heading": "Obsluha, inventář a úklid",
+     "body": "",
+     "items": [
+      "Zajistíte obsluhu? — Ano, profesionální personál podle velikosti akce.",
+      "A inventář? — Nádobí, rautové stoly, ubrusy, ozvučení i dekorace podle domluvy. [DOPLNÍ KLIENT: co zajišťujete přes partnery]",
+      "Uklidíte? — Úklid po cateringu je součástí plánu akce."
+     ]
+    },
+    {
+     "id": "platba",
+     "heading": "Platba, záloha a storno",
+     "body": "",
+     "items": [
+      "Záloha — [DOPLNÍ KLIENT]",
+      "Splatnost faktury — [DOPLNÍ KLIENT]",
+      "Storno — [DOPLNÍ KLIENT]",
+      "Finální počet hostů — [DOPLNÍ KLIENT: kolik dní předem]"
+     ]
+    },
+    {
+     "id": "terminy",
+     "heading": "Jak dlouho předem",
+     "body": "",
+     "items": [
+      "Svatby — ideálně aspoň půl roku předem",
+      "Firemní a soukromé akce — [DOPLNÍ KLIENT]",
+      "Spěcháte? — Napište, zkusíme to."
+     ]
+    },
+    {
+     "id": "cheesecaky",
+     "heading": "Cheesecaky",
+     "body": "",
+     "items": [
+      "Jak dlouho předem objednat? — [DOPLNÍ KLIENT]",
+      "Můžu si cheesecake vyzvednout? — [DOPLNÍ KLIENT: výdejní místo]",
+      "Napíšete na cheesecake vzkaz? — Na Daddy vanilkový až 25 znaků.",
+      "Uděláte vlastní příchuť? — Ano, napište nám."
+     ]
+    },
+    {
+     "id": "cta",
+     "heading": "Nenašli jste odpověď?",
+     "body": "Zeptejte se našeho digitálního asistenta. Odpovídá ze stejných informací, jaké čtete tady.",
+     "cta": "Zeptat se asistenta"
+    }
+   ]
+  },
+  {
+   "path": "/kontakt",
+   "metaTitle": "Kontakt | Mummies & Daddies catering Praha",
+   "metaDescription": "Zavolejte nebo napište: +420 737 818 694, info@mummiesdaddies.com. Fakturační údaje Mummies and Daddies s.r.o., Praha 2.",
+   "sections": [
+    {
+     "id": "lide",
+     "heading": "Ozvěte se nám",
+     "body": "Rádi si s vámi popovídáme o jídle.",
+     "items": [
+      "Bc. Monika Jožková — [DOPLNÍ KLIENT: role] · nabídky, svatby, akce · +420 737 818 694 · info@mummiesdaddies.com",
+      "Rudolf Nikolai — majitel a šéfkuchař · +420 737 301 679 · rudolf.nikolai@mummiesdaddies.com"
+     ]
+    },
+    {
+     "id": "rychla-poptavka",
+     "heading": "Rychlá poptávka",
+     "body": "Typ akce, datum a počet osob. Nabídku na standardní akci máte do pár minut.",
+     "cta": "Chci nabídku → /poptavka"
+    },
+    {
+     "id": "fakturace",
+     "heading": "Fakturační údaje",
+     "body": "",
+     "items": [
+      "Mummies and Daddies s.r.o.",
+      "Varšavská 715, 120 00 Praha 2",
+      "IČO 17957524",
+      "DIČ CZ17957524",
+      "Spisová značka C 379274 vedená u Městského soudu v Praze"
+     ]
+    },
+    {
+     "id": "provozovna",
+     "heading": "Provozovna a výdej cheesecaků",
+     "body": "[DOPLNÍ KLIENT: adresa kuchyně a výdejního místa, otevírací doba]"
+    },
+    {
+     "id": "site",
+     "heading": "Sledujte nás",
+     "body": "Fotky z akcí a z kuchyně.",
+     "items": [
+      "Instagram: @mummiesdaddies1",
+      "Instagram: @mummiesdaddies.catering",
+      "Facebook: mummiesdaddies2",
+      "LinkedIn: [DOPLNÍ KLIENT: odkaz]"
+     ],
+     "cta": "Zavolat / Poptat"
+    }
+   ]
+  },
+  {
+   "path": "/obchodni-podminky",
+   "metaTitle": "Obchodní podmínky | Mummies & Daddies",
+   "metaDescription": "Obchodní podmínky e-shopu s cheesecaky a dárkovými poukazy a podmínky cateringových služeb Mummies and Daddies s.r.o.",
+   "sections": [
+    {
+     "id": "prodavajici",
+     "heading": "Prodávající",
+     "body": "Mummies and Daddies s.r.o., Varšavská 715, 120 00 Praha 2, IČO 17957524, DIČ CZ17957524, C 379274 vedená u Městského soudu v Praze. Kontakt: info@mummiesdaddies.com, +420 737 818 694."
+    },
+    {
+     "id": "eshop",
+     "heading": "E-shop: cheesecaky a poukazy",
+     "body": "[DOPLNÍ KLIENT / PRÁVNÍK: uzavření smlouvy, ceny, platba, objednací lhůta, doručení (Praha 300 Kč, Praha + 30 km 550 Kč, Praha + 70 km 750 Kč), převzetí, reklamace, výjimka z odstoupení u potravin podléhajících rychlé zkáze a zboží upraveného na přání, dárkové poukazy a jejich platnost]"
+    },
+    {
+     "id": "catering",
+     "heading": "Cateringové služby",
+     "body": "[DOPLNÍ KLIENT / PRÁVNÍK: závaznost nabídky a její platnost, záloha, splatnost, finální počet hostů, storno podmínky, inventář a škody, alergeny]"
+    },
+    {
+     "id": "spory",
+     "heading": "Řešení sporů",
+     "body": "[DOPLNÍ PRÁVNÍK: mimosoudní řešení spotřebitelských sporů (ČOI), účinnost podmínek]"
+    }
+   ]
+  },
+  {
+   "path": "/ochrana-osobnich-udaju",
+   "metaTitle": "Ochrana osobních údajů | Mummies & Daddies",
+   "metaDescription": "Jak Mummies and Daddies s.r.o. zpracovává osobní údaje z poptávek, objednávek a chatu s digitálním asistentem.",
+   "sections": [
+    {
+     "id": "spravce",
+     "heading": "Správce údajů",
+     "body": "Mummies and Daddies s.r.o., Varšavská 715, 120 00 Praha 2, IČO 17957524. Kontakt: info@mummiesdaddies.com."
+    },
+    {
+     "id": "jake-udaje",
+     "heading": "Jaké údaje zpracováváme a proč",
+     "body": "Z poptávky a chatu: jméno, e-mail, telefon, firmu a IČO a údaje o akci včetně diet a alergií, které nám sdělíte. Potřebujeme je, abychom vám připravili nabídku a akci zajistili. Z objednávky: kontaktní, doručovací a fakturační údaje. [DOPLNÍ PRÁVNÍK: právní základy a doby uložení]"
+    },
+    {
+     "id": "asistent",
+     "heading": "Digitální asistent",
+     "body": "Poptávky na webu a e-mailem zpracovává náš digitální asistent založený na umělé inteligenci. Pomáhá doplnit chybějící údaje, odpovídá na časté dotazy a připravuje standardní nabídky podle našeho schváleného ceníku. Nabídky na míru vždy schvaluje člověk z našeho týmu. Kdykoli můžete požádat o kontakt s člověkem. [DOPLNÍ PRÁVNÍK: zpracovatelé, přenos mimo EU, uchování konverzací]"
+    },
+    {
+     "id": "prava",
+     "heading": "Vaše práva",
+     "body": "Máte právo na přístup, opravu, výmaz, omezení zpracování, přenositelnost a vznést námitku. Stížnost můžete podat u Úřadu pro ochranu osobních údajů. Napište nám na info@mummiesdaddies.com."
+    }
+   ]
+  },
+  {
+   "path": "/cookies",
+   "metaTitle": "Cookies | Mummies & Daddies",
+   "metaDescription": "Jaké cookies používáme a jak je můžete nastavit.",
+   "sections": [
+    {
+     "id": "co-jsou",
+     "heading": "Cookies",
+     "body": "Používáme nezbytné cookies, aby web fungoval, a s vaším souhlasem i analytické a marketingové. [DOPLNÍ: seznam cookies a nástrojů]"
+    },
+    {
+     "id": "nastaveni",
+     "heading": "Nastavení",
+     "body": "Souhlas můžete kdykoli změnit v nastavení cookies v patičce webu.",
+     "cta": "Nastavit cookies"
+    }
+   ]
+  },
+  {
+   "path": "/en",
+   "metaTitle": "Catering Prague – corporate events, weddings, parties | Mummies & Daddies",
+   "metaDescription": "Chef-led catering from Prague for companies, weddings and private parties across the Czech Republic. Get a quote for standard events in minutes.",
+   "sections": [
+    {
+     "id": "poznamka",
+     "heading": "Fáze 2",
+     "body": "Zkrácená EN verze (homepage, firemní catering, svatby, poptávka, cheesecaky) s hreflang. Texty přeložíme z finální CZ verze. Níže hlavní claimy."
+    },
+    {
+     "id": "hero",
+     "heading": "CATERING THEY'LL REMEMBER.",
+     "body": "Corporate events, weddings and parties in Prague and across the Czech Republic. Fine-dining cooking, warm service and cheesecakes made to an original American recipe.",
+     "cta": "Get a quote in minutes"
+    }
+   ]
+  },
+  {
+   "path": "/cockpit",
+   "metaTitle": "Cockpit | Mummies & Daddies (interní)",
+   "metaDescription": "Interní systém. Noindex.",
+   "sections": [
+    {
+     "id": "prihlaseni",
+     "heading": "Cockpit",
+     "body": "Interní systém týmu Mummies & Daddies. Přihlaste se firemním účtem.",
+     "cta": "Přihlásit se"
+    },
+    {
+     "id": "navigace",
+     "heading": "Navigace",
+     "body": "",
+     "items": [
+      "Leady a pipeline",
+      "Nabídky (standardní / ke schválení)",
+      "Objednávky e-shopu",
+      "Cateringová mapa",
+      "Reporting"
+     ]
+    }
+   ]
+  }
+ ],
+ "microcopy": [
+  "POPTÁVKA — nadpis kroku 1: O jakou akci jde?",
+  "POPTÁVKA — pole Typ akce: Vyberte typ akce",
+  "POPTÁVKA — možnosti typu akce: Firemní catering · Snídaně · Coffee break · Oběd · Večeře a banket · Společenská akce · Teambuilding · Svatba · Oslava a piknik · Konzultace nebo ochutnávka · Ještě nevím",
+  "POPTÁVKA — pole Segment: Pořádáte akci za firmu, nebo soukromě?",
+  "POPTÁVKA — možnosti segmentu: Za firmu · Soukromě · Jsem eventová agentura",
+  "POPTÁVKA — pole Datum: Datum akce",
+  "POPTÁVKA — nápověda k datu: Ještě nevíte přesně? Napište přibližný termín do poznámky.",
+  "POPTÁVKA — pole Čas: Od kolika do kolika?",
+  "POPTÁVKA — pole Místo: Adresa nebo PSČ",
+  "POPTÁVKA — zaškrtávátko: Hledám prostor, poraďte mi",
+  "POPTÁVKA — pole Počet osob: Kolik vás bude?",
+  "POPTÁVKA — nápověda k počtu osob: Stačí odhad, upřesníte později.",
+  "POPTÁVKA — pole Formát servisu: Jak chcete jídlo podávat?",
+  "POPTÁVKA — možnosti formátu: Bufet · Raut · Banket u stolu · Sharing table · Finger food a jednohubky · BBQ a live cooking · Piknikový koš · Poraďte mi",
+  "POPTÁVKA — pole Rozpočet: Rozpočet na osobu (nepovinné)",
+  "POPTÁVKA — nápověda k rozpočtu: Obvykle 300 až 2 000 Kč na osobu. Pomůže nám trefit menu napoprvé.",
+  "POPTÁVKA — pole Diety: Diety a alergie",
+  "POPTÁVKA — možnosti diet: Vegetariánské · Bezlepkové · Bez laktózy · Vegan · Jiné (napište do poznámky)",
+  "POPTÁVKA — nápověda k dietám: Napište počty, třeba 3× bezlepkové.",
+  "POPTÁVKA — pole Obsluha: Potřebujete obsluhu a inventář?",
+  "POPTÁVKA — možnosti obsluhy: Jen dovoz · Dovoz a příprava na místě · Plný servis s obsluhou · Nevím, poraďte",
+  "POPTÁVKA — pole Nápoje: Nápoje",
+  "POPTÁVKA — možnosti nápojů: Káva a čaj · Nealko · Welcome drink nebo přípitek · Mobilní bar · Bez nápojů",
+  "POPTÁVKA — pole Doplňky: Něco sladkého navíc?",
+  "POPTÁVKA — možnosti doplňků: Sladký bar · Mini cheesecaky · Cheesecake nebo dort · Fresh a smoothie bar",
+  "POPTÁVKA — nadpis kroku Kontakt: Kam vám pošleme nabídku?",
+  "POPTÁVKA — pole Jméno: Jméno a příjmení",
+  "POPTÁVKA — pole E-mail: E-mail",
+  "POPTÁVKA — pole Telefon: Telefon",
+  "POPTÁVKA — nápověda k telefonu: Zavoláme jen, když bude potřeba něco upřesnit.",
+  "POPTÁVKA — pole Firma: Název firmy",
+  "POPTÁVKA — pole IČO: IČO (doplníme fakturační údaje za vás)",
+  "POPTÁVKA — pole Poznámka: Cokoli dalšího? Téma akce, přání, zajímavosti.",
+  "POPTÁVKA — souhlas GDPR: Souhlasím se zpracováním osobních údajů pro přípravu nabídky. Více v zásadách ochrany osobních údajů.",
+  "POPTÁVKA — informace o asistentovi: Poptávku zpracuje náš digitální asistent. Nabídky na míru vždy schvaluje člověk.",
+  "POPTÁVKA — tlačítko odeslat: Odeslat a získat nabídku",
+  "POPTÁVKA — tlačítko během odesílání: Odesíláme…",
+  "POPTÁVKA — tlačítko zpět: Zpět",
+  "POPTÁVKA — tlačítko další: Pokračovat",
+  "POPTÁVKA — předvyplnění z odkazu: Máme předvyplněno: {typ akce}, {počet osob} osob. Můžete to změnit.",
+  "CHYBA — povinné pole: Tohle pole potřebujeme vyplnit.",
+  "CHYBA — e-mail: Tenhle e-mail nevypadá správně. Zkontrolujte ho, prosím.",
+  "CHYBA — telefon: Zadejte telefon včetně předvolby, třeba +420 737 000 000.",
+  "CHYBA — datum v minulosti: Tohle datum už proběhlo. Vyberte, prosím, budoucí termín.",
+  "CHYBA — počet osob pod minimem: Tenhle formát připravujeme od {minimum} osob. Zkuste jiný formát, nebo napište do poznámky, poradíme.",
+  "CHYBA — IČO: IČO má 8 číslic. Zkontrolujte ho, prosím.",
+  "CHYBA — souhlas: Bez souhlasu vám nabídku bohužel poslat nemůžeme.",
+  "CHYBA — odeslání selhalo: Něco se pokazilo a poptávka neodešla. Zkuste to znovu, nebo zavolejte Monice na +420 737 818 694.",
+  "CHYBA — výpadek spojení: Ztratili jsme spojení. Vaše údaje jsme si uložili, stačí kliknout znovu na Odeslat.",
+  "POTVRZENÍ — standard, nadpis: Děkujeme, poptávku máme!",
+  "POTVRZENÍ — standard, text: Nabídku s cenou vám pošleme na {e-mail} do pár minut. Shrnutí poptávky už máte ve schránce.",
+  "POTVRZENÍ — na míru, nadpis: Děkujeme, tohle si zaslouží osobní přístup.",
+  "POTVRZENÍ — na míru, text: Vaše akce je trochu jiná, a to máme rádi. Monika ji projde osobně a ozve se vám obvykle do 1 pracovního dne [DOPLNÍ KLIENT: potvrdit lhůtu]. Orientační rozpětí ceny najdete v potvrzovacím e-mailu.",
+  "POTVRZENÍ — varianta do schválení ceníku: Děkujeme, poptávku máme! Nabídku připravujeme a pošleme vám ji co nejdřív, obvykle ještě týž pracovní den. [Použít, dokud cateringová mapa není ve schválené verzi a nabídky odesílá člověk.]",
+  "POTVRZENÍ — konzultace: Děkujeme! Vyberte si termín konzultace v kalendáři, nebo počkejte, Monika se vám ozve.",
+  "POTVRZENÍ — další krok: Mezitím se podívejte na naše reference.",
+  "POTVRZENÍ — e-mail, předmět: Vaše poptávka cateringu: {typ akce}, {datum}",
+  "POTVRZENÍ — e-mail, úvod: Dobrý den, {jméno}, děkujeme za poptávku. Tady je shrnutí toho, co jsme si zapsali. Kdyby něco nesedělo, stačí odpovědět na tento e-mail.",
+  "NABÍDKA — e-mail, předmět: Nabídka cateringu: {typ akce}, {datum}, {počet osob} osob",
+  "NABÍDKA — e-mail, text: Dobrý den, {jméno}, posíláme nabídku na vaši akci. Cena je {cena} Kč za osobu, celkem {celkem} Kč. Co je v ceně a platnost nabídky najdete v příloze. Potvrdit můžete jedním kliknutím.",
+  "NABÍDKA — tlačítko: Potvrdit nabídku",
+  "NABÍDKA — po potvrzení: Hotovo, máme to v kalendáři! Brzy se ozveme s dalšími kroky.",
+  "NABÍDKA — platnost: Nabídka platí do {datum}.",
+  "ASISTENT — úvodní zpráva: Dobrý den, jsem digitální asistent Mummies & Daddies. Pomůžu vám s nabídkou cateringu. Pro jakou akci vaříme?",
+  "ASISTENT — doptání: Ještě mi chybí {údaj}. Prozradíte mi ho?",
+  "ASISTENT — předvyplněno: Vidím, že plánujete {typ akce} pro {počet osob} osob. Na jaké datum?",
+  "ASISTENT — mimo ceník: Na tohle se zeptám Moniky, ať vám neřeknu nic nepřesného. Ozve se vám osobně.",
+  "ASISTENT — předání člověku: Rádi vás spojíme s člověkem. Zavolejte na +420 737 818 694, nebo nechte číslo a zavoláme vám.",
+  "ASISTENT — tlačítko: Chci mluvit s člověkem",
+  "ASISTENT — tlačítko: Zavolejte mi zpět",
+  "ASISTENT — zpětné volání potvrzeno: Děkujeme, zavoláme vám [DOPLNÍ KLIENT: v pracovní dny od–do].",
+  "ASISTENT — nerozumím: Promiňte, tomu jsem úplně nerozuměl. Zkusíte to napsat jinak?",
+  "ASISTENT — výpadek: Teď mi to nejde. Vyplňte prosím krátký formulář, nebo zavolejte na +420 737 818 694.",
+  "ASISTENT — placeholder vstupu: Napište zprávu…",
+  "RYCHLÝ START — tlačítko: Spočítat nabídku",
+  "RYCHLÝ START — placeholder typ akce: Typ akce",
+  "RYCHLÝ START — placeholder počet osob: Počet osob",
+  "KOŠÍK — nadpis: Váš košík",
+  "KOŠÍK — prázdný: Košík je zatím prázdný. Co takhle cheesecake?",
+  "KOŠÍK — tlačítko prázdný: Vybrat cheesecake",
+  "KOŠÍK — přidáno: Přidáno do košíku. Dobrá volba!",
+  "KOŠÍK — tlačítka po přidání: Pokračovat v nákupu · Přejít do košíku",
+  "KOŠÍK — odebrat: Odebrat",
+  "KOŠÍK — množství: Počet kusů",
+  "KOŠÍK — nápis: Nápis na cheesecake (max. 25 znaků)",
+  "KOŠÍK — nápis počítadlo: {n}/25",
+  "KOŠÍK — chyba nápis: Nápis může mít nejvýš 25 znaků.",
+  "KOŠÍK — příchutě mini: Vyberte 10 příchutí. Zbývá vybrat {n}.",
+  "KOŠÍK — chyba příchutě: Vyberte prosím všech 10 mini cheesecaků.",
+  "KOŠÍK — mezisoučet: Mezisoučet",
+  "KOŠÍK — doprava: Doprava",
+  "KOŠÍK — celkem: Celkem k úhradě (vč. DPH)",
+  "KOŠÍK — způsob doručení: Doručit, nebo vyzvednout?",
+  "KOŠÍK — možnosti doručení: Praha 300 Kč · Praha + 30 km 550 Kč · Praha + 70 km 750 Kč · Osobní vyzvednutí",
+  "KOŠÍK — mimo zónu: Na tuhle adresu bohužel nevozíme. Napište nám a domluvíme se.",
+  "KOŠÍK — termín: Kdy cheesecake chcete?",
+  "KOŠÍK — chyba termín: Tenhle termín už nestihneme upéct. Nejbližší možný je {datum}.",
+  "KOŠÍK — fakturace: Nakupuji na firmu",
+  "KOŠÍK — platba: Způsob platby",
+  "KOŠÍK — možnosti platby: [DOPLNÍ KLIENT: Kartou online · Převodem]",
+  "KOŠÍK — souhlas: Souhlasím s obchodními podmínkami a beru na vědomí zpracování osobních údajů.",
+  "KOŠÍK — tlačítko: Odeslat objednávku",
+  "KOŠÍK — upsell: Pořádáte akci? Cheesecaky přidáme i ke cateringu.",
+  "OBJEDNÁVKA — potvrzení nadpis: Děkujeme, objednávka je u nás!",
+  "OBJEDNÁVKA — potvrzení text: Číslo objednávky {číslo}. Potvrzení jsme poslali na {e-mail}. Pečeme na {datum}.",
+  "OBJEDNÁVKA — převod: Pošlete prosím {částka} Kč na účet [DOPLNÍ KLIENT], variabilní symbol {číslo}. Pečeme po připsání platby.",
+  "OBJEDNÁVKA — platba selhala: Platba neprošla. Nic jsme vám nestrhli. Zkuste to znovu, nebo zvolte platbu převodem.",
+  "OBJEDNÁVKA — e-mail předmět: Vaše objednávka {číslo} | Mummies & Daddies",
+  "POUKAZ — hodnota: Vyberte hodnotu poukazu",
+  "POUKAZ — vlastní částka: Vlastní částka v Kč",
+  "POUKAZ — chyba částka: Zadejte částku od [DOPLNÍ KLIENT] Kč.",
+  "POUKAZ — jméno obdarovaného: Pro koho je poukaz?",
+  "POUKAZ — vzkaz: Vzkaz pro obdarovaného",
+  "POUKAZ — doručení: Kam poukaz poslat? E-mail obdarovaného, nebo váš",
+  "POUKAZ — tlačítko: Koupit poukaz",
+  "POUKAZ — potvrzení: Hotovo! Poukaz odešel na {e-mail}. Udělali jste někomu radost.",
+  "COOKIES — lišta: Používáme cookies, aby web fungoval, a s vaším souhlasem i abychom věděli, co vás zajímá.",
+  "COOKIES — tlačítka: Přijmout vše · Jen nezbytné · Nastavení",
+  "404 — nadpis: Tahle stránka se nám připálila.",
+  "404 — text: Nenašli jsme ji. Zkuste menu, nebo rovnou poptávku.",
+  "404 — tlačítka: Na úvod · Chci nabídku",
+  "HEADER — tlačítko: Chci nabídku",
+  "HEADER — mobil CTA: Nabídka",
+  "HEADER — horní lišta: Nabídku cateringu dostanete do pár minut · +420 737 818 694",
+  "CTA — sekundární univerzální: Nevíte, který formát zvolit? Zeptejte se asistenta"
+ ]
+}

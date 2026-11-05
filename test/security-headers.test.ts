@@ -94,6 +94,8 @@ describe('security headers', () => {
 
 describe('robots', () => {
   it('veřejný web se indexuje, Cockpit, přihlášení a API ne', () => {
-    expect(robots()).toEqual({ rules: { userAgent: '*', allow: '/', disallow: ['/cockpit', '/login', '/auth', '/api'] } })
+    const r = robots()
+    expect(r.rules).toEqual({ userAgent: '*', allow: '/', disallow: ['/cockpit', '/login', '/auth', '/api', '/kosik', '/poptavka/odeslano'] })
+    expect(r.sitemap).toBe('https://www.mummiesdaddies.com/sitemap.xml')
   })
 })

@@ -1,0 +1,136 @@
+/*
+ * Základní styly veřejného webu. Vše je pod třídou .md-web (obal v
+ * app/(web)/layout.tsx), aby se web v hlavním systému nepotkal s Cockpitem.
+ * Žádné @tailwind / @layer direktivy: ty má kořenové globals.css.
+ */
+
+.md-web {
+  background-color: theme('colors.cream');
+  color: theme('colors.cocoa.DEFAULT');
+  font-family: theme('fontFamily.copy');
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color-scheme: light;
+}
+
+.md-web ::selection {
+  background: theme('colors.blush.DEFAULT');
+  color: theme('colors.cocoa.DEFAULT');
+}
+
+/* Kotvy nemají zajet pod sticky header. */
+.md-web [id] {
+  scroll-margin-top: calc(theme('spacing.header') + 1rem);
+}
+
+/* Titulky: elegantní serif verzálkami s prostrkáním. */
+.md-caps {
+  font-family: theme('fontFamily.display');
+  text-transform: uppercase;
+  font-feature-settings: 'kern', 'liga', 'lnum';
+  text-wrap: balance;
+}
+
+.md-balance {
+  text-wrap: balance;
+}
+
+.md-pretty {
+  text-wrap: pretty;
+}
+
+/* Viditelný fokus pro klávesnici (AA): malinový prstenec s bílým lemem. */
+.md-web :focus-visible {
+  outline: 2px solid theme('colors.raspberry.ink');
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.md-web .md-focus-on-dark:focus-visible {
+  outline-color: theme('colors.paper');
+}
+
+/* Odkaz „přeskočit na obsah“. */
+.md-skip {
+  position: absolute;
+  left: 1rem;
+  top: -100px;
+  z-index: 100;
+  background: theme('colors.paper');
+  color: theme('colors.cocoa.DEFAULT');
+  padding: 0.75rem 1.25rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  box-shadow: theme('boxShadow.float');
+}
+.md-skip:focus {
+  top: 0.75rem;
+}
+
+/* Textové odkazy v obsahu. */
+.md-link {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: theme('colors.raspberry.DEFAULT');
+  transition: text-decoration-thickness 160ms ease, color 160ms ease;
+}
+.md-link:hover {
+  text-decoration-thickness: 2px;
+  color: theme('colors.raspberry.ink');
+}
+
+/* Zástupce obsahu, který doplní klient ([DOPLNÍ KLIENT: …]). Viditelný záměrně. */
+.md-fill {
+  display: inline;
+  padding: 0.05em 0.4em;
+  border: 1px dashed theme('colors.raspberry.ink');
+  border-radius: 0.35rem;
+  background: rgba(255, 255, 255, 0.65);
+  color: theme('colors.cocoa.DEFAULT');
+  font-family: theme('fontFamily.copy');
+  font-size: 0.85em;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* Jemné zrnění na pastelových zástupcích fotek. */
+.md-placeholder-pattern {
+  background-image:
+    radial-gradient(circle at 20% 25%, rgba(255, 255, 255, 0.55) 0 18%, transparent 19%),
+    radial-gradient(circle at 78% 70%, rgba(255, 255, 255, 0.35) 0 24%, transparent 25%);
+}
+
+/* Disclosure šipka FAQ. */
+.md-web details > summary {
+  list-style: none;
+}
+.md-web details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Ohleduplnost k nastavení „omezit pohyb“: žádné animace ani plynulé rolování. */
+@media (prefers-reduced-motion: reduce) {
+  .md-web *,
+  .md-web *::before,
+  .md-web *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:has(.md-web) {
+    scroll-behavior: smooth;
+  }
+}

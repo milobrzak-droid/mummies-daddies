@@ -119,6 +119,18 @@ const eslintConfig = defineConfig([
   // connectors: nezná domain ani worker (smí lib a core).
   { files: ["connectors/**"], ...restrict(fromDomain, fromWorker) },
 
+  // Veřejný web (balík P6) má záchytnou stránku app/(web)/[...nenalezeno]
+  // (vlastní 404 webu). Pravidlo no-html-link-for-pages pak bere každou
+  // interní cestu jako „stránku" a hlásí i záměrné celé navigace (<a> na
+  // /api/ms/connect, /auth/mfa/enroll), proto je vypnuté.
+  { rules: { "@next/next/no-html-link-for-pages": "off" } },
+
+  // Komponenty webu čtou po hydrataci localStorage / sessionStorage (košík,
+  // rozpracovaná poptávka, potvrzení) a výsledek ukládají do stavu v efektu.
+  // Na serveru úložiště není, takže render musí začít prázdný; jde o záměrný
+  // vzor, ne o kaskádu renderů.
+  { files: ["components/web/**"], rules: { "react-hooks/set-state-in-effect": "off" } },
+
   // lib (sdílené jádro): nezná žádnou vyšší vrstvu ...
   {
     files: ["lib/**"],

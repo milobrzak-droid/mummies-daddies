@@ -25,6 +25,8 @@ export const shopOrderSchema = z.object({
   fulfilment: z.enum(['pickup', 'delivery']),
   /** Adresa doručení (povinná u 'delivery'). */
   deliveryAddress: optText(300),
+  /** Pásmo doručení (ShopConfig.delivery.zones); null = bez pásem / vyzvednutí. */
+  deliveryZone: z.string().trim().min(1).max(40).nullable().default(null),
   /** Věnování / přání k dortu (krátký text na dort, ne zvláštní požadavky). */
   dedication: optText(80),
   note: optText(1000),
@@ -88,7 +90,7 @@ export function inSeason(p: Pick<ShopProductConfig, 'season'>, isoDay: string): 
  */
 export function priceShopOrder(
   shop: ShopConfig,
-  order: Pick<ShopOrder, 'items' | 'fulfilmentDate' | 'fulfilment'>,
+  order: Pick<ShopOrder, 'items' | 'fulfilmentDate' | 'fulfilment'> & { deliveryZone?: string | null },
   today: string,
 ): ShopOrderPricing {
   const problems = new Set<ShopOrderProblem>()
@@ -96,6 +98,10 @@ export function priceShopOrder(
   if (lead < shop.minLeadDays) problems.add('date_too_soon')
   if (lead > shop.maxLeadDays) problems.add('date_too_far')
   if (order.fulfilment === 'delivery' && !shop.delivery.enabled) problems.add('delivery_unavailable')
+  // Pásma doručení: s pásmy musí objednávka nést známé pásmo, cena je cena pásma.
+  const zones = shop.delivery.zones
+  const zone = zones?.length ? zones.find((x) => x.key === order.deliveryZone) : undefined
+  if (order.fulfilment === 'delivery' && zones?.length && !zone) problems.add('delivery_unavailable')
 
   const lines: ShopOrderLine[] = []
   for (const it of order.items) {
@@ -107,7 +113,7 @@ export function priceShopOrder(
     lines.push({ productKey: p.key, label: p.label, quantity: it.quantity, unitPriceCzk: p.priceCzk, totalCzk: p.priceCzk * it.quantity })
   }
   if (problems.size) return { ok: false, problems: [...problems] }
-  const deliveryCzk = order.fulfilment === 'delivery' ? shop.delivery.priceCzk : 0
+  const deliveryCzk = order.fulfilment === 'delivery' ? (zone ? zone.priceCzk : shop.delivery.priceCzk) : 0
   return { ok: true, lines, deliveryCzk, totalCzk: lines.reduce((s, l) => s + l.totalCzk, 0) + deliveryCzk }
 }
 

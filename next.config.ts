@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { legacyRedirectConfig } from "./lib/web/redirects";
 
 /**
  * Security headers for every route.
@@ -166,6 +167,23 @@ export const securityHeaders: { key: string; value: string }[] = [
 ];
 
 const nextConfig: NextConfig = {
+  // Jen pro lokální vývojovou kopii, kde je node_modules symlink mimo složku
+  // projektu: Turbopack pak musí smět číst i výš. Na Vercelu se nenastavuje.
+  ...(process.env.TURBOPACK_ROOT ? { turbopack: { root: process.env.TURBOPACK_ROOT } } : {}),
+  poweredByHeader: false,
+  // Obrázky veřejného webu (public/web/photos, next/image). Next 16:
+  // qualities je povinný allowlist; 75 = výchozí, 85 = hero (lib/web/photos.ts).
+  images: {
+    formats: ["image/avif", "image/webp"],
+    qualities: [60, 75, 85],
+    deviceSizes: [360, 480, 640, 750, 828, 1080, 1280, 1600, 1920, 2560],
+    imageSizes: [64, 96, 128, 256, 320],
+    minimumCacheTTL: 60 * 60 * 24 * 30,
+  },
+  // Staré URL webu (Wix, cs.mummiesdaddies.com) → nový web, 301 (lib/web/redirects.ts).
+  async redirects() {
+    return legacyRedirectConfig();
+  },
   // Server Actions mají ve výchozím stavu tělo požadavku nejvýš 1 MB, takže PDF
   // nabídky nad 1 MB (import nabídky i hromadný import zakázek) by se ani
   // nedostalo k akci. 4 MB je pod limitem Vercelu (4,5 MB); hromadný import

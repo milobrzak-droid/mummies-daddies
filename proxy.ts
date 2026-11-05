@@ -8,7 +8,7 @@ export async function proxy(request: NextRequest) {
 }
 
 // Brána se nevztahuje na statické soubory: Next interní (_next/static, _next/image),
-// favicon, písma (fonts/) a soubory z public/ přímo v kořeni (logo, symbol…),
+// favicon, písma (fonts/), fotky veřejného webu (web/photos/, balík P6) a soubory z public/ přímo v kořeni (logo, symbol…),
 // které se poznají podle přípony obrázku. Bez toho `/logo.svg` přesměroval
 // nepřihlášeného na /login a na přihlašovací stránce bylo rozbité logo.
 //
@@ -19,5 +19,5 @@ export async function proxy(request: NextRequest) {
 // Matcher musí být doslovný řetězec (Next ho čte staticky při buildu, žádné
 // proměnné ani interpolace).
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon\\.ico|fonts/|[^/]+\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico)$).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon\\.ico|fonts/|web/photos/|[^/]+\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico)$).*)'],
 }

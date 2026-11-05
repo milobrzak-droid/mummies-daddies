@@ -429,6 +429,17 @@ export const MUMMIES_DADDIES = {
     maxLeadDays: 60,
     maxQuantityPerItem: 10,
     pickupAddress: 'Varšavská 715, 120 00 Praha 2',
-    delivery: { enabled: false, priceCzk: 0, note: 'Doručení domluvíme individuálně.' },
+    // Pásma doručení podle ceníku na webu (OVĚŘIT s klientem). Cena dopravy
+    // je cena pásma; adresu zákazník píše do objednávky.
+    delivery: {
+      enabled: true,
+      priceCzk: 300,
+      note: 'Dovezeme po Praze a do 70 km od Prahy.',
+      zones: [
+        { key: 'praha', label: 'Praha', priceCzk: 300 },
+        { key: 'praha-30', label: 'Praha + 30 km', priceCzk: 550 },
+        { key: 'praha-70', label: 'Praha + 70 km', priceCzk: 750 },
+      ],
+    },
   },
 } as const satisfies CompanyConfig<MdNode, MdPillar>

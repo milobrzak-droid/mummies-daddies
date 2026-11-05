@@ -1,22 +1,77 @@
-import Link from 'next/link'
-import { COMPANY } from '@/config'
+import { Button, Faq, Hero, Section, SectionHeading } from '@/components/web'
+import {
+  CheesecakeTeaser,
+  EventTypeGrid,
+  FinalInquiry,
+  HowItWorks,
+  Kitchen,
+  QuickStartCard,
+  References,
+  Team,
+  Venues,
+  WhyUs,
+} from '@/components/web/uvod'
+import { pageMetadata } from '@/lib/web/content'
+import {
+  cheesecakeProductsLd,
+  cheesecakesData,
+  eventGridData,
+  faqData,
+  finalInquiryData,
+  heroData,
+  howItWorksData,
+  kitchenData,
+  quickStartData,
+  referencesData,
+  teamData,
+  venuesData,
+  whyUsData,
+} from '@/lib/web/uvod/home'
 
-// Zástupná úvodní stránka veřejného webu. Celý web (úvod, catering,
-// cheesecaky, formulář poptávky, objednávka) dodá balík P6.
-export default function WebHome() {
-  const brand = COMPANY.brand
+/**
+ * Úvodní stránka přesně podle strategy.homepage:
+ * hero (vlastní raut) → rychlý start → mřížka typů akcí → proč my → reference
+ * → z naší kuchyně → jak to funguje → prostory → cheesecaky (doplněk) → tým
+ * → FAQ → závěrečná poptávka. Horní lištu, header a patičku kreslí layout.
+ */
+export const metadata = pageMetadata('/')
+
+export default function HomePage() {
+  const faq = faqData()
+  const cheesecakes = cheesecakesData()
+  const productsLd = cheesecakeProductsLd(cheesecakes.products)
+
   return (
-    <main id="main" className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center gap-6 px-4 py-16">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={brand?.logo ?? '/logo.svg'} alt={brand?.logoAlt ?? COMPANY.name} className="h-8 w-auto self-start" />
-      <h1 className="m-0 text-title1">{brand?.tagline ?? COMPANY.name}</h1>
-      <p className="m-0 text-body text-muted">
-        Nový web se připravuje. Poptávku cateringu nebo objednávku cheesecaku zatím pošlete na{' '}
-        <a href="mailto:info@mummiesdaddies.com">info@mummiesdaddies.com</a>.
-      </p>
-      <p className="m-0 text-footnote text-muted">
-        <Link href="/cockpit">Vstup pro tým</Link>
-      </p>
-    </main>
+    <>
+      <Hero {...heroData()} tone="blush" size="home" />
+      <QuickStartCard {...quickStartData()} source="/" />
+      <EventTypeGrid {...eventGridData()} />
+      <WhyUs {...whyUsData()} />
+      <References {...referencesData()} />
+      <Kitchen {...kitchenData()} />
+      <HowItWorks {...howItWorksData()} />
+      <Venues {...venuesData()} />
+      <CheesecakeTeaser {...cheesecakes} />
+      <Team {...teamData()} />
+
+      <Section id="faq" tone="cream" labelledBy="faq-title">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-16">
+          <SectionHeading
+            id="faq-title"
+            title={faq.heading}
+            lead={faq.lead}
+            action={faq.cta ? <Button href={faq.cta.href} variant="ghost">{faq.cta.label}</Button> : undefined}
+            className="md:!flex-col md:!items-start md:!justify-start"
+          />
+          <Faq items={faq.items} />
+        </div>
+      </Section>
+
+      <FinalInquiry {...finalInquiryData()} />
+
+      {productsLd ? (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productsLd).replace(/</g, '\\u003c') }} />
+      ) : null}
+    </>
   )
 }

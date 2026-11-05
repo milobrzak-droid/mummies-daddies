@@ -413,7 +413,24 @@ export interface ShopConfig {
   maxQuantityPerItem: number
   /** Způsoby předání: osobní odběr na adrese provozovny, nebo doručení. */
   pickupAddress: string
-  delivery: { enabled: boolean; priceCzk: number; note: string }
+  delivery: {
+    enabled: boolean
+    priceCzk: number
+    note: string
+    /**
+     * Pásma doručení (P6, nepovinné). Když jsou vyplněná, doručení vyžaduje
+     * klíč pásma (ShopOrder.deliveryZone) a cena dopravy je cena pásma;
+     * priceCzk se pak nepoužije.
+     */
+    zones?: readonly ShopDeliveryZone[]
+  }
+}
+
+/** Pásmo doručení e-shopu (např. Praha, Praha + 30 km). Cena v celých Kč vč. DPH. */
+export interface ShopDeliveryZone {
+  key: string
+  label: string
+  priceCzk: number
 }
 
 export interface CompanyConfig<N extends string = string, P extends string = string> {
