@@ -81,6 +81,16 @@ pravomoc `send_standard_offer` = L4 v tabulce `authority_policy` a schválená
 cenová mapa (verze nesmí začínat `ilustracni`). Dokud kterákoli brána chybí,
 nabídka čeká na schválení obchodem.
 
+Připomínky neodpovězených nabídek (follow-up cadence, migrace 0105) běží
+v cronu `/api/cron/follow-ups` za hlídačem jen s `FOLLOWUP_CADENCE_ENABLED=true`
+(a zapnutým `FOLLOWUP_WATCH_ENABLED`). Nastavení je
+`COMPANY.capabilities.followUpCadence`: kroky v pracovních dnech s českými
+svátky, okno odesílání, denní limit, co po vyčerpání. Připomínka jde jen do
+fronty `agent_outbox` (RPC `agent_outbox_enqueue`); dokud fronta není,
+zůstane pokus `planned` v `follow_up_attempt`. Cadence se zastaví na odpovědi
+zákazníka, ruční aktivitě u obchodu, nesouhlasu s oslovením, uzavření obchodu
+nebo proběhlé akci. Druhý denní běh cronu (08:05 UTC) je v okně odesílání.
+
 ## 4. Import zakázek
 
 Cockpit → Obchody → Import (`/cockpit/import/zakazky`): CSV se středníkem

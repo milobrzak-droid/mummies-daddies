@@ -393,6 +393,9 @@ export function planFollowUpSends(input: CadencePlanInput): CadenceAction[] {
 }
 
 /** Důvod prohry pro onExhausted 'lost': popisek z číselníku firmy (deal.lost_reason je text), jinak klíč. */
-export function lostReasonText(key: string, reasons = COMPANY.lostReasons ?? []): string {
+export function lostReasonText(
+  key: string,
+  reasons: readonly { key: string; label: string }[] = COMPANY.lostReasons ?? [],
+): string {
   return reasons.find((r) => r.key === key)?.label ?? key
 }
