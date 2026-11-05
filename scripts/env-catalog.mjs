@@ -161,5 +161,6 @@ export function renderEnvExample() {
     lines.push(`# ${v.purpose} (${req}${v.def ? `; výchozí: ${v.def}` : ''})`)
     lines.push(`${v.required === 'always' ? '' : '# '}${v.name}=`)
   }
+  lines.push('', '# --- Nastavuje platforma (Vercel, Node, GitHub Actions) — nevyplňovat ---', `# ${[...PLATFORM_VARS].join(', ')}`)
   return lines.join('\n') + '\n'
 }
