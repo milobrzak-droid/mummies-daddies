@@ -164,12 +164,12 @@ describe.skipIf(!PGliteCtor)('0107 outbound agent (PGlite, celý řetěz)', () =
       `INSERT INTO outbound_outreach (account_id, contact_id, channel, basis, email_hash, subject, body) VALUES (1, $1, 'review_email', 'existing_customer', $2, 'Vánoce', 'Text') RETURNING id`,
       [contact!.id, hash])).rows[0]
     const r = (await svc<{ r: Row }>(`SELECT outbound_unsubscribe($1::jsonb) AS r`, [JSON.stringify({ email_hash: hash, outreach_id: id })]))[0].r
-    expect(r).toEqual({ suppressed: true, contacts: 1 })
+    expect(r).toEqual({ suppressed: true, contacts: 1, outbox_blocked: 0 })
     expect(await one(`SELECT do_not_contact FROM contact WHERE id = $1`, [contact!.id])).toEqual({ do_not_contact: true })
     expect(await one(`SELECT status FROM outbound_outreach WHERE id = $1`, [id])).toEqual({ status: 'skipped' })
     expect(await one(`SELECT withdrawn_at IS NOT NULL AS w FROM outreach_consent WHERE email_hash = $1`, [hash])).toEqual({ w: true })
     // Opakované odhlášení nic nerozbije.
-    expect((await svc<{ r: Row }>(`SELECT outbound_unsubscribe($1::jsonb) AS r`, [JSON.stringify({ email_hash: hash })]))[0].r).toEqual({ suppressed: true, contacts: 0 })
+    expect((await svc<{ r: Row }>(`SELECT outbound_unsubscribe($1::jsonb) AS r`, [JSON.stringify({ email_hash: hash })]))[0].r).toEqual({ suppressed: true, contacts: 0, outbox_blocked: 0 })
     await expect(svc(`SELECT outbound_unsubscribe('{"email_hash":"x"}'::jsonb)`)).rejects.toThrow(/OU000/)
   })
 
@@ -210,6 +210,54 @@ describe.skipIf(!PGliteCtor)('0107 outbound agent (PGlite, celý řetěz)', () =
     await svc(`SELECT agent_outbox_confirm($1, 'gm1', 'th1', NULL)`, [id])
     expect(await one(`SELECT status, outbox_id, outbox_source_ref FROM outbound_outreach WHERE id = $1`, [ok]))
       .toEqual({ status: 'sent', outbox_id: id, outbox_source_ref: `outreach:${ok}` })
+  })
+
+  test('0110: odhlášení zastaví i oslovení ve frontě (queued → skipped, zpráva blocked); znovu do fronty nejde', async () => {
+    expect((await one<{ n: number }>(`SELECT count(*)::int AS n FROM schema_migration WHERE version = '0110'`))!.n).toBe(1)
+    const { signal_id } = await upsert(tender('vvz-unsub'))
+    const lead = (await svc<{ r: Row }>(`SELECT outbound_lead_create($1::jsonb) AS r`, [JSON.stringify({ signal_id })]))[0].r
+    const dealId = Number(lead.deal_id)
+    const mk = async (to: string) => {
+      const id = (await db.query<{ id: number }>(
+        `INSERT INTO outbound_outreach (account_id, deal_id, channel, status, basis, email_hash, subject, body, decided_by, decided_at)
+         VALUES ($1, $2, 'review_email', 'approved', 'existing_customer', $3, 'Rok od akce', 'Text', $4, now()) RETURNING id`,
+        [lead.account_id, dealId, emailHash(to), SALES])).rows[0].id
+      const p = outreachEnqueuePayload({
+        outreachId: id, dealId, mailboxMemberId: SALES, to, subject: 'Rok od akce', text: 'Text\n--\nOdhlášení: https://x.example/o?t=2',
+        listUnsubscribeUrl: 'https://x.example/o?t=2',
+      })
+      const outbox = (await svc<{ r: { outbox_id: number } }>(`SELECT agent_outbox_enqueue($1::jsonb) AS r`, [JSON.stringify(p)]))[0].r.outbox_id
+      // Úloha outbound agenta po zařazení označí oslovení 'queued'.
+      await db.query(`UPDATE outbound_outreach SET status = 'queued', outbox_source_ref = $2, outbox_id = $3 WHERE id = $1`, [id, `outreach:${id}`, outbox])
+      return { id, outbox }
+    }
+    const status = async (o: { id: number; outbox: number }) => ({
+      outreach: (await one<{ status: string }>(`SELECT status FROM outbound_outreach WHERE id = $1`, [o.id]))!.status,
+      outbox: await one<Row>(`SELECT status, stop_reason FROM agent_outbox WHERE id = $1`, [o.outbox]),
+    })
+
+    // a) čeká ve frontě → po odhlášení přeskočeno a zpráva zablokovaná
+    const queued = await mk('odhlasit@firma.example')
+    const r = (await svc<{ r: Row }>(`SELECT outbound_unsubscribe($1::jsonb) AS r`, [JSON.stringify({ email_hash: emailHash('Odhlasit@firma.example') })]))[0].r
+    expect(r).toMatchObject({ suppressed: true, outbox_blocked: 1 })
+    expect(await status(queued)).toEqual({ outreach: 'skipped', outbox: { status: 'blocked', stop_reason: 'unsubscribed' } })
+    const claimQueued = (await svc<{ r: Row }>(`SELECT agent_outbox_claim($1, 'odhlasit@firma.example', $2, false, 15, ARRAY['outreach']::text[], 5) AS r`,
+      [queued.outbox, `<ao.${queued.outbox}.u@mummiesdaddies.com>`]))[0].r
+    expect(claimQueued).toEqual({ ok: false, reason: 'not_queued' })
+    // Člověk ji uvolnit nemůže: pojistka ji nechá zablokovanou.
+    await as({ role: 'authenticated', sub: SALES }, `SELECT agent_outbox_release($1)`, [queued.outbox])
+    expect((await status(queued)).outbox).toEqual({ status: 'blocked', stop_reason: 'unsubscribed' })
+
+    // b) rozpracovaná zpráva (claimed) se nechá doběhnout; vrácená rezervace se do fronty nevrátí
+    const inflight = await mk('rozpracovano@firma.example')
+    const c = (await svc<{ r: Row }>(`SELECT agent_outbox_claim($1, 'rozpracovano@firma.example', $2, false, 15, ARRAY['outreach']::text[], 5) AS r`,
+      [inflight.outbox, `<ao.${inflight.outbox}.v@mummiesdaddies.com>`]))[0].r
+    expect(c).toMatchObject({ ok: true })
+    await svc(`SELECT outbound_unsubscribe($1::jsonb) AS r`, [JSON.stringify({ email_hash: emailHash('rozpracovano@firma.example') })])
+    expect(await status(inflight)).toEqual({ outreach: 'queued', outbox: { status: 'claimed', stop_reason: null } })
+    await svc(`SELECT agent_outbox_finish($1, 'queued', 'throttled', NULL, NULL, NULL)`, [inflight.outbox])
+    expect(await status(inflight)).toEqual({ outreach: 'skipped', outbox: { status: 'blocked', stop_reason: 'unsubscribed' } })
+    expect(await one(`SELECT claimed_at, rfc_message_id FROM agent_outbox WHERE id = $1`, [inflight.outbox])).toEqual({ claimed_at: null, rfc_message_id: null })
   })
 
   test('audit nenese název, text, e-mail ani otisk', async () => {

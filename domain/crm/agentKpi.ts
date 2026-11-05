@@ -502,7 +502,7 @@ export type AgentAttentionRow = {
 export const RELEASABLE_STATUSES = ['blocked', 'failed', 'needs_attention'] as const
 
 export function isReleasable(o: Pick<AgentOutboxRow, 'kind' | 'status' | 'stop_reason'>): boolean {
-  return (RELEASABLE_STATUSES as readonly string[]).includes(o.status) && o.kind !== 'offer' && o.stop_reason !== 'body_purged' && o.stop_reason !== 'gdpr_erased'
+  return (RELEASABLE_STATUSES as readonly string[]).includes(o.status) && o.kind !== 'offer' && o.stop_reason !== 'body_purged' && o.stop_reason !== 'gdpr_erased' && o.stop_reason !== 'unsubscribed'
 }
 
 const EXTRA_STOP_LABELS: Readonly<Record<string, string>> = {
@@ -513,6 +513,7 @@ const EXTRA_STOP_LABELS: Readonly<Record<string, string>> = {
   quote_mismatch: 'cena nebo rozsah nabídky se po přípravě textu změnily — koncept přegenerovat',
   throttled: 'Gmail dočasně omezil odesílání',
   gdpr_erased: 'údaje smazány na žádost (GDPR)',
+  unsubscribed: 'adresát se odhlásil z obchodních sdělení',
   missing_unsubscribe: 'oslovení bez odkazu na odhlášení',
   outside_send_window: 'mimo okno odesílání',
 }
