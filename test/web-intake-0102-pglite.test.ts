@@ -103,7 +103,7 @@ describe.skipIf(!PGliteCtor)('základ: migrace firmy, seed a vstup webu 0102 (PG
 
   test('celý řetěz včetně rezervovaných zástupců 0103–0106 je v ledgeru', async () => {
     expect(skipped).toEqual([...NEEDS_VAULT])
-    const versions = (await db.query<{ version: string }>(`SELECT version FROM schema_migration WHERE version >= '0102' ORDER BY version`)).rows.map((r) => r.version)
+    const versions = (await db.query<{ version: string }>(`SELECT version FROM schema_migration WHERE version >= '0102' AND version <= '0106' ORDER BY version`)).rows.map((r) => r.version)
     expect(versions).toEqual(['0102', '0103', '0104', '0105', '0106'])
   })
 

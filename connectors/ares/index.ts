@@ -12,6 +12,8 @@ export type AresCompany = {
   founded: string | null
   nace: string[]
   industry: string | null // hrubý sektor z primárního NACE (best-effort)
+  /** Kód právní formy (číselník ČSÚ; 101–108 = fyzická osoba podnikající). */
+  legalFormCode?: string | null
 }
 
 type AresRaw = {
@@ -19,6 +21,7 @@ type AresRaw = {
   obchodniJmeno?: string
   datumVzniku?: string
   czNace2008?: string[]
+  pravniForma?: string
   sidlo?: { nazevObce?: string; nazevKraje?: string; textovaAdresa?: string }
 }
 
@@ -86,6 +89,7 @@ function normalize(s: AresRaw): AresCompany | null {
     founded: s.datumVzniku ?? null,
     nace,
     industry: nace[0] ? sectorFor(nace[0]) : null,
+    ...(s.pravniForma ? { legalFormCode: s.pravniForma } : {}),
   }
 }
 

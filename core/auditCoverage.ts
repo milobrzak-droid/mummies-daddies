@@ -28,11 +28,13 @@ import { INFORMATION_STATES, type InformationState } from '@/core/informationSta
 import { AGENT_AUDIT } from '@/core/auditCoverage.agent'
 import { FOLLOWUP_AUDIT } from '@/core/auditCoverage.followup'
 import { OUTBOX_AUDIT } from '@/core/auditCoverage.outbox'
+import { OUTBOUND_AUDIT } from '@/core/auditCoverage.outbound'
 import { WEB_AUDIT } from '@/core/auditCoverage.web'
 
-// Dílčí seznamy paralelních balíků (P2, P3, P4, P6). Tenhle soubor po
+// Dílčí seznamy paralelních balíků (P2, P3, P4, P6, P7). Tenhle soubor po
 // rozvětvení nikdo nemění — nové tabulky patří do core/auditCoverage.<balík>.ts.
-const PARTS = [AGENT_AUDIT, OUTBOX_AUDIT, FOLLOWUP_AUDIT, WEB_AUDIT] as const
+// (P7 sem jen přidal svůj díl OUTBOUND_AUDIT; kontrakt díl pro P7 neměl.)
+const PARTS = [AGENT_AUDIT, OUTBOX_AUDIT, FOLLOWUP_AUDIT, WEB_AUDIT, OUTBOUND_AUDIT] as const
 const fromParts = <K extends keyof (typeof PARTS)[number]>(k: K) =>
   Object.assign({}, ...PARTS.map((p) => p[k])) as (typeof PARTS)[number][K]
 
