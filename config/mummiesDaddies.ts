@@ -282,7 +282,26 @@ export const MUMMIES_DADDIES = {
       maxPerRun: 10,
       dailyAutoSendLimit: 20,
       perRecipientDailyLimit: 2,
+      // ask_info odchází sám jen u jasného segmentu; nejasný nebo rozporný
+      // segment a nedohledatelné místo akce jdou na posouzení (P2).
       autoSendKinds: ['send_offer', 'ask_info'],
+      // Provozovna = výchozí bod výpočtu vzdálenosti (Mapy.cz, za GEO_ENABLED).
+      originAddress: 'Varšavská 715, 120 00 Praha 2',
+      // Sdílené adresy poptávek: info@ (skupina nebo alias) a vyhrazená
+      // schránka s přeposíláním. OVĚŘIT, která z nich u klienta existuje.
+      inquiryAddresses: ['info@mummiesdaddies.com', 'poptavky@mummiesdaddies.com'],
+      leadMapping: {
+        b2b: { pillar: 'b2b_akce', revenueLine: 'catering_firemni' },
+        b2c: { pillar: 'b2c_oslavy', revenueLine: 'oslava_soukroma', eventTypeRevenueLines: { svatba: 'svatebni_hostina' } },
+        '*': { pillar: 'b2b_akce', revenueLine: 'catering_firemni' },
+      },
+      // Patičku (údaje firmy, nezávaznost, VOP, upozornění na automat) připojí
+      // odchozí fronta při odeslání (P3, capabilities.agentOutbox) — tady žádná.
+      dedupWindowDays: 14,
+      maxMessageAgeDays: 3,
+      modelDailyLimit: 100,
+      modelMaxAttempts: 4,
+      trustedAuthServId: 'mx.google.com',
     },
 
     // Kontrakt P4: připomínky neodpovězených nabídek. OVĚŘIT cadence a texty.

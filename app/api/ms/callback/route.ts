@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server'
+import { msGraphEnabled } from '@/lib/msGraph'
 import { createClient } from '@/lib/supabase/server'
 import { tryRequireUser } from '@/lib/auth/requireUser'
 import { logError } from '@/lib/log'
@@ -30,6 +31,8 @@ function redirectAndClear(request: NextRequest, path: string): NextResponse {
 
 // Microsoft redirects here after the user approves (or denies) consent.
 export async function GET(request: NextRequest) {
+  // Pošta firmy je Google Workspace; Outlook jen s MS_GRAPH_ENABLED (lib/msGraph.ts).
+  if (!msGraphEnabled()) return new NextResponse(null, { status: 404 })
   const { searchParams } = new URL(request.url)
   const code = searchParams.get('code')
   const state = searchParams.get('state')

@@ -154,7 +154,7 @@ describe('text nabídky', () => {
     expect(subject).toContain('80 hostů')
     expect(body).toContain('Dobrý den, paní Nováková,')
     expect(body).toMatch(/Celkem s DPH: 83\s933 Kč/)
-    expect(body).toContain('Nabídka platí do 19. 11. 2026')
+    expect(body).toContain('Kalkulace je nezávazná a platí do 19. 11. 2026')
     for (const i of r.quote.package.includes) expect(body).toContain(i)
   })
 })
