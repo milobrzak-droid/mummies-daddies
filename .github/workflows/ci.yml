@@ -6,8 +6,8 @@
 # do main, je tohle poslední místo, kde se dá chyba zachytit.
 #
 # Produkci zastavuje sama brána ve vercel.json (buildCommand = npm run
-# build:release) — viz docs/PROVOZ.md „Blokující CI“. Tenhle workflow je
-# tatáž brána na GitHubu, aby červená byla vidět už u commitu / PR.
+# build:release). Tenhle workflow je tatáž brána na GitHubu (rozdělená na
+# kroky), aby červená byla vidět už u commitu / PR (docs/NASAZENI.md, krok 1).
 # Nepotřebuje žádné secrets.
 name: CI
 
@@ -51,13 +51,31 @@ jobs:
       - name: Kontrola migrací
         run: npx vitest run test/migrations-lint.test.ts test/migrate-lib.test.ts test/migrate-runner.test.ts
 
-      # Tytéž čtyři kroky, které běží jako buildCommand ve Vercelu
-      # (vercel.json → npm run build:release): tsc --noEmit, eslint, vitest
-      # run, next build. Jeden příkaz = CI a produkční build nemohou
-      # rozejít. Build schválně bez tajemství: ověřuje se, že se aplikace
-      # přeloží, ne že se připojí k databázi (hodnoty níže jsou zástupné).
-      - name: Celá brána (typy, lint, testy, build)
-        run: npm run build:release
+      # Tytéž čtyři kroky jako buildCommand ve Vercelu (vercel.json →
+      # npm run build:release: tsc --noEmit, eslint, vitest, next build), tady
+      # rozdělené, ať je v přehledu hned vidět, co neprošlo. Testy běží přes
+      # test:release (čisté prostředí env -i, TZ=UTC) — bez sítě a bez
+      # tajemství; živé služby mockují (fetch, Supabase, PGlite).
+      - name: Typy (tsc)
+        run: npx tsc --noEmit
+
+      - name: Lint (eslint)
+        run: npx eslint .
+
+      - name: Testy (vitest)
+        run: npm run test:release
+
+      # Založení databáze od nuly: celý řetěz migrací tímtéž běhačem jako
+      # produkce na PGlite + seed + kontroly (docs/NASAZENI.md, krok 3).
+      # Test db-bootstrap-pglite to pokrývá taky; tady je to vidět samostatně
+      # a ověřuje se i samotný skript.
+      - name: Založení DB od nuly (PGlite)
+        run: node scripts/db-bootstrap.mjs --pglite --seed
+
+      # Build schválně bez tajemství: ověřuje se, že se aplikace přeloží, ne
+      # že se připojí k databázi (hodnoty níže jsou zástupné).
+      - name: Build (next build)
+        run: npx next build
         env:
           SUPABASE_URL: https://example.supabase.co
           SUPABASE_PUBLISHABLE_KEY: sb_publishable_ci_placeholder
