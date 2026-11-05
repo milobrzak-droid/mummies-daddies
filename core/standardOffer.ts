@@ -10,9 +10,12 @@
 //                Pokud jde nabídku spočítat, přiloží se jako koncept.
 //
 // Zásada: model cenu nikdy nepočítá ani neupravuje. Co mapa neumí, je
-// výjimka — nikdy odhad. Všechny částky jsou celé Kč bez DPH.
+// výjimka — nikdy odhad. Všechny částky jsou celé Kč bez DPH; DPH se
+// počítá po sazbách podle druhu plnění (jídlo, obsluha, doprava, pronájem,
+// alkohol) ze součtu základů každé sazby. Spotřebitelům (segment
+// s pricesIncludeVat) text nabídky ukazuje ceny včetně DPH.
 import { z } from 'zod'
-import type { PriceMapConfig, PriceMapPackage, StandardOfferConfig } from './tenant'
+import type { PriceMapConfig, PriceMapPackage, StandardOfferConfig, VatClass } from './tenant'
 
 // --- Vstup ----------------------------------------------------------------
 
@@ -71,7 +74,13 @@ export type OfferLine = {
   unit: 'host' | 'akce' | 'hod.' | 'km' | 'číšník·hod.' | '%'
   unitPrice: number
   total: number
+  /** Druh plnění a sazba DPH řádku. */
+  vatClass: VatClass
+  vatRate: number
 }
+
+/** DPH za jednu sazbu: základ (součet řádků bez DPH) a daň zaokrouhlená na Kč. */
+export type VatBreakdown = { rate: number; base: number; vat: number }
 
 export type OfferQuote = {
   mapVersion: string
@@ -84,7 +93,11 @@ export type OfferQuote = {
   lines: OfferLine[]
   subtotal: number
   vat: number
+  /** DPH po sazbách (vzestupně podle sazby); součet `vat` = `vat` nabídky. */
+  vatBreakdown: VatBreakdown[]
   total: number
+  /** Text nabídky ukazuje ceny včetně DPH (spotřebitel). */
+  pricesIncludeVat: boolean
   currency: 'CZK'
   issuedAt: string
   validUntil: string
@@ -200,7 +213,7 @@ export function evaluateStandardOffer(
     segment && eventType && pkg && q.guests != null && q.eventDate != null && isRealDate(q.eventDate) &&
     q.distanceKm != null && extras.every((x) => x.extra) && diets.every((d) => d.diet)
       ? priceQuote(map, {
-          segment: segment.key, eventType: eventType.key, eventTypeLabel: eventType.label, pkg,
+          segment: segment.key, pricesIncludeVat: segment.pricesIncludeVat === true, eventType: eventType.key, eventTypeLabel: eventType.label, pkg,
           guests: q.guests, eventDate: q.eventDate, durationHours: q.durationHours, distanceKm: q.distanceKm,
           extras: extras.map((x) => x.extra!), diets: diets.map((d) => ({ diet: d.diet!, guests: d.guests })),
         }, today)
@@ -217,6 +230,7 @@ export function evaluateStandardOffer(
 
 type PricingInput = {
   segment: string
+  pricesIncludeVat: boolean
   eventType: string
   eventTypeLabel: string
   pkg: PriceMapPackage
@@ -230,48 +244,55 @@ type PricingInput = {
 
 function priceQuote(map: PriceMapConfig, x: PricingInput, today: string): OfferQuote {
   const lines: OfferLine[] = []
-  const line = (l: Omit<OfferLine, 'total'> & { total?: number }) =>
-    lines.push({ ...l, total: l.total ?? Math.round(l.quantity * l.unitPrice) })
+  const rateOf = (c: VatClass) => map.vatRates?.[c] ?? map.vatRate
+  const line = (l: Omit<OfferLine, 'total' | 'vatClass' | 'vatRate'> & { total?: number; vatClass: VatClass }) =>
+    lines.push({ ...l, total: l.total ?? Math.round(l.quantity * l.unitPrice), vatRate: rateOf(l.vatClass) })
 
   const hours = Math.max(map.staff.minHours, Math.ceil(x.durationHours ?? map.staff.defaultHours))
 
-  line({ key: `package:${x.pkg.key}`, label: x.pkg.label, quantity: x.guests, unit: 'host', unitPrice: x.pkg.pricePerGuest })
+  line({ key: `package:${x.pkg.key}`, label: x.pkg.label, quantity: x.guests, unit: 'host', unitPrice: x.pkg.pricePerGuest, vatClass: 'food' })
   const food = lines[0].total
 
   for (const d of x.diets) {
     if (d.diet.surchargePerGuest > 0) {
-      line({ key: `diet:${d.diet.key}`, label: `Příplatek: ${d.diet.label}`, quantity: d.guests, unit: 'host', unitPrice: d.diet.surchargePerGuest })
+      line({ key: `diet:${d.diet.key}`, label: `Příplatek: ${d.diet.label}`, quantity: d.guests, unit: 'host', unitPrice: d.diet.surchargePerGuest, vatClass: 'food' })
     }
   }
 
   if (isWeekend(x.eventDate) && map.weekendSurchargePct > 0) {
     line({
       key: 'weekend', label: 'Víkendový příplatek', quantity: map.weekendSurchargePct, unit: '%', unitPrice: food,
-      total: Math.round((food * map.weekendSurchargePct) / 100),
+      total: Math.round((food * map.weekendSurchargePct) / 100), vatClass: 'food',
     })
   }
 
   if (x.pkg.service) {
     const waiters = Math.ceil(x.guests / map.staff.guestsPerWaiter)
-    line({ key: 'staff', label: `Obsluha (${waiters} × ${hours} h)`, quantity: waiters * hours, unit: 'číšník·hod.', unitPrice: map.staff.pricePerWaiterHour })
+    line({ key: 'staff', label: `Obsluha (${waiters} × ${hours} h)`, quantity: waiters * hours, unit: 'číšník·hod.', unitPrice: map.staff.pricePerWaiterHour, vatClass: 'service' })
   }
 
   for (const e of x.extras) {
     const quantity = e.unit === 'guest' ? x.guests : e.unit === 'hour' ? hours : 1
     const unit = e.unit === 'guest' ? 'host' : e.unit === 'hour' ? 'hod.' : 'akce'
-    line({ key: `extra:${e.key}`, label: e.label, quantity, unit, unitPrice: e.price })
+    line({ key: `extra:${e.key}`, label: e.label, quantity, unit, unitPrice: e.price, vatClass: e.vatClass ?? 'food' })
   }
 
   const extraKm = Math.ceil(Math.max(0, x.distanceKm - map.delivery.includedKm))
   if (extraKm > 0) {
-    line({ key: 'delivery', label: `Doprava nad ${map.delivery.includedKm} km (tam i zpět)`, quantity: extraKm * 2, unit: 'km', unitPrice: map.delivery.pricePerKm })
+    line({ key: 'delivery', label: `Doprava nad ${map.delivery.includedKm} km (tam i zpět)`, quantity: extraKm * 2, unit: 'km', unitPrice: map.delivery.pricePerKm, vatClass: 'delivery' })
   }
 
   const subtotal = lines.reduce((s, l) => s + l.total, 0)
-  const vat = Math.round(subtotal * map.vatRate)
+  const bases = new Map<number, number>()
+  for (const l of lines) bases.set(l.vatRate, (bases.get(l.vatRate) ?? 0) + l.total)
+  const vatBreakdown = [...bases.entries()]
+    .sort((a, b) => a[0] - b[0])
+    .map(([rate, base]) => ({ rate, base, vat: Math.round(base * rate) }))
+  const vat = vatBreakdown.reduce((s, b) => s + b.vat, 0)
   return {
     mapVersion: map.version,
     segment: x.segment,
+    pricesIncludeVat: x.pricesIncludeVat,
     eventType: x.eventType,
     eventTypeLabel: x.eventTypeLabel,
     package: x.pkg,
@@ -280,6 +301,7 @@ function priceQuote(map: PriceMapConfig, x: PricingInput, today: string): OfferQ
     lines,
     subtotal,
     vat,
+    vatBreakdown,
     total: subtotal + vat,
     currency: map.currency,
     issuedAt: today,
@@ -301,6 +323,7 @@ export function priceMapProblems(map: PriceMapConfig): string[] {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(map.validUntil) || !isRealDate(map.validUntil)) out.push('validUntil není datum')
   if (map.validUntil < map.approvedAt) out.push('validUntil je před approvedAt')
   if (!(map.vatRate >= 0 && map.vatRate < 1)) out.push('vatRate mimo 0–1')
+  for (const [k, r] of Object.entries(map.vatRates ?? {})) if (!(typeof r === 'number' && r >= 0 && r < 1)) out.push(`vatRates.${k} mimo 0–1`)
   if (map.minLeadDays < 0 || map.maxLeadDays < map.minLeadDays) out.push('minLeadDays/maxLeadDays')
   if (map.offerValidityDays < 1) out.push('offerValidityDays < 1')
   if (map.staff.guestsPerWaiter < 1) out.push('staff.guestsPerWaiter < 1')
@@ -339,17 +362,33 @@ function czDate(iso: string): string {
   return `${d}. ${m}. ${y}`
 }
 
-/** Text e-mailu se standardní nabídkou. Neobsahuje nic, co nespočítal kód. */
+const czkDec = new Intl.NumberFormat('cs-CZ', { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+const formatCzkDec = (n: number) => `${czkDec.format(Math.round(n * 100) / 100)} Kč`
+const pct = (rate: number) => `${czk.format(Math.round(rate * 1000) / 10)} %`
+
+/**
+ * Text e-mailu se standardní nabídkou. Neobsahuje nic, co nespočítal kód.
+ * Nabídka je NEZÁVAZNÁ kalkulace: smlouva vzniká až písemným potvrzením
+ * firmy (patičku s údaji firmy, obchodními a storno podmínkami připojí
+ * odchozí fronta, core/agents/outboxPolicy.ts#customerText).
+ */
 export function renderOfferEmail(
   quote: OfferQuote,
   ctx: { companyName: string; signature: string; customerName?: string | null },
 ): { subject: string; body: string } {
   const greeting = ctx.customerName ? `Dobrý den, ${ctx.customerName},` : 'Dobrý den,'
-  const rows = quote.lines.map((l) =>
-    l.unit === '%'
-      ? `- ${l.label} (${l.quantity} %): ${formatCzk(l.total)}`
-      : `- ${l.label}: ${czk.format(l.quantity)} ${l.unit} × ${formatCzk(l.unitPrice)} = ${formatCzk(l.total)}`,
-  )
+  const gross = quote.pricesIncludeVat
+  const rows = quote.lines.map((l) => {
+    const k = gross ? 1 + l.vatRate : 1
+    const total = gross ? formatCzkDec(l.total * k) : formatCzk(l.total)
+    return l.unit === '%'
+      ? `- ${l.label} (${l.quantity} %): ${total}`
+      : `- ${l.label}: ${czk.format(l.quantity)} ${l.unit} × ${gross ? formatCzkDec(l.unitPrice * k) : formatCzk(l.unitPrice)} = ${total}`
+  })
+  const vatRows = quote.vatBreakdown.map((b) => `DPH ${pct(b.rate)} ze základu ${formatCzk(b.base)}: ${formatCzk(b.vat)}`)
+  const totals = gross
+    ? [`Celkem včetně DPH: ${formatCzk(quote.total)}`, 'z toho:', ...vatRows.map((r) => `- ${r}`), `Cena bez DPH: ${formatCzk(quote.subtotal)}`]
+    : [`Celkem bez DPH: ${formatCzk(quote.subtotal)}`, ...vatRows, `Celkem s DPH: ${formatCzk(quote.total)}`]
   const body = [
     greeting,
     '',
@@ -358,14 +397,12 @@ export function renderOfferEmail(
     `Balíček ${quote.package.label} obsahuje:`,
     ...quote.package.includes.map((i) => `- ${i}`),
     '',
-    'Cena:',
+    gross ? 'Cena (včetně DPH):' : 'Cena (bez DPH):',
     ...rows,
     '',
-    `Celkem bez DPH: ${formatCzk(quote.subtotal)}`,
-    `DPH: ${formatCzk(quote.vat)}`,
-    `Celkem s DPH: ${formatCzk(quote.total)}`,
+    ...totals,
     '',
-    `Nabídka platí do ${czDate(quote.validUntil)}. Termín je potvrzený až po Vašem potvrzení nabídky.`,
+    `Kalkulace je nezávazná a platí do ${czDate(quote.validUntil)}. Termín i objednávka jsou závazné až po písemném potvrzení z naší strany.`,
     'Pokud chcete cokoli upravit, stačí odpovědět na tento e-mail.',
     '',
     'S pozdravem',
@@ -379,7 +416,7 @@ const QUESTIONS: Record<MissingField, string> = {
   eventType: 'O jaký typ akce jde (např. raut, coffee break, oslava, svatba)?',
   eventDate: 'Na jaký den je akce plánovaná?',
   guests: 'Kolik hostů očekáváte?',
-  distanceKm: 'Kde se akce bude konat (adresa nebo obec)?',
+  distanceKm: 'Na jaké přesné adrese se akce bude konat (ulice, číslo, obec)?',
 }
 
 /** E-mail s doptáním chybějících údajů. Nic nenabízí ani neslibuje. */
