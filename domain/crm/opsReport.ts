@@ -45,7 +45,7 @@ import { daysBetweenPragueDays, pragueDayOf } from '@/lib/pragueDate'
 
 // --- Sekce -------------------------------------------------------------------
 
-export const OPS_SECTION_KEYS = ['obchody', 'dodavky', 'na-nas', 'na-klienta', 'ke-schvaleni', 'riziko', 'neovereno', 'finance-rozdily'] as const
+export const OPS_SECTION_KEYS = ['obchody', 'dodavky', 'na-nas', 'na-klienta', 'ke-schvaleni', 'riziko', 'neovereno', 'finance-rozdily', 'agent'] as const
 /** Klíč sekce je zároveň kotva na stránce (/prehled-tydne#riziko). */
 export type OpsSectionKey = (typeof OPS_SECTION_KEYS)[number]
 
@@ -104,12 +104,18 @@ export const OPS_SECTIONS: readonly SectionSpec[] = [
     lead: 'Faktury a úhrady z iDokladu, které se nepodařilo zapsat jednoznačně, a rozdíly proti záznamům v Cockpitu.',
     path: '/cockpit/finance#rozdily', calm: 'Mezi iDokladem a Cockpitem není žádný rozdíl.', salesOnly: true,
   },
+  // Jen se zapnutým modulem agenta (agent v OpsReportInput) a jen obchodní role (P5).
+  {
+    key: 'agent', title: 'Agent na poptávky', short: 'Agent',
+    lead: 'Poptávky, které agent za týden zpracoval, eskalace na obchod, odeslané zprávy a fronta, která čeká na člověka.',
+    path: '/cockpit/agent', calm: 'Agent za týden nic nezpracoval a ve frontě nic nečeká.', salesOnly: true,
+  },
 ]
 
 /** Pořadí v nadpisu a předmětu e-mailu: od toho, co hoří. Dodávky jsou stav, ne úkol, v nadpisu nejsou. */
-const HEADLINE_ORDER: readonly OpsSectionKey[] = ['riziko', 'ke-schvaleni', 'na-nas', 'na-klienta', 'neovereno', 'finance-rozdily', 'obchody']
+const HEADLINE_ORDER: readonly OpsSectionKey[] = ['riziko', 'ke-schvaleni', 'agent', 'na-nas', 'na-klienta', 'neovereno', 'finance-rozdily', 'obchody']
 /** Sekce, které chtějí něčí pozornost (součet = „položek k pozornosti"). */
-const ATTENTION_KEYS: readonly OpsSectionKey[] = ['riziko', 'ke-schvaleni', 'na-nas', 'na-klienta', 'neovereno', 'finance-rozdily']
+const ATTENTION_KEYS: readonly OpsSectionKey[] = ['riziko', 'ke-schvaleni', 'agent', 'na-nas', 'na-klienta', 'neovereno', 'finance-rozdily']
 
 /** Naše milníky s termínem do tolika dní jsou „Čeká na nás". */
 export const OURS_HORIZON_DAYS = 7
@@ -213,6 +219,12 @@ export type OpsReportInput = {
    */
   financeDiffs?: { state: 'ok'; items: readonly OpsFinanceDiff[]; total: number } | { state: 'error' }
   /**
+   * Agent na poptávky (P5): jen se zapnutým modulem agent. `undefined` = modul
+   * vypnutý, sekce se neukáže; `null` = nejde zjistit; `{ state: 'off' }` =
+   * tabulky agenta zatím nejsou (sekce řekne, že agent neběží).
+   */
+  agent?: OpsAgentSummary | { state: 'off' } | null
+  /**
    * Týdenní přehled (domain/crm/digest.ts): Stav zdrojů a obchodní seznamy
    * (follow-upy po termínu, firmy k oslovení, blokované obchody). null = nenačteno.
    */
@@ -220,6 +232,16 @@ export type OpsReportInput = {
     digest: { sources: DigestSection; sourceAlerts: number }
     source: { followUps: readonly DigestFollowUp[]; outreach: readonly OutreachCandidate[]; blockedDeals: readonly BlockedDeal[] }
   } | null
+}
+
+/** Souhrn agenta za týden (počty, bez textů a kontaktů). */
+export type OpsAgentSummary = {
+  state?: 'ok'
+  inquiries: number
+  escalations: number
+  sent: number
+  needsAttention: number
+  blocked: number
 }
 
 // --- Pomocné -----------------------------------------------------------------
@@ -711,6 +733,33 @@ export function financeDiffItems(diffs: readonly OpsFinanceDiff[], today: string
 
 // --- Celý přehled -------------------------------------------------------------
 
+/**
+ * Položky sekce Agent: nahoře fronta, která chce člověka (zprávy k pozornosti,
+ * zablokované, eskalace), pod tím klidný souhrn týdne. Součet (`total`) jsou
+ * jen věci k řešení — souhrn sám pozornost nechce.
+ */
+export function agentItems(a: OpsAgentSummary | { state: 'off' }): { items: OpsItem[]; total: number } {
+  if ('state' in a && a.state === 'off') {
+    return { items: [{ key: 'agent-off', title: 'Agent zatím neběží', detail: 'Tabulky agenta ještě nejsou nasazené.', href: '/cockpit/agent', proof: 'Stav agenta', tone: 'info' }], total: 0 }
+  }
+  const s = a as OpsAgentSummary
+  const items: OpsItem[] = []
+  if (s.needsAttention > 0) {
+    items.push({ key: 'agent-pozornost', title: `Zprávy k pozornosti: ${s.needsAttention}`, detail: 'Odchozí zprávy agenta čekají na kontrolu člověkem.', href: '/cockpit/agent#fronta', proof: 'Odchozí fronta agenta', tone: 'neg' })
+  }
+  if (s.blocked > 0) {
+    items.push({ key: 'agent-blokovano', title: `Zablokované zprávy: ${s.blocked}`, detail: 'Brána odeslání zprávu zastavila; nabídku je potřeba schválit nebo poslat ručně.', href: '/cockpit/agent#fronta', proof: 'Odchozí fronta agenta', tone: 'warn' })
+  }
+  if (s.escalations > 0) {
+    items.push({ key: 'agent-eskalace', title: `Eskalace na obchod: ${s.escalations}`, detail: 'Poptávky, které agent předal člověku (důvody na stránce agenta).', href: '/cockpit/agent#rozhodnuti', proof: 'Rozhodnutí agenta za týden', tone: 'warn' })
+  }
+  items.push({
+    key: 'agent-souhrn', title: `Poptávek: ${s.inquiries}, odesláno zpráv: ${s.sent}`,
+    detail: 'Souhrn agenta za týden.', href: '/cockpit/agent', proof: 'Rozhodnutí a odchozí fronta agenta', tone: 'info',
+  })
+  return { items, total: s.needsAttention + s.blocked + s.escalations }
+}
+
 function section(key: OpsSectionKey, items: OpsItem[], unavailable: string[], total = items.length): OpsSection {
   const spec = OPS_SECTIONS.find((s) => s.key === key)!
   return {
@@ -785,6 +834,14 @@ export function buildOpsReport(input: OpsReportInput): OpsReport {
       fd.state === 'ok' ? financeDiffItems(fd.items, input.today) : [],
       fd.state === 'error' ? ['rozdíly z iDokladu'] : [],
       fd.state === 'ok' ? fd.total : 0))
+  }
+
+  // Agent: jen s modulem (agent !== undefined) a jen obchodní role.
+  if (sales && input.agent !== undefined) {
+    const a = input.agent
+    const built = a ? agentItems(a) : { items: [], total: 0 }
+    // Souhrnná položka pozornost nechce: total jsou jen věci k řešení.
+    sections.push({ ...section('agent', built.items, a === null ? ['agent'] : []), total: built.total })
   }
 
   const byKey = new Map(sections.map((s) => [s.key, s]))

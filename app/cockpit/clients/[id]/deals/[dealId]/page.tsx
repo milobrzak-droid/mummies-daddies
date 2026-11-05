@@ -35,6 +35,7 @@ import {
 import { NewScopeVersionForm, ScopeVersionButtons } from '@/components/ScopeVersionControls'
 import { checkDealInvariant } from '@/domain/crm/dealInvariant'
 import { OPEN_DEAL_STAGES, weightedValue } from '@/domain/crm/sales'
+import { lostReasonText } from '@/domain/crm/lostReason'
 
 function formatMoney(v: number | string, currency: 'CZK' | 'EUR'): string {
   if (currency === 'CZK') return formatCzk(v)
@@ -229,7 +230,7 @@ export default async function DealDetailPage({ params, searchParams }: {
             }
           >
             <DealsStageStrip stage={deal.stage} />
-            {deal.stage === 'prohráno' && deal.lost_reason && <p className="m-0 mt-3 text-callout text-muted">Důvod prohry: {deal.lost_reason}</p>}
+            {deal.stage === 'prohráno' && deal.lost_reason && <p className="m-0 mt-3 text-callout text-muted">Důvod prohry: {lostReasonText(deal.lost_reason)}</p>}
           </Card>
         </div>
 

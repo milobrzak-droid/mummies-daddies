@@ -183,7 +183,8 @@ describe('loadOpsReport', () => {
     const f = createSupabaseFake({ resolve: () => { throw new Error('síť spadla') } })
     const r = await loadOpsReport({ now: NOW, week: 'minuly', canSeeSales: true, digest: null, db: f.client as never })
     expect(logError).toHaveBeenCalled()
-    expect(r.sections).toHaveLength(7)
-    expect(r.unavailable).toEqual(expect.arrayContaining(['dodávky', 'čekání na klienta', 'Ke schválení', 'kapacity']))
+    // 7 sekcí + Agent na poptávky (modul agent je u firmy zapnutý, P5).
+    expect(r.sections).toHaveLength(8)
+    expect(r.unavailable).toEqual(expect.arrayContaining(['dodávky', 'čekání na klienta', 'Ke schválení', 'kapacity', 'agent']))
   })
 })

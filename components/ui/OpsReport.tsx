@@ -24,6 +24,7 @@ const KEY_CLASS: Record<OpsSectionKey, string> = {
   riziko: 'keycap keycap-red',
   neovereno: 'keycap keycap-white',
   'finance-rozdily': 'keycap keycap-yellow',
+  agent: 'keycap keycap-turquoise',
 }
 
 /** Tón i slovem pro čtečky (barva sama nestačí). */
@@ -45,6 +46,7 @@ const CALM_BG: Record<OpsSectionKey, string> = {
   riziko: 'bg-[color:var(--p-peach)]',
   neovereno: 'bg-[color:var(--c-soft)]',
   'finance-rozdily': 'bg-[color:var(--p-sun)]',
+  agent: 'bg-[color:var(--p-mint)]',
 }
 
 /** Klávesy se souhrnem: jedna na sekci, klik skočí na její kartu níž. */

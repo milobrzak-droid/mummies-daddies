@@ -11,6 +11,7 @@ import { hasManualProbability } from '@/domain/crm/sales'
 import type { ZodError } from 'zod'
 import { DEAL_TRANSITION_MESSAGES, dealTransitionDbMessage, transitionIssues } from '@/domain/crm/dealTransition'
 import { readActiveMember } from '@/lib/auth/activeMember'
+import { normalizeLostReason } from '@/domain/crm/lostReason'
 
 function fieldErrorsOf(error: ZodError): Record<string, string> {
   const result: Record<string, string> = {}
@@ -97,6 +98,9 @@ export async function updateDealStage(
   if (!areEntityIds(dealId)) return { success: false, error: 'Neplatné ID.' }
   const stage = dealStage.safeParse(stageValue)
   if (!stage.success) return { success: false, error: 'Neplatná fáze obchodu.' }
+  // Důvod prohry: kód z COMPANY.lostReasons jako předpona „kod: poznámka"
+  // (P5, bez změny schématu); volný text projde jen oříznutý.
+  lostReason = lostReason == null ? undefined : normalizeLostReason(lostReason)
   if (stage.data === 'prohráno' && !lostReason?.trim()) {
     return { success: false, error: 'U prohraného obchodu je povinný důvod.' }
   }

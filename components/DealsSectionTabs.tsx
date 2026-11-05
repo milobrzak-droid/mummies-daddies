@@ -1,16 +1,21 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { COMPANY } from '@/config'
+import { isModuleOn } from '@/core/modules'
+import type { ModuleKey } from '@/core/tenant'
 
 // Záložky sekce Obchody (docs/PROVOZ.md §11, plán vlny 2): stejný
 // segmentový přepínač jako SectionTabs, jen s vlastní záložkou Reporty.
 // Tabule (/pipeline) je aktivní i na /pipeline/new, ale ne na /pipeline/reporty
 // – proto vlastní pravidlo místo prefixového isActivePath.
-export type DealsTab = { href: string; label: string; count?: number }
+// `module`: záložka modulu, který jde u firmy vypnout (CompanyConfig.modules).
+export type DealsTab = { href: string; label: string; count?: number; module?: ModuleKey }
 
 export const DEALS_SECTION_TABS: DealsTab[] = [
   { href: '/cockpit/pipeline', label: 'Tabule' },
   { href: '/cockpit/pipeline/reporty', label: 'Reporty' },
+  { href: '/cockpit/agent', label: 'Agent', module: 'agent' },
   { href: '/cockpit/cilove-seznamy', label: 'Seznamy k oslovení' },
   { href: '/cockpit/oslovovani', label: 'Oslovování' },
 ]
@@ -28,7 +33,7 @@ export function DealsSectionTabs({ counts }: { counts?: Partial<Record<string, n
   return (
     <nav aria-label="Obchody" className="-mt-1 mb-6">
       <div className="seg">
-        {DEALS_SECTION_TABS.map((t) => {
+        {DEALS_SECTION_TABS.filter((t) => !t.module || isModuleOn(COMPANY.modules, t.module)).map((t) => {
           const count = counts?.[t.href]
           return (
             <Link key={t.href} href={t.href} className="seg-item" aria-current={isDealsTabActive(pathname, t.href) ? 'page' : undefined}>

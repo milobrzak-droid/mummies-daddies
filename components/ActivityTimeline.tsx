@@ -33,6 +33,11 @@ const DOT: Record<string, string> = {
   note: 'bg-[var(--p-sun)]', other: 'bg-[var(--c-soft)]',
 }
 
+/** Krok agenta (P2/P4): sales_activity.source s předponou 'agent:' (např. 'agent:inquiry'). */
+export function isAgentActivity(activity: { source?: string | null }): boolean {
+  return typeof activity.source === 'string' && activity.source.startsWith('agent:')
+}
+
 const formatter = new Intl.DateTimeFormat('cs-CZ', {
   day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
 })
@@ -72,6 +77,9 @@ export function ActivityTimeline({ activities, showAccount = true }:
                 {activity.author ? ` · ${activity.author.full_name}` : ''}
               </span>
               <span className={OUTCOME_CLASS[activity.outcome] ?? 'st'}>{OUTCOME[activity.outcome] ?? activity.outcome}</span>
+              {isAgentActivity(activity) && (
+                <span className="st info" title="Krok udělal automatický agent na poptávky">Agent</span>
+              )}
             </div>
             {showAccount && activity.account && (
               <Link href={`/cockpit/clients/${activity.account.id}`} className="inline-block text-xs mt-2 text-ink underline decoration-[color:var(--c-accent)] underline-offset-2">
