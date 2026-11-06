@@ -41,7 +41,7 @@ export function FloatingTag({
     <span
       style={style}
       className={cx(
-        'inline-flex max-w-[18rem] items-center gap-2 rounded-pill border-2 border-cocoa px-3.5 py-2 font-copy text-[0.875rem] font-bold leading-tight text-cocoa shadow-hard-sm',
+        'inline-flex max-w-[18rem] items-center sm:max-w-none sm:whitespace-nowrap gap-2 rounded-pill border-2 border-cocoa px-3.5 py-2 font-copy text-[0.875rem] font-bold leading-tight text-cocoa shadow-hard-sm',
         float ? 'md-float' : '[transform:rotate(var(--r))]',
         TONE[tone],
         className,

@@ -38,14 +38,14 @@ export function BigMarquee({
   )
   return (
     <section id={id} aria-label={label} className="md-marquee relative isolate overflow-hidden border-t-2 border-cocoa bg-cocoa">
-      <div className="relative h-[15rem] sm:h-[clamp(18rem,12rem+20vw,34rem)]">
+      <div className="relative h-[19rem] sm:h-[clamp(18rem,12rem+20vw,34rem)]">
         {photo?.src ? (
           <div aria-hidden="true" className="absolute inset-0">
             <Image src={photo.src} alt="" fill sizes="100vw" quality={60} className="object-cover" style={photo.position ? { objectPosition: photo.position } : undefined} />
           </div>
         ) : null}
         <div aria-hidden="true" className="absolute inset-0 bg-cocoa/45" />
-        <div aria-hidden="true" className="absolute inset-x-0 top-1/2 -translate-y-1/2 overflow-hidden pt-[0.18em]">
+        <div aria-hidden="true" className="absolute inset-x-0 top-[34%] -translate-y-1/2 overflow-hidden pt-[0.18em] sm:top-1/2">
           <div className="md-marquee-track md-caps whitespace-nowrap text-[4.5rem] leading-[1.15] text-cream sm:text-[clamp(4.5rem,1.6rem+11.7vw,12.35rem)]">
             {run(false)}
             {run(true)}

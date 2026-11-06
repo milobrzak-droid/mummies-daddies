@@ -241,6 +241,12 @@
 .md-scroll-fade::-webkit-scrollbar {
   display: none;
 }
+@media (min-width: 1024px) {
+  .md-scroll-fade {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
 
 /* Disclosure šipka FAQ. */
 .md-web details > summary {
@@ -277,4 +283,10 @@
   html:has(.md-web) {
     scroll-behavior: smooth;
   }
+}
+
+/* Zástupce na tmavé ploše (patička): plná máslová, aby byl čitelný. */
+.md-on-dark .md-fill {
+  background: theme('colors.butter');
+  color: theme('colors.cocoa.DEFAULT');
 }

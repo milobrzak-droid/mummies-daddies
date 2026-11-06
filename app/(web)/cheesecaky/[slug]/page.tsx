@@ -8,6 +8,7 @@ import { cheesecakeOf } from '@/lib/web/options'
 import { pageMetadata } from '@/lib/web/content'
 import { CHEESECAKE_PATH, CHEESECAKE_SLUGS, allowsInscription, isCheesecakeSlug, productPath } from '@/lib/web/eshop/catalog'
 import { productPageData } from '@/lib/web/eshop/copy'
+import { AccentTitle } from '@/components/web/AccentTitle'
 
 /**
  * /cheesecaky/[slug] – detail cheesecaku (7 produktů z copy.json):
@@ -60,9 +61,7 @@ export default async function CheesecakePage({ params }: { params: Promise<{ slu
           </div>
 
           <div className="motion-safe:animate-lift">
-            <h1 id="produkt-title" className="md-caps text-h1 text-cocoa">
-              {d.heading}
-            </h1>
+            <h1 id="produkt-title" className="md-caps text-h1 text-cocoa"><AccentTitle title={d.heading} /></h1>
             <div className="mt-5">
               <PriceTag text={d.priceText} amount={d.priceText ? null : p.price} size="lg" />
             </div>
@@ -72,7 +71,7 @@ export default async function CheesecakePage({ params }: { params: Promise<{ slu
               </p>
             ) : null}
 
-            <div className="mt-8 rounded-soft bg-paper p-5 shadow-float ring-1 ring-inset ring-hairline sm:p-7">
+            <div className="mt-8 rounded-soft bg-paper p-5 shadow-float ring-2 ring-inset ring-cocoa sm:p-7">
               {d.labels.optionsHeading && allowsInscription(slug) ? (
                 <div className="mb-6">
                   <h2 className="md-caps text-h3 text-cocoa">{d.labels.optionsHeading}</h2>
@@ -89,17 +88,13 @@ export default async function CheesecakePage({ params }: { params: Promise<{ slu
         <div className="grid gap-12 md:grid-cols-2 md:gap-16">
           {d.parametry ? (
             <div>
-              <h2 id="parametry-title" className="md-caps mb-6 text-h2 text-cocoa">
-                {d.parametry.section.heading}
-              </h2>
+              <h2 id="parametry-title" className="md-caps mb-6 text-h2 text-cocoa"><AccentTitle title={d.parametry.section.heading} /></h2>
               <TermList items={d.parametry.items} />
             </div>
           ) : null}
           {d.doprava ? (
             <div>
-              <h2 id="doprava-title" className="md-caps mb-6 text-h2 text-cocoa">
-                {d.doprava.heading}
-              </h2>
+              <h2 id="doprava-title" className="md-caps mb-6 text-h2 text-cocoa"><AccentTitle title={d.doprava.heading} /></h2>
               <p className="md-pretty text-lead text-cocoa">
                 <PlaceholderText text={d.doprava.body} />
               </p>

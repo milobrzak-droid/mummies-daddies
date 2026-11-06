@@ -3,6 +3,7 @@ import { ProductCard, TermList } from '@/components/web/eshop'
 import { pageMetadata } from '@/lib/web/content'
 import { catalogPageData } from '@/lib/web/eshop/copy'
 import { isMini } from '@/lib/web/eshop/catalog'
+import { AccentTitle } from '@/components/web/AccentTitle'
 
 /**
  * /cheesecaky – doplňkový e-shop (strategy.sitemap): úvod → produkty (karty
@@ -62,9 +63,7 @@ export default function CheesecakesPage() {
 
       <Section id="na-prani" tone="cream" spacing="sm" labelledBy="na-prani-title">
         <div className="grid gap-8 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-16">
-          <h2 id="na-prani-title" className="md-caps text-h2 text-cocoa">
-            {d.naPrani.heading}
-          </h2>
+          <h2 id="na-prani-title" className="md-caps text-h2 text-cocoa"><AccentTitle title={d.naPrani.heading} /></h2>
           <p className="md-pretty text-lead text-cocoa">
             <PlaceholderText text={d.naPrani.body} />
           </p>
@@ -99,9 +98,7 @@ export default function CheesecakesPage() {
               <PhotoFrame photo={d.naAkci.photo} aspect="fill" rounded={false} tone="vanilla" sizes="(min-width: 768px) 50vw, 100vw" />
             </div>
             <div className="flex flex-col justify-center px-gutter py-section-sm md:py-section md:pl-[max(theme(spacing.gutter),calc((min(100vw,theme(maxWidth.web-wide))-theme(maxWidth.web))/2+theme(spacing.gutter)))] md:pr-12">
-              <h2 id="na-akci-title" className="md-caps text-h2 text-cocoa">
-                {d.naAkci.section.heading}
-              </h2>
+              <h2 id="na-akci-title" className="md-caps text-h2 text-cocoa"><AccentTitle title={d.naAkci.section.heading} /></h2>
               <p className="md-pretty mt-5 max-w-xl text-lead text-cocoa-soft">
                 <PlaceholderText text={d.naAkci.section.body} />
               </p>
@@ -119,9 +116,7 @@ export default function CheesecakesPage() {
         <Section id="poukaz" tone="cream" spacing="sm" labelledBy="poukaz-title">
           <div className="flex flex-col gap-6 rounded-frame bg-pistachio p-6 sm:flex-row sm:items-center sm:justify-between sm:p-10">
             <div>
-              <h2 id="poukaz-title" className="md-caps text-h2 text-cocoa">
-                {d.poukaz.section.heading}
-              </h2>
+              <h2 id="poukaz-title" className="md-caps text-h2 text-cocoa"><AccentTitle title={d.poukaz.section.heading} /></h2>
               <p className="mt-3 text-lead text-cocoa">
                 <PlaceholderText text={d.poukaz.section.body} />
               </p>

@@ -3,6 +3,7 @@ import { UI_TEXT } from '@/lib/web/poptavka/ui-text'
 import { Button } from '../Button'
 import { Container } from '../Container'
 import { IconPlate } from '../icons'
+import { AccentTitle } from '@/components/web/AccentTitle'
 
 /**
  * Stránka 404 (mikrotexty 404 — …): nadpis, text, „Na úvod“ / „Chci nabídku“
@@ -29,9 +30,7 @@ export function NotFoundView({
           <IconPlate size={36} />
         </span>
         <p className="mt-6 font-display text-[4.5rem] italic leading-none text-cocoa-soft">404</p>
-        <h1 id="nenalezeno-title" className="md-caps mt-4 text-h1 text-cocoa">
-          {heading}
-        </h1>
+        <h1 id="nenalezeno-title" className="md-caps mt-4 text-h1 text-cocoa"><AccentTitle title={heading} /></h1>
         <p className="md-pretty mx-auto mt-5 max-w-xl text-lead text-cocoa-soft">{text}</p>
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Button href="/" variant="outline" size="lg">

@@ -11,7 +11,7 @@ const IconMinus = ({ size = 18 }: { size?: number }) => (
 )
 
 const BTN =
-  'grid h-11 w-11 shrink-0 place-items-center rounded-pill bg-paper text-cocoa ring-1 ring-inset ring-cocoa/20 ' +
+  'grid h-11 w-11 shrink-0 place-items-center rounded-pill bg-paper text-cocoa ring-2 ring-inset ring-cocoa ' +
   'transition-colors duration-quick hover:bg-cocoa hover:text-cream disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-paper disabled:hover:text-cocoa'
 
 /**

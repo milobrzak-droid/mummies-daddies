@@ -13,6 +13,7 @@ import { PhotoFrame } from '../PhotoFrame'
 import { PlaceholderText } from '../PlaceholderText'
 import { Section } from '../Section'
 import { SectionHeading } from '../SectionHeading'
+import { AccentTitle } from '@/components/web/AccentTitle'
 
 const P = '/prostory'
 
@@ -80,9 +81,7 @@ export function VenuesPage() {
       <Section tone="blush" soft labelledBy="pomuzeme-title">
         <div className="grid gap-10 md:grid-cols-2 md:items-center lg:gap-16">
           <div>
-            <h2 id="pomuzeme-title" className="md-caps text-h2 text-cocoa">
-              {pomuzeme.heading}
-            </h2>
+            <h2 id="pomuzeme-title" className="md-caps text-h2 text-cocoa"><AccentTitle title={pomuzeme.heading} /></h2>
             <p className="md-pretty mt-5 text-lead text-cocoa-soft">
               <PlaceholderText text={pomuzeme.body} />
             </p>

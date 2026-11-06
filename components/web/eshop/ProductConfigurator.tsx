@@ -137,7 +137,7 @@ export function ProductConfigurator({
 
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
-          <label htmlFor={id('pocet')} className="mb-2 block font-copy text-small font-semibold text-cocoa">
+          <label htmlFor={id('pocet')} className="mb-2 block font-copy text-small font-bold text-cocoa">
             {labels.quantity}
           </label>
           <Stepper id={id('pocet')} name="pocet" value={quantity} onChange={(n) => { setQuantity(n); setAdded(false) }} />
@@ -169,8 +169,8 @@ export function ProductConfigurator({
 
       <div ref={statusRef} tabIndex={-1} role="status" aria-live="polite" className="outline-none">
         {added ? (
-          <div className="rounded-soft bg-pistachio-soft p-5 ring-1 ring-inset ring-cocoa/10 motion-safe:animate-fade">
-            <p className="font-copy text-copy font-semibold text-cocoa">{labels.added}</p>
+          <div className="rounded-soft bg-pistachio-soft p-5 ring-2 ring-inset ring-cocoa motion-safe:animate-fade">
+            <p className="font-copy text-copy font-bold text-cocoa">{labels.added}</p>
             <div className="mt-4 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-5">
               <Button href={labels.goToCart.href} variant="primary" size="md" arrow>
                 {labels.goToCart.label}

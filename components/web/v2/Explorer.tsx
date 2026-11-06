@@ -73,7 +73,7 @@ export function Explorer({ items, label, showDots = false }: { items: ExplorerIt
         role="tablist"
         aria-label={label}
         aria-orientation="vertical"
-        className="md-scroll-fade -mx-gutter flex snap-x gap-2 overflow-x-auto px-gutter pb-5 pt-1 lg:mx-0 lg:block lg:snap-none lg:overflow-visible lg:border-r-2 lg:border-cocoa lg:p-0 lg:[mask-image:none]"
+        className="md-scroll-fade flex snap-x gap-2 overflow-x-auto px-gutter pb-5 pt-1 lg:mx-0 lg:block lg:snap-none lg:overflow-visible lg:border-r-2 lg:border-cocoa lg:p-0"
       >
         {items.map((it, i) => {
           const tone = it.tone ?? 'raspberry'
@@ -121,7 +121,7 @@ export function Explorer({ items, label, showDots = false }: { items: ExplorerIt
           aria-labelledby={`${base}-tab-${i}`}
           hidden={i !== active}
           tabIndex={0}
-          className="min-w-0 outline-offset-[-3px] motion-safe:animate-fade lg:px-10 lg:py-12 xl:px-14"
+          className="min-w-0 px-gutter pb-10 pt-2 outline-offset-[-3px] motion-safe:animate-fade lg:px-10 lg:py-12 xl:px-14"
         >
           <Panel item={it} />
         </div>

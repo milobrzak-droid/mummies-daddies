@@ -14,6 +14,7 @@ import { FactList } from './FactList'
 import { FilterGrid, type FilterItem } from './FilterGrid'
 import { Gallery } from './Gallery'
 import { QuoteCard } from './QuoteCard'
+import { AccentTitle } from '@/components/web/AccentTitle'
 
 const LIST_PATH = '/reference'
 
@@ -78,14 +79,12 @@ export function ReferenceListPage() {
         <Breadcrumbs items={[{ label: 'Úvod', href: '/' }, { label: 'Reference' }]} className="mb-8" />
         <div className="grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-16">
           <div className="motion-safe:animate-lift">
-            <h1 id="reference-title" className="md-caps text-h1 text-cocoa">
-              {uvod.heading}
-            </h1>
+            <h1 id="reference-title" className="md-caps text-h1 text-cocoa"><AccentTitle title={uvod.heading} /></h1>
             <p className="md-pretty mt-5 max-w-2xl text-lead text-cocoa">
               <PlaceholderText text={uvod.body} />
             </p>
           </div>
-          <section aria-labelledby="reference-loga" className="rounded-soft bg-paper/80 p-6 ring-1 ring-hairline">
+          <section aria-labelledby="reference-loga" className="rounded-soft bg-paper/80 p-6 ring-2 ring-cocoa">
             <h2 id="reference-loga" className="font-copy text-eyebrow uppercase text-cocoa-soft">
               {loga.heading}
             </h2>
@@ -165,9 +164,7 @@ export function ReferenceCasePage({ slug }: { slug: string }) {
         <div className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
           <FactList facts={facts} />
           <div>
-            <h2 id="zadani-title" className="md-caps text-h2 text-cocoa">
-              {zadani.heading}
-            </h2>
+            <h2 id="zadani-title" className="md-caps text-h2 text-cocoa"><AccentTitle title={zadani.heading} /></h2>
             <p className="md-pretty mt-5 text-lead text-cocoa-soft">
               <PlaceholderText text={zadani.body} />
             </p>
@@ -181,7 +178,7 @@ export function ReferenceCasePage({ slug }: { slug: string }) {
           <ul role="list" className="gap-5 md:columns-2">
             {menu.parsedItems.map((it) => (
               <li key={it.raw} className="mb-5 break-inside-avoid">
-                <article className="h-full rounded-frame bg-paper p-6 ring-1 ring-hairline sm:p-8">
+                <article className="h-full rounded-frame bg-paper p-6 ring-2 ring-cocoa sm:p-8">
                   <h3 className="md-caps text-h3 text-cocoa">{it.label ?? it.title}</h3>
                   <p className="md-pretty mt-3 text-copy text-cocoa-soft">
                     <PlaceholderText text={it.text} />

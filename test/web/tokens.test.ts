@@ -37,4 +37,61 @@ describe('kontrast tokenů (WCAG AA 4,5 : 1 pro text)', () => {
   it('krémový text na kakaové patičce', () => {
     expect(contrast(colors.cream, colors.cocoa.DEFAULT)).toBeGreaterThanOrEqual(7)
   })
+
+})
+
+// Web v2 (docs/web-v2-design.md §1.3): páry, které design používá, a páry, které zakazuje.
+describe('kontrast palety v2 (Mummy malina + Daddy modrá)', () => {
+  const text = (fg: string, bg: string) => expect(contrast(fg, bg), `${fg} na ${bg}`).toBeGreaterThanOrEqual(4.5)
+  const large = (fg: string, bg: string) => expect(contrast(fg, bg), `${fg} na ${bg}`).toBeGreaterThanOrEqual(3)
+
+  it('ink a ink-soft na všech plochách v2 (krém, papír, tinty, máslová)', () => {
+    for (const bg of [colors.cream, colors.paper, colors.daddy.tint, colors.raspberry.tint, colors.butter]) {
+      text(colors.cocoa.DEFAULT, bg)
+      text(colors.cocoa.soft, bg)
+    }
+  })
+
+  it('krémový text na plných tlačítkách (malina, modrá) i jejich hoveru', () => {
+    for (const bg of [colors.raspberry.ink, colors.raspberry.deep, colors.daddy.ink, colors.daddy.deep]) {
+      text(colors.cream, bg)
+      text(colors.paper, bg)
+    }
+  })
+
+  it('malinový a modrý text pod 24 px na krému a papíru (ink varianty), akcentová modrá', () => {
+    for (const bg of [colors.cream, colors.paper]) {
+      text(colors.raspberry.ink, bg)
+      text(colors.daddy.ink, bg)
+      text(colors.daddy.DEFAULT, bg)
+    }
+    text(colors.daddy.ink, colors.raspberry.tint)
+  })
+
+  it('akcentová malina (#D23F6B) jen pro velký text: ≥ 3 : 1 na krému i tintech, < 4,5 na krému', () => {
+    for (const bg of [colors.cream, colors.paper, colors.daddy.tint, colors.raspberry.tint]) large(colors.raspberry.DEFAULT, bg)
+    expect(contrast(colors.raspberry.DEFAULT, colors.cream)).toBeLessThan(4.5)
+    large(colors.raspberry.ink, colors.daddy.tint)
+  })
+
+  it('patička: krém, malina a modrá na ink', () => {
+    expect(contrast(colors.cream, colors.cocoa.DEFAULT)).toBeGreaterThanOrEqual(7)
+    text(colors.raspberry.onInk, colors.cocoa.DEFAULT)
+    text(colors.daddy.onInk, colors.cocoa.DEFAULT)
+    text(colors.butter, colors.cocoa.DEFAULT)
+  })
+
+  it('stavy formulářů na krému', () => {
+    for (const fg of [colors.danger, colors.success, colors.warning]) text(fg, colors.cream)
+  })
+
+  it('zakázané páry: tmavý text na plné malině / modré nesplňuje AA (proto se nepoužívá)', () => {
+    expect(contrast(colors.cocoa.DEFAULT, colors.raspberry.DEFAULT)).toBeLessThan(4.5)
+    expect(contrast(colors.cocoa.DEFAULT, colors.daddy.DEFAULT)).toBeLessThan(4.5)
+  })
+
+  it('netextové prvky: 2px ink linka a modrý prstenec fokusu na krému ≥ 3 : 1', () => {
+    large(colors.hairline, colors.cream)
+    large(colors.daddy.ink, colors.cream)
+  })
 })

@@ -108,12 +108,12 @@ export function VoucherForm({ labels }: { labels: VoucherLabels }) {
 
   if (success) {
     return (
-      <div className="rounded-soft bg-paper p-6 text-center shadow-float sm:p-10 motion-safe:animate-rise">
+      <div className="rounded-soft bg-paper p-6 text-center shadow-float sm:p-10 motion-safe:animate-rise ring-2 ring-inset ring-cocoa">
         <h2 ref={doneRef} tabIndex={-1} className="md-caps text-h2 text-cocoa outline-none">
           {fill(labels.confirmation, { 'e-mail': success.deliveryEmail })}
         </h2>
         {success.payment.method === 'prevod' ? (
-          <p className="md-pretty mx-auto mt-6 max-w-web-prose rounded-soft bg-vanilla p-5 text-copy text-cocoa">
+          <p className="md-pretty mx-auto mt-6 max-w-web-prose rounded-soft bg-vanilla p-5 text-copy text-cocoa ring-2 ring-inset ring-cocoa">
             <PlaceholderText text={fill(labels.transferText, { částka: formatNumber(success.payment.amount), číslo: success.payment.variableSymbol })} />
           </p>
         ) : null}
@@ -127,7 +127,7 @@ export function VoucherForm({ labels }: { labels: VoucherLabels }) {
     <div className="grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-14">
       <form noValidate onSubmit={onSubmit} aria-label={labels.submit} className="order-2 grid gap-8 lg:order-1">
         {/* hodnota */}
-        <section aria-labelledby="poukaz-krok-hodnota" className="rounded-soft bg-blush-soft p-5 sm:p-8">
+        <section aria-labelledby="poukaz-krok-hodnota" className="rounded-soft bg-blush-soft p-5 sm:p-8 ring-2 ring-inset ring-cocoa">
           <StepHeading id="poukaz-krok-hodnota" number={1} title={labels.valuesHeading} />
           <ChoiceGroup id={ID.amount} legend={labels.valuesLegend} error={preset === 'vlastni' ? null : err('amount')}>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -146,7 +146,7 @@ export function VoucherForm({ labels }: { labels: VoucherLabels }) {
                       }}
                       className={cx(RADIO_CLASS, 'mt-0')}
                     />
-                    <span className={cx('font-copy font-semibold', p.amount ? 'text-[1.0625rem] tabular-nums text-raspberry-ink' : 'text-copy text-cocoa')}>
+                    <span className={cx('font-copy font-bold', p.amount ? 'text-[1.0625rem] tabular-nums text-raspberry-ink' : 'text-copy text-cocoa')}>
                       {p.label}
                     </span>
                   </label>
@@ -177,7 +177,7 @@ export function VoucherForm({ labels }: { labels: VoucherLabels }) {
         </section>
 
         {/* pro koho */}
-        <section aria-labelledby="poukaz-krok-pro-koho" className="rounded-soft bg-vanilla-soft p-5 sm:p-8">
+        <section aria-labelledby="poukaz-krok-pro-koho" className="rounded-soft bg-vanilla-soft p-5 sm:p-8 ring-2 ring-inset ring-cocoa">
           <StepHeading id="poukaz-krok-pro-koho" number={2} title={labels.personalHeading} body={labels.personalBody} />
           <div className="grid gap-6">
             <Field id={ID.recipient} label={labels.recipient} error={err('recipientName')}>
@@ -229,7 +229,7 @@ export function VoucherForm({ labels }: { labels: VoucherLabels }) {
         </section>
 
         {/* platba a souhlas */}
-        <section aria-labelledby="poukaz-krok-platba" className="rounded-soft bg-sage-soft p-5 sm:p-8">
+        <section aria-labelledby="poukaz-krok-platba" className="rounded-soft bg-sage-soft p-5 sm:p-8 ring-2 ring-inset ring-cocoa">
           <StepHeading id="poukaz-krok-platba" number={3} title={labels.paymentLegend} body={labels.paymentBody} />
           <ChoiceGroup id={ID.payment} legend={labels.paymentLegend} error={err('payment')} className="[&>legend]:sr-only">
             <div className="grid gap-3 sm:grid-cols-2">
@@ -246,7 +246,7 @@ export function VoucherForm({ labels }: { labels: VoucherLabels }) {
                     }}
                     className={RADIO_CLASS}
                   />
-                  <span className="font-copy text-copy font-semibold text-cocoa">{p.label}</span>
+                  <span className="font-copy text-copy font-bold text-cocoa">{p.label}</span>
                 </label>
               ))}
             </div>
@@ -269,7 +269,7 @@ export function VoucherForm({ labels }: { labels: VoucherLabels }) {
               <span>{labels.consent}</span>
             </label>
             {err('consent') ? (
-              <p id={`${ID.consent}-chyba`} className="mt-2 font-copy text-small font-semibold text-danger">
+              <p id={`${ID.consent}-chyba`} className="mt-2 font-copy text-small font-bold text-danger">
                 {err('consent')}
               </p>
             ) : null}
@@ -290,7 +290,7 @@ export function VoucherForm({ labels }: { labels: VoucherLabels }) {
             {sending ? labels.sending : labels.submit}
           </Button>
           <div role="alert" className="empty:hidden">
-            {failure ? <p className="mt-4 font-copy text-small font-semibold text-danger">{failure}</p> : null}
+            {failure ? <p className="mt-4 font-copy text-small font-bold text-danger">{failure}</p> : null}
           </div>
         </div>
       </form>
@@ -301,7 +301,7 @@ export function VoucherForm({ labels }: { labels: VoucherLabels }) {
           <div className="relative overflow-hidden rounded-frame bg-blush p-3 shadow-float sm:p-4">
             <div className="relative flex aspect-[3/2] flex-col justify-between rounded-frame border border-cocoa/15 bg-paper/70 p-6 sm:p-8">
               <div className="flex items-start justify-between gap-4">
-                <p className="font-display text-[1.125rem] font-semibold uppercase tracking-[0.08em] text-cocoa">{labels.brand}</p>
+                <p className="font-display text-[1.125rem] font-bold uppercase tracking-[0.08em] text-cocoa">{labels.brand}</p>
                 <p className="font-copy text-eyebrow uppercase text-cocoa-soft">{labels.previewTitle}</p>
               </div>
               <div>

@@ -14,6 +14,7 @@ import { headingId, photoOf, type CateringContext } from './CateringSection'
 import { overviewFacts } from './CateringTypePage'
 import { contextHref, splitPriceFacts } from './parse'
 import { RichText } from './RichText'
+import { AccentTitle } from '@/components/web/AccentTitle'
 
 /**
  * Přehled /catering: rozcestník všech služeb s cenou od a minimem osob,
@@ -116,9 +117,7 @@ export function CateringOverview() {
         <div className="grid gap-5 sm:gap-6 md:grid-cols-2">
           {[diety, oblast].map((s, i) => (
             <section key={s.id} id={s.id} aria-labelledby={headingId(s.id)} className={cx('rounded-soft p-6 sm:p-10', i === 0 ? 'bg-sage-soft' : 'bg-vanilla-soft')}>
-              <h2 id={headingId(s.id)} className="md-caps text-h2 text-cocoa">
-                {s.heading}
-              </h2>
+              <h2 id={headingId(s.id)} className="md-caps text-h2 text-cocoa"><AccentTitle title={s.heading} /></h2>
               <p className="md-pretty mt-5 text-copy text-cocoa-soft">
                 <RichText text={s.body} />
               </p>

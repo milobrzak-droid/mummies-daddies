@@ -47,7 +47,7 @@ export function QuickAddButton({
       <p role="status" aria-live="polite" className="mt-3 min-h-0 font-copy text-small text-cocoa empty:mt-0">
         {done ? (
           <>
-            <span className="font-semibold">{added}</span>{' '}
+            <span className="font-bold">{added}</span>{' '}
             <Link href={cart.href} className="md-link whitespace-nowrap">
               {cart.label}
             </Link>

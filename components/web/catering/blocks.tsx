@@ -10,6 +10,7 @@ import { cx } from '../cx'
 import { IconCheck, Ornament } from './icons'
 import { splitPriceFacts, splitStepNumber } from './parse'
 import { RichText } from './RichText'
+import { AccentTitle } from '@/components/web/AccentTitle'
 
 /*
  * Stavební bloky stránek cateringu. Všechno jsou serverové komponenty bez stavu;
@@ -54,9 +55,7 @@ export function SectionIntro({
   const center = align === 'center'
   return (
     <div className={cx('mb-10 max-w-3xl sm:mb-12', center && 'mx-auto text-center', className)}>
-      <h2 id={id} className="md-caps text-h2 text-cocoa">
-        {title}
-      </h2>
+      <h2 id={id} className="md-caps text-h2 text-cocoa"><AccentTitle title={title} /></h2>
       {facts?.rest ? (
         <p className={cx('md-pretty mt-5 text-lead text-cocoa-soft', center && 'mx-auto max-w-2xl')}>
           <RichText text={facts.rest} />
@@ -75,7 +74,7 @@ export function ChipList({ items, className }: { items: string[]; className?: st
   return (
     <ul className={cx('flex flex-wrap gap-2.5 sm:gap-3', className)}>
       {items.map((it, i) => (
-        <li key={i} className="rounded-pill bg-paper px-4 py-2.5 font-copy text-copy font-medium leading-snug text-cocoa ring-1 ring-inset ring-hairline sm:px-5">
+        <li key={i} className="rounded-pill bg-paper px-4 py-2.5 font-copy text-copy font-medium leading-snug text-cocoa ring-2 ring-inset ring-cocoa sm:px-5">
           <RichText text={it} />
         </li>
       ))}
@@ -95,7 +94,7 @@ export function CheckList({ items, columns = 1, className }: { items: string[]; 
               <IconCheck size={14} />
             </span>
             <span className="md-pretty">
-              {it.label ? <span className="font-semibold">{it.label}: </span> : it.title ? <span className="font-semibold">{it.title} — </span> : null}
+              {it.label ? <span className="font-bold">{it.label}: </span> : it.title ? <span className="font-bold">{it.title} — </span> : null}
               <RichText text={it.label || it.title ? it.text : raw} />
             </span>
           </li>
@@ -205,7 +204,7 @@ export function PackageGrid({ items, headingLevel = 'h3' }: { items: string[]; h
         <div className="mt-8 space-y-2">
           {notes.map((n, i) => (
             <p key={i} className="text-copy text-cocoa-soft">
-              <span className="font-semibold text-cocoa">{n.label}: </span>
+              <span className="font-bold text-cocoa">{n.label}: </span>
               <RichText text={n.text} />
             </p>
           ))}

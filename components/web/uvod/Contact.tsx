@@ -26,7 +26,7 @@ export function ContactPersonCard({ name, lines, tone = 'sage' }: { name: string
         <ul role="list" className="mt-auto space-y-1 pt-6">
           {links.map((l) => (
             <li key={l.href}>
-              <a href={l.href} className="inline-flex min-h-11 items-center gap-3 font-copy text-[1.0625rem] font-semibold text-cocoa hover:underline">
+              <a href={l.href} className="inline-flex min-h-11 items-center gap-3 font-copy text-[1.0625rem] font-bold text-cocoa hover:underline">
                 {l.kind === 'phone' ? <IconPhone size={20} className="shrink-0" /> : <IconMail size={20} className="shrink-0" />}
                 <span className="min-w-0">{l.kind === 'email' ? withBreakAfterAt(l.text) : l.text}</span>
               </a>
@@ -67,7 +67,7 @@ export function ContactPanel({
   children?: ReactNode
 }) {
   return (
-    <section aria-labelledby={`${id}-title`} className={cx('rounded-soft p-6 sm:p-8', tone ? TONE_BG[tone] : 'bg-paper ring-1 ring-hairline', className)}>
+    <section aria-labelledby={`${id}-title`} className={cx('rounded-soft p-6 sm:p-8', tone ? TONE_BG[tone] : 'bg-paper ring-2 ring-cocoa', className)}>
       <h2 id={`${id}-title`} className="md-caps text-h3 text-cocoa">
         {heading}
       </h2>
@@ -98,7 +98,7 @@ export function SocialList({ items }: { items: SocialLink[] }) {
           <>
             {Icon ? <Icon size={20} className="shrink-0" /> : <span aria-hidden="true" className="inline-block w-5" />}
             <span>
-              <span className="font-semibold">{s.label}:</span> <PlaceholderText text={s.text} />
+              <span className="font-bold">{s.label}:</span> <PlaceholderText text={s.text} />
             </span>
           </>
         )

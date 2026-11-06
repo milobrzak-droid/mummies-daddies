@@ -13,7 +13,7 @@ export function EstimateCard({ estimate, guests, live = false, className }: { es
   const n = estimate.total ? (guests ?? null) : null
   return (
     <div
-      className={cx('rounded-soft bg-vanilla p-5 ring-1 ring-inset ring-cocoa/5 sm:p-6', className)}
+      className={cx('rounded-soft bg-vanilla p-5 ring-2 ring-inset ring-cocoa sm:p-6', className)}
       {...(live ? { role: 'status', 'aria-live': 'polite' as const } : {})}
     >
       <p className="font-copy text-eyebrow uppercase text-cocoa-soft">{UI_TEXT.estimateTitle}</p>
@@ -21,7 +21,7 @@ export function EstimateCard({ estimate, guests, live = false, className }: { es
         <PriceTag amount={estimate.od} to={estimate.do} unit="os" size="lg" />
       </p>
       {estimate.total && n ? (
-        <p className="mt-2 font-copy text-small font-semibold text-cocoa">
+        <p className="mt-2 font-copy text-small font-bold text-cocoa">
           {fillText(UI_TEXT.estimateTotal, {
             n: formatNumber(n),
             osob: plural(n, ['osobu', 'osoby', 'osob']),

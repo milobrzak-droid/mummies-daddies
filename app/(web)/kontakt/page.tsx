@@ -2,6 +2,7 @@ import { Breadcrumbs, Button, IconPhone, PlaceholderText, Section } from '@/comp
 import { ContactPanel, ContactPersonCard, QuickStartForm, SocialList } from '@/components/web/uvod'
 import { pageMetadata } from '@/lib/web/content'
 import { billingData, peopleData, premisesData, primaryActions, quickInquiryData, socialsData } from '@/lib/web/uvod/kontakt'
+import { AccentTitle } from '@/components/web/AccentTitle'
 
 /**
  * /kontakt (strategy.sitemap): lidé s telefony a e-maily, rychlá poptávka,
@@ -24,9 +25,7 @@ export default function ContactPage() {
         <Breadcrumbs items={[{ label: 'Úvod', href: '/' }, { label: 'Kontakt' }]} className="mb-8" />
         <div className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
           <div className="motion-safe:animate-lift">
-            <h1 id="kontakt-title" className="md-caps text-h1 text-cocoa">
-              {people.heading}
-            </h1>
+            <h1 id="kontakt-title" className="md-caps text-h1 text-cocoa"><AccentTitle title={people.heading} /></h1>
             {people.lead ? (
               <p className="md-pretty mt-5 max-w-xl text-lead text-cocoa">
                 <PlaceholderText text={people.lead} />
@@ -64,7 +63,7 @@ export default function ContactPage() {
           <ContactPanel id="fakturace" heading={billing.heading} body={billing.body} tone="vanilla">
             <address className="space-y-1 text-copy not-italic text-cocoa">
               {billing.lines.map((l, i) => (
-                <p key={l} className={i === 0 ? 'font-semibold' : undefined}>
+                <p key={l} className={i === 0 ? 'font-bold' : undefined}>
                   {l}
                 </p>
               ))}

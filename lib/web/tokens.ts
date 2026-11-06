@@ -80,7 +80,7 @@ type FontSizeToken = [size: string, config: { lineHeight: string; letterSpacing?
 // Klíče bez Record<…> v uvozovkách: test/deal-stage-migration hlídá staré
 // klíče fází obchodu (mj. „lead“) jako řetězcové literály v celém kódu.
 export const fontSize = {
-  mega: ['clamp(3.25rem, 1.2rem + 9vw, 9.5rem)', { lineHeight: '1.12', letterSpacing: '0.005em', fontWeight: '400' }],
+  mega: ['clamp(3.25rem, 1.4rem + 7vw, 8rem)', { lineHeight: '1.12', letterSpacing: '0.005em', fontWeight: '400' }],
   hero: ['clamp(2.75rem, 1.2rem + 6.4vw, 7rem)', { lineHeight: '1.12', letterSpacing: '0.005em', fontWeight: '400' }],
   h1: ['clamp(2.5rem, 1.4rem + 4.8vw, 5.5rem)', { lineHeight: '1.15', letterSpacing: '0.005em', fontWeight: '400' }],
   h2: ['clamp(2rem, 1.3rem + 3vw, 4rem)', { lineHeight: '1.15', letterSpacing: '0.005em', fontWeight: '400' }],

@@ -8,11 +8,11 @@ import { cx } from '../cx'
  * rámeček, malinový focus; chyba = text v barvě danger + aria-invalid.
  */
 export const FIELD_CLASS =
-  'block min-h-12 w-full rounded-soft bg-paper px-4 font-copy text-copy text-cocoa ring-1 ring-inset ring-cocoa/25 ' +
-  'transition-shadow duration-quick ease-md-out placeholder:text-cocoa-soft hover:ring-cocoa/50 focus:outline-none focus:ring-2 focus:ring-raspberry-ink ' +
+  'block min-h-12 w-full rounded-soft bg-paper px-4 font-copy text-copy text-cocoa ring-2 ring-inset ring-cocoa ' +
+  'transition-shadow duration-quick ease-md-out placeholder:text-cocoa-soft hover:bg-cream focus:outline-none focus:ring-[3px] focus:ring-daddy-ink ' +
   'aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-danger'
 
-export const LABEL_CLASS = 'mb-2 block font-copy text-small font-semibold text-cocoa'
+export const LABEL_CLASS = 'mb-2 block font-copy text-small font-bold text-cocoa'
 
 const hintId = (id: string) => `${id}-napoveda`
 const errorId = (id: string) => `${id}-chyba`
@@ -44,7 +44,7 @@ export function FieldHint({ id, hint }: { id: string; hint?: ReactNode }) {
 export function FieldError({ id, error }: { id: string; error?: string | null }) {
   if (!error) return null
   return (
-    <p id={errorId(id)} className="mt-2 font-copy text-small font-semibold text-danger">
+    <p id={errorId(id)} className="mt-2 font-copy text-small font-bold text-danger">
       {error}
     </p>
   )
@@ -144,9 +144,9 @@ export function ChoiceGroup({
               key={o.value}
               htmlFor={inputId}
               className={cx(
-                'relative flex min-h-12 cursor-pointer items-start gap-3 rounded-soft bg-paper px-4 py-3 ring-1 ring-inset ring-cocoa/20',
-                'transition-[box-shadow,background-color] duration-quick ease-md-out hover:ring-cocoa/50',
-                'has-[:checked]:bg-blush-soft has-[:checked]:ring-2 has-[:checked]:ring-cocoa has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-raspberry-ink',
+                'relative flex min-h-12 cursor-pointer items-start gap-3 rounded-soft bg-paper px-4 py-3 ring-2 ring-inset ring-cocoa',
+                'transition-[box-shadow,background-color] duration-quick ease-md-out hover:bg-cream',
+                'has-[:checked]:bg-blush-soft has-[:checked]:bg-raspberry-tint has-[:checked]:shadow-hard-sm has-[:focus-visible]:ring-[3px] has-[:focus-visible]:ring-daddy-ink',
                 error && 'ring-danger/60',
               )}
             >
@@ -160,7 +160,7 @@ export function ChoiceGroup({
                 className="mt-1 h-4 w-4 shrink-0 accent-raspberry-ink"
               />
               <span className="flex min-w-0 flex-col">
-                <span className="font-copy text-copy font-semibold leading-snug text-cocoa">{o.label}</span>
+                <span className="font-copy text-copy font-bold leading-snug text-cocoa">{o.label}</span>
                 {o.meta ? <span className="mt-0.5 font-copy text-small text-cocoa-soft">{o.meta}</span> : null}
               </span>
             </label>

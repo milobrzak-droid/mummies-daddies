@@ -35,7 +35,7 @@ export function MiniFlavorPicker({
   const status = `${id}-zbyva`
   return (
     <ChoiceGroup id={id} legend={legend} hint={hint} error={error}>
-      <p id={status} aria-live="polite" className={cx('mb-4 font-copy text-small font-semibold', remaining === 0 ? 'text-success' : 'text-cocoa')}>
+      <p id={status} aria-live="polite" className={cx('mb-4 font-copy text-small font-bold', remaining === 0 ? 'text-success' : 'text-cocoa')}>
         {fill(remainingTemplate, { n: remaining })}
       </p>
       <ul role="list" className="grid gap-3 sm:grid-cols-2">
@@ -43,8 +43,8 @@ export function MiniFlavorPicker({
           const inputId = `${id}-${f.value}`
           const value = counts[f.value] ?? 0
           return (
-            <li key={f.value} className="flex items-center justify-between gap-3 rounded-soft bg-paper px-4 py-2 ring-1 ring-inset ring-cocoa/15">
-              <label htmlFor={inputId} className="font-copy text-copy font-semibold text-cocoa">
+            <li key={f.value} className="flex items-center justify-between gap-3 rounded-soft bg-paper px-4 py-2 ring-2 ring-inset ring-cocoa">
+              <label htmlFor={inputId} className="font-copy text-copy font-bold text-cocoa">
                 {f.label}
               </label>
               <Stepper

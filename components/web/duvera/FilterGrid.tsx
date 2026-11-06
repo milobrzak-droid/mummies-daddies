@@ -64,8 +64,8 @@ export function FilterGrid({
 
   const pill = (pressed: boolean) =>
     cx(
-      'inline-flex min-h-11 items-center rounded-pill px-5 font-copy text-small font-semibold transition-colors duration-quick ease-md-out',
-      pressed ? 'bg-cocoa text-cream' : 'bg-paper text-cocoa ring-1 ring-inset ring-hairline hover:ring-cocoa/40',
+      'inline-flex min-h-11 items-center rounded-pill px-5 font-copy text-small font-bold transition-colors duration-quick ease-md-out',
+      pressed ? 'bg-cocoa text-cream' : 'bg-paper text-cocoa ring-2 ring-inset ring-cocoa hover:ring-cocoa/40',
     )
 
   return (

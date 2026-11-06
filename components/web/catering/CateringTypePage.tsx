@@ -98,7 +98,7 @@ function QuickFacts({ cfg, overlap }: { cfg: CateringTypeConfig; overlap: 'photo
   return (
     <div className={cx('relative z-20', overlap === 'photo' ? '-mt-10 sm:-mt-12' : '-mt-12')}>
       <Container>
-        <div className="flex flex-col gap-4 rounded-soft bg-paper px-5 py-5 shadow-float ring-1 ring-cocoa/5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-8 sm:px-8 motion-safe:animate-lift">
+        <div className="flex flex-col gap-4 rounded-soft bg-paper px-5 py-5 shadow-float ring-2 ring-cocoa sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-8 sm:px-8 motion-safe:animate-lift">
           <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6">
             <p className="font-copy text-eyebrow uppercase text-cocoa-soft">{facts.title}</p>
             <FactsRow price={facts.price} guests={facts.guests} size="lg" />

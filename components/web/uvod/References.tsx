@@ -57,8 +57,8 @@ export function References({
           {cards.map((c, i) => (
             <li key={c.href} className="hover:!bg-raspberry-tint">
               <article className="group relative flex h-full flex-col px-gutter py-8 sm:p-8 xl:p-10">
-                <span aria-hidden="true" className="md-caps -mb-6 text-[6rem] leading-[1.15] text-raspberry">
-                  „
+                <span aria-hidden="true" className="md-caps block h-[4.5rem] text-[7rem] leading-[1] text-raspberry">
+                  “
                 </span>
                 <h3 className="md-caps text-h3 text-cocoa">
                   <Link href={c.href} className="outline-none after:absolute after:inset-0 after:content-[''] focus-visible:after:outline focus-visible:after:outline-[3px] focus-visible:after:-outline-offset-4 focus-visible:after:outline-daddy-ink">

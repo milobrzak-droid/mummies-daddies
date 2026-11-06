@@ -26,7 +26,7 @@ export function PriceText({ text }: { text: string }) {
     <>
       {splitPrices(text).map((p, i) =>
         p.price ? (
-          <span key={i} className="whitespace-nowrap font-semibold text-raspberry-ink">
+          <span key={i} className="whitespace-nowrap font-bold text-raspberry-ink">
             <PlaceholderText text={p.text} />
           </span>
         ) : (

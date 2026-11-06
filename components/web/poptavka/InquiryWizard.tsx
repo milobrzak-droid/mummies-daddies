@@ -24,6 +24,7 @@ import { IconArrowRight } from '../icons'
 import { cx } from '../cx'
 import { EstimateCard } from './EstimateCard'
 import { Checkbox, ChoiceGroup, FIELD_CLASS, Field, describedBy, type ChoiceOption } from './fields'
+import { AccentTitle } from '@/components/web/AccentTitle'
 
 /**
  * Průvodce poptávkou krok za krokem: typ akce → hosté → datum → místo →
@@ -281,12 +282,12 @@ export function InquiryWizard({
                 aria-controls={value === 'asistent' ? 'pop-asistent' : 'pop-formular'}
                 onClick={() => setMode(value)}
                 className={cx(
-                  'flex min-h-14 flex-col items-start justify-center rounded-soft px-5 py-4 text-left ring-1 ring-inset',
-                  'transition-[background-color,box-shadow] duration-quick ease-md-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-raspberry-ink',
-                  mode === value ? 'bg-cocoa text-cream ring-cocoa' : 'bg-paper text-cocoa ring-cocoa/20 hover:ring-cocoa/50',
+                  'flex min-h-14 flex-col items-start justify-center rounded-soft px-5 py-4 text-left ring-2 ring-inset',
+                  'transition-[background-color,box-shadow] duration-quick ease-md-out focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-daddy-ink',
+                  mode === value ? 'bg-cocoa text-cream ring-cocoa' : 'bg-paper text-cocoa ring-cocoa hover:bg-cream',
                 )}
               >
-                <span className="font-copy text-copy font-semibold">{title}</span>
+                <span className="font-copy text-copy font-bold">{title}</span>
                 {hint ? <span className={cx('mt-0.5 font-copy text-small', mode === value ? 'text-cream/85' : 'text-cocoa-soft')}>{hint}</span> : null}
               </button>
             ))}
@@ -294,13 +295,13 @@ export function InquiryWizard({
         </section>
 
         {mode === 'asistent' ? (
-          <section id="pop-asistent" aria-label={labels.choice.assistant} className="rounded-soft bg-paper shadow-float ring-1 ring-cocoa/5 motion-safe:animate-fade">
+          <section id="pop-asistent" aria-label={labels.choice.assistant} className="rounded-soft bg-paper shadow-float ring-2 ring-cocoa motion-safe:animate-fade">
             <div className="flex items-center gap-3 border-b border-hairline px-5 py-4 sm:px-6">
               <span aria-hidden="true" className="h-2.5 w-2.5 rounded-pill bg-success" />
-              <p className="font-copy text-copy font-semibold text-cocoa">{labels.choice.assistant}</p>
+              <p className="font-copy text-copy font-bold text-cocoa">{labels.choice.assistant}</p>
             </div>
             <div className="space-y-5 px-5 py-6 sm:px-6">
-              <p className="max-w-[30rem] rounded-soft rounded-tl-frame bg-sage-soft px-4 py-3 text-copy text-cocoa">{labels.assistantGreeting}</p>
+              <p className="max-w-[30rem] rounded-soft rounded-tl-frame bg-sage-soft px-4 py-3 text-copy text-cocoa ring-2 ring-inset ring-cocoa">{labels.assistantGreeting}</p>
               <ul role="list" aria-label={labels.eventType} className="flex flex-wrap gap-2">
                 {EVENT_TYPE_OPTIONS.map((o) => (
                   <li key={o.value}>
@@ -308,8 +309,8 @@ export function InquiryWizard({
                       type="button"
                       onClick={() => chooseFromAssistant(o.value)}
                       className={cx(
-                        'inline-flex min-h-11 items-center rounded-pill bg-paper px-4 font-copy text-small font-semibold text-cocoa ring-1 ring-inset ring-cocoa/30',
-                        'transition-colors duration-quick ease-md-out hover:bg-raspberry-ink hover:text-paper hover:ring-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-raspberry-ink',
+                        'inline-flex min-h-11 items-center rounded-pill bg-paper px-4 font-copy text-small font-bold text-cocoa ring-2 ring-inset ring-cocoa',
+                        'transition-colors duration-quick ease-md-out hover:bg-raspberry-ink hover:text-paper hover:ring-transparent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-daddy-ink',
                       )}
                     >
                       {o.label}
@@ -321,7 +322,7 @@ export function InquiryWizard({
             <p className="border-t border-hairline px-5 py-4 text-small text-cocoa-soft sm:px-6">{labels.assistantNote}</p>
           </section>
         ) : (
-          <div id="pop-formular" className="rounded-soft bg-paper p-5 shadow-float ring-1 ring-cocoa/5 sm:p-8">
+          <div id="pop-formular" className="rounded-soft bg-paper p-5 shadow-float ring-2 ring-cocoa sm:p-8">
             <Progress labels={labels} step={step} maxStep={maxStep} onJump={(s) => goTo(s)} stepOf={stepOf} />
 
             <p role="status" aria-live="polite" className="sr-only">
@@ -329,15 +330,13 @@ export function InquiryWizard({
             </p>
 
             {prefilledNotice ? (
-              <p className="mb-6 rounded-soft bg-pistachio-soft px-4 py-3 font-copy text-small text-cocoa">{prefilledNotice}</p>
+              <p className="mb-6 rounded-soft bg-pistachio-soft px-4 py-3 font-copy text-small text-cocoa ring-2 ring-inset ring-cocoa">{prefilledNotice}</p>
             ) : null}
 
             <form noValidate onSubmit={onSubmit} aria-labelledby={`pop-krok-${step}`}>
               <div key={step} className="motion-safe:animate-fade">
                 <p className="hidden font-copy text-eyebrow uppercase text-cocoa-soft sm:block">{stepOf}</p>
-                <h2 id={`pop-krok-${step}`} tabIndex={-1} className="md-caps mt-2 text-h2 text-cocoa outline-none">
-                  {stepLabel.title}
-                </h2>
+                <h2 id={`pop-krok-${step}`} tabIndex={-1} className="md-caps mt-2 text-h2 text-cocoa outline-none"><AccentTitle title={stepLabel.title} /></h2>
                 {step !== 'souhrn' && step !== 'styl' ? <p className="mt-2 text-small text-cocoa-soft">{labels.requiredNote}</p> : null}
 
                 <div className="mt-8 space-y-8">
@@ -376,7 +375,7 @@ export function InquiryWizard({
                       </Field>
                       {min ? (
                         <p className="font-copy text-small text-cocoa-soft">
-                          {eventTypeOf(draft.eventType)?.label}: <span className="font-semibold text-cocoa">{fillText(UI_TEXT.minGuests, { n: min })}</span>
+                          {eventTypeOf(draft.eventType)?.label}: <span className="font-bold text-cocoa">{fillText(UI_TEXT.minGuests, { n: min })}</span>
                         </p>
                       ) : null}
                       <EstimateCard estimate={estimate} guests={guests} className="lg:hidden" />
@@ -399,7 +398,7 @@ export function InquiryWizard({
                         />
                       </Field>
                       <fieldset className="min-w-0">
-                        <legend className="mb-3 block font-copy text-small font-semibold text-cocoa">{labels.time}</legend>
+                        <legend className="mb-3 block font-copy text-small font-bold text-cocoa">{labels.time}</legend>
                         <div className="flex flex-wrap gap-4">
                           {(
                             [
@@ -593,7 +592,7 @@ export function InquiryWizard({
               </div>
 
               {submitError ? (
-                <p role="alert" className="mt-8 rounded-soft bg-blush-soft px-4 py-3 font-copy text-small font-semibold text-danger ring-1 ring-inset ring-danger/30">
+                <p role="alert" className="mt-8 rounded-soft bg-blush-soft px-4 py-3 font-copy text-small font-bold text-danger ring-2 ring-inset ring-danger/30">
                   {submitError}
                 </p>
               ) : null}
@@ -633,7 +632,7 @@ function Progress({ labels, step, maxStep, onJump, stepOf }: { labels: WizardLab
         <div className="h-full rounded-pill bg-raspberry-ink motion-safe:transition-[width] motion-safe:duration-base" style={{ width: `${((index + 1) / STEP_IDS.length) * 100}%` }} />
       </div>
       <p className="mt-2 font-copy text-small text-cocoa-soft sm:hidden">
-        {stepOf} · <span className="font-semibold text-cocoa">{labels.steps[step].name}</span>
+        {stepOf} · <span className="font-bold text-cocoa">{labels.steps[step].name}</span>
       </p>
       <ol className="hidden flex-wrap gap-2 sm:flex">
         {STEP_IDS.map((id, i) => {
@@ -648,13 +647,13 @@ function Progress({ labels, step, maxStep, onJump, stepOf }: { labels: WizardLab
             </>
           )
           const cls = cx(
-            'inline-flex min-h-10 items-center gap-2 rounded-pill px-3 pr-4 font-copy text-small font-semibold',
-            current ? 'bg-cocoa text-cream' : reachable ? 'bg-paper text-cocoa ring-1 ring-inset ring-cocoa/20 hover:ring-cocoa/50' : 'text-cocoa-soft',
+            'inline-flex min-h-10 items-center gap-2 rounded-pill px-3 pr-4 font-copy text-small font-bold',
+            current ? 'bg-cocoa text-cream' : reachable ? 'bg-paper text-cocoa ring-2 ring-inset ring-cocoa hover:bg-cream' : 'text-cocoa-soft',
           )
           return (
             <li key={id}>
               {reachable ? (
-                <button type="button" onClick={() => onJump(id)} className={cx(cls, 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-raspberry-ink')}>
+                <button type="button" onClick={() => onJump(id)} className={cx(cls, 'focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-daddy-ink')}>
                   {inner}
                 </button>
               ) : (
@@ -701,10 +700,10 @@ function Summary({ labels, draft, onEdit }: { labels: WizardLabels; draft: Inqui
       {rows.map((r, i) => (
         <div key={`${r.step}-${i}`} className="grid gap-1 py-3 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)_auto] sm:items-baseline sm:gap-4">
           <dt className="font-copy text-small text-cocoa-soft">{r.label}</dt>
-          <dd className="md-pretty break-words font-copy text-copy font-semibold text-cocoa">{r.value ?? <span className="font-normal text-cocoa-soft">{UI_TEXT.empty}</span>}</dd>
+          <dd className="md-pretty break-words font-copy text-copy font-bold text-cocoa">{r.value ?? <span className="font-normal text-cocoa-soft">{UI_TEXT.empty}</span>}</dd>
           {i === 0 || rows[i - 1].step !== r.step ? (
             <dd className="sm:text-right">
-              <button type="button" onClick={() => onEdit(r.step)} className="md-link font-copy text-small font-semibold">
+              <button type="button" onClick={() => onEdit(r.step)} className="md-link font-copy text-small font-bold">
                 {UI_TEXT.edit}
                 <span className="sr-only">: {labels.steps[r.step].name}</span>
               </button>

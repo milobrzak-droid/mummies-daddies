@@ -4,6 +4,7 @@ import { getPage, pageMetadata } from '@/lib/web/content'
 import { inquiryHref } from '@/lib/web/inquiry-link'
 import { FAQ_PAGE, faqGroups } from '@/lib/web/poptavka/copy'
 import { UI_TEXT } from '@/lib/web/poptavka/ui-text'
+import { AccentTitle } from '@/components/web/AccentTitle'
 
 /**
  * /caste-dotazy – ceny, minima, doprava, alergeny, servis, platba, termíny
@@ -26,9 +27,7 @@ export default function FaqPage() {
       <Section tone="vanilla" soft spacing="none" labelledBy="dotazy-title" className="pb-12 pt-8 sm:pb-16 sm:pt-12">
         <Breadcrumbs items={[{ label: 'Úvod', href: '/' }, { label: TITLE }]} className="mb-8" />
         <div className="max-w-3xl motion-safe:animate-lift">
-          <h1 id="dotazy-title" className="md-caps text-h1 text-cocoa">
-            {TITLE}
-          </h1>
+          <h1 id="dotazy-title" className="md-caps text-h1 text-cocoa"><AccentTitle title={TITLE} /></h1>
           <p className="md-pretty mt-5 text-lead text-cocoa">{page.metaDescription}</p>
         </div>
       </Section>
@@ -41,7 +40,7 @@ export default function FaqPage() {
                 <li key={g.id}>
                   <a
                     href={`#${g.id}`}
-                    className="inline-flex min-h-10 items-center rounded-pill bg-paper px-4 font-copy text-small font-semibold text-cocoa ring-1 ring-inset ring-hairline hover:ring-cocoa/40 lg:bg-transparent lg:px-0 lg:ring-0 lg:hover:text-raspberry-ink"
+                    className="inline-flex min-h-10 items-center rounded-pill bg-paper px-4 font-copy text-small font-bold text-cocoa ring-2 ring-inset ring-cocoa hover:ring-cocoa/40 lg:bg-transparent lg:px-0 lg:ring-0 lg:hover:text-raspberry-ink"
                   >
                     {g.heading}
                   </a>
@@ -53,9 +52,7 @@ export default function FaqPage() {
           <div className="max-w-web-prose space-y-14 lg:max-w-none">
             {groups.map((g) => (
               <section key={g.id} id={g.id} aria-labelledby={`${g.id}-title`} className="scroll-mt-[calc(theme(spacing.header)+1.5rem)]">
-                <h2 id={`${g.id}-title`} className="md-caps text-h2 text-cocoa">
-                  {g.heading}
-                </h2>
+                <h2 id={`${g.id}-title`} className="md-caps text-h2 text-cocoa"><AccentTitle title={g.heading} /></h2>
                 {g.body ? (
                   <p className="md-pretty mt-4 text-lead text-cocoa-soft">
                     <PlaceholderText text={g.body} />
@@ -63,13 +60,13 @@ export default function FaqPage() {
                 ) : null}
                 {g.questions.length ? <Faq items={g.questions} jsonLd={false} className="mt-6" /> : null}
                 {g.terms.length ? (
-                  <dl className="mt-6 divide-y divide-hairline overflow-hidden rounded-soft bg-paper ring-1 ring-inset ring-hairline">
+                  <dl className="mt-6 divide-y divide-hairline overflow-hidden rounded-soft bg-paper ring-2 ring-inset ring-cocoa">
                     {g.terms.map((t) => (
                       <div key={t.term} className="grid gap-1 px-5 py-4 sm:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] sm:gap-6">
                         <dt className="font-copy text-copy text-cocoa">
                           <PlaceholderText text={t.term} />
                         </dt>
-                        <dd className="font-copy text-copy font-semibold text-cocoa">
+                        <dd className="font-copy text-copy font-bold text-cocoa">
                           <PlaceholderText text={t.value} />
                         </dd>
                       </div>
