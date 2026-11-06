@@ -4,6 +4,7 @@ import { pageMetadata } from '@/lib/web/content'
 import { catalogPageData } from '@/lib/web/eshop/copy'
 import { isMini } from '@/lib/web/eshop/catalog'
 import { AccentTitle } from '@/components/web/AccentTitle'
+import { FloatingCutout } from '@/components/web/v2/FloatingCutout'
 
 /**
  * /cheesecaky – doplňkový e-shop (strategy.sitemap): úvod → produkty (karty
@@ -27,6 +28,7 @@ export default function CheesecakesPage() {
         tone="blush"
         size="page"
         primaryCta={{ label: d.produkty.heading, href: '#produkty' }}
+        art={<CheesecakeArt />}
       />
 
       <Section id="produkty" tone="cream" labelledBy="produkty-title">
@@ -128,5 +130,19 @@ export default function CheesecakesPage() {
         </Section>
       ) : null}
     </>
+  )
+}
+
+/** Hero /cheesecaky: levitující výřezy cheesecaků na kruhových „talířích“ v barvách řad (Daddy modrá, Mummy malina). */
+function CheesecakeArt() {
+  return (
+    <div className="relative mx-auto aspect-square w-full max-w-[34rem]">
+      <div aria-hidden="true" className="absolute inset-[6%] rounded-full border-2 border-cocoa bg-daddy-tint shadow-hard-md" />
+      <div aria-hidden="true" className="absolute -bottom-[2%] -left-[4%] h-[42%] w-[42%] rounded-full border-2 border-cocoa bg-raspberry-tint shadow-hard-sm" />
+      <FloatingCutout slug="cheesecake-pistaciovo-malinovy" preload decorative={false} rotate={8} sizes="(min-width: 1024px) 400px, 70vw" className="absolute left-[14%] top-[10%] w-[66%]" />
+      <FloatingCutout slug="cheesecake-cokoladovo-liskooriskovy" rotate={-10} delay={-2} sizes="(min-width: 1024px) 200px, 34vw" className="absolute -bottom-[1%] left-[0%] w-[38%]" />
+      <FloatingCutout slug="mini-cheesecake-cokoladovy" rotate={6} delay={-3.4} sizes="(min-width: 1024px) 150px, 26vw" className="absolute -right-[2%] bottom-[4%] w-[26%]" />
+      <FloatingCutout slug="mini-cheesecake-kosicek" rotate={-12} delay={-1.1} sizes="120px" className="absolute right-[4%] top-[2%] w-[18%] max-w-[8.5rem]" />
+    </div>
   )
 }

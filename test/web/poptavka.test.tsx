@@ -79,7 +79,11 @@ function expectBasics(doc: Document) {
   for (const el of Array.from(doc.querySelectorAll('[aria-labelledby]'))) {
     expect(doc.getElementById(el.getAttribute('aria-labelledby')!), el.getAttribute('aria-labelledby')!).not.toBeNull()
   }
-  for (const img of Array.from(doc.querySelectorAll('img'))) expect((img.getAttribute('alt') ?? '').length).toBeGreaterThan(0)
+  // alt má každý obrázek; prázdný jen čistě dekorativní výřez uvnitř aria-hidden (web v2)
+  for (const img of Array.from(doc.querySelectorAll('img'))) {
+    if (img.closest('[aria-hidden="true"]')) expect(img.getAttribute('alt')).toBe('')
+    else expect((img.getAttribute('alt') ?? '').length).toBeGreaterThan(0)
+  }
   for (const f of Array.from(doc.querySelectorAll('input:not([type=hidden]), select, textarea'))) {
     expect(doc.querySelector(`label[for="${f.id}"]`), `pole ${f.getAttribute('name')} bez popisku`).not.toBeNull()
   }

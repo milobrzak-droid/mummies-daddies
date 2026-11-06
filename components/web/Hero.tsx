@@ -46,6 +46,7 @@ export function Hero({
   accentTone,
   tilt = true,
   tags,
+  art,
   children,
 }: {
   title: string
@@ -70,6 +71,8 @@ export function Hero({
   tilt?: boolean
   /** Plovoucí štítky s FAKTY (max. 3), např. minimum osob. */
   tags?: string[]
+  /** Vlastní kompozice místo fotky (např. levitující výřezy cheesecaků). */
+  art?: ReactNode
   /** Obsah pod tlačítky (např. štítky, rychlý start v hero). */
   children?: ReactNode
 }) {
@@ -117,9 +120,11 @@ export function Hero({
         </div>
 
         <div className={cx('relative mx-auto w-full', aspect === 'portrait' ? 'max-w-[30rem]' : 'max-w-[40rem]', floating.length > 0 && 'pb-6 lg:pb-0')}>
-          <div className={cx(tilt && 'motion-safe:-rotate-2')}>
-            <PhotoFrame photo={photo} aspect={aspect} sticker preload quality={85} tone={tone} sizes="(min-width: 1440px) 620px, (min-width: 1024px) 44vw, 92vw" />
-          </div>
+          {art ?? (
+            <div className={cx(tilt && 'motion-safe:-rotate-2')}>
+              <PhotoFrame photo={photo} aspect={aspect} sticker preload quality={85} tone={tone} sizes="(min-width: 1440px) 620px, (min-width: 1024px) 44vw, 92vw" />
+            </div>
+          )}
           {floating.length ? (
             <ul role="list" className="mt-5 flex flex-wrap gap-2 lg:mt-0 lg:block">
               {floating.map((t, i) => (
