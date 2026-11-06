@@ -7,6 +7,7 @@ import { Cta } from '../Cta'
 import { PastelCard } from '../PastelCard'
 import { PhotoFrame } from '../PhotoFrame'
 import { Section } from '../Section'
+import { TONE_BG } from '../tones'
 import { cx } from '../cx'
 import { CheckList, FactsRow, SectionIntro } from './blocks'
 import { CateringHero } from './CateringHero'
@@ -14,6 +15,7 @@ import { headingId, photoOf, type CateringContext } from './CateringSection'
 import { overviewFacts } from './CateringTypePage'
 import { contextHref, splitPriceFacts } from './parse'
 import { RichText } from './RichText'
+import { AccentTitle } from '@/components/web/AccentTitle'
 
 /**
  * Přehled /catering: rozcestník všech služeb s cenou od a minimem osob,
@@ -77,19 +79,20 @@ export function CateringOverview() {
         <ul className="grid gap-x-12 gap-y-8 md:grid-cols-2">
           {(formaty.items ?? []).map(parseItem).map((it, i) => {
             const slot = FORMAT_PHOTOS.find((f) => f.match.test(it.title ?? it.text))?.slot ?? null
+            const photo = slot ? getPhoto(slot) : null
+            const hasPhoto = !!photo?.src && !photo.placeholder
             return (
-              <li key={i} className="flex items-start gap-5 border-t border-hairline pt-6">
-                <PhotoFrame
-                  photo={slot ? getPhoto(slot) : null}
-                  aspect="square"
-                  sizes="112px"
-                  tone={toneAt(i)}
-                  className="w-20 shrink-0 sm:w-28"
-                />
+              <li key={i} className="flex items-start gap-5 border-t-2 border-cocoa pt-6">
+                {/* Bez fotky žádná ikona v rámečku: jen barevný pruh vlevo (vedle skutečných fotek působí ikona rozbitě). */}
+                {hasPhoto ? (
+                  <PhotoFrame photo={photo} aspect="square" sticker sizes="112px" tone={toneAt(i)} className="w-20 shrink-0 sm:w-28" />
+                ) : (
+                  <span aria-hidden="true" className={cx('w-2.5 shrink-0 self-stretch border-2 border-cocoa', TONE_BG[toneAt(i)])} />
+                )}
                 <div className="min-w-0">
                   <h3 className="md-caps text-h3 text-cocoa">{it.title ?? it.text}</h3>
                   {it.title ? (
-                    <p className="md-pretty mt-2 text-copy text-cocoa-soft">
+                    <p className="md-pretty mt-2 text-copy text-cocoa-soft first-letter:uppercase">
                       <RichText text={it.text} />
                     </p>
                   ) : null}
@@ -115,10 +118,8 @@ export function CateringOverview() {
       <Section spacing="sm" className="pb-section">
         <div className="grid gap-5 sm:gap-6 md:grid-cols-2">
           {[diety, oblast].map((s, i) => (
-            <section key={s.id} id={s.id} aria-labelledby={headingId(s.id)} className={cx('rounded-soft p-6 sm:p-10', i === 0 ? 'bg-sage-soft' : 'bg-vanilla-soft')}>
-              <h2 id={headingId(s.id)} className="md-caps text-h2 text-cocoa">
-                {s.heading}
-              </h2>
+            <section key={s.id} id={s.id} aria-labelledby={headingId(s.id)} className={cx('rounded-sticker border-2 border-cocoa p-6 shadow-hard sm:p-10', i === 0 ? 'bg-daddy-tint' : 'bg-butter')}>
+              <h2 id={headingId(s.id)} className="md-caps text-h2 text-cocoa"><AccentTitle title={s.heading} /></h2>
               <p className="md-pretty mt-5 text-copy text-cocoa-soft">
                 <RichText text={s.body} />
               </p>

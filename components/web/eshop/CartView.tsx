@@ -20,6 +20,7 @@ import { cx } from '../cx'
 import { CHOICE_CLASS, ChoiceGroup, FIELD_CLASS, Field, RADIO_CLASS, StepHeading, describedBy } from './fields'
 import { Stepper } from './Stepper'
 import { useCart } from './useCart'
+import { AccentTitle } from '@/components/web/AccentTitle'
 
 /**
  * Košík a objednávka (/kosik). Položky z localStorage → doručení a termín →
@@ -70,6 +71,10 @@ function firstErrorId(errors: FieldErrors<OrderField>): string | null {
 
 type Success = Extract<SubmitOrderResult, { ok: true }> & { email: string }
 
+/** Funkční popisky košíku, které copy nemá (KE SCHVÁLENÍ copywriterem). */
+const REQUIRED_NOTE = 'Pole s hvězdičkou jsou povinná.'
+const CONTINUE_TO_SUBMIT = 'Pokračovat k odeslání'
+
 export function CartView({ labels, products }: { labels: CartLabels; products: Record<CheesecakeSlug, ProductSummary> }) {
   const { cart, ready } = useCart()
   const [method, setMethod] = useState<DeliveryMethod | ''>('')
@@ -88,8 +93,19 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
   const [success, setSuccess] = useState<Success | null>(null)
   const [earliest, setEarliest] = useState<string | null>(null)
   const doneRef = useRef<HTMLHeadingElement>(null)
+  const summaryRef = useRef<HTMLDivElement>(null)
+  const [summaryVisible, setSummaryVisible] = useState(true)
 
   useEffect(() => setEarliest(earliestOrderDate()), [])
+  // Mobilní lišta „Celkem · Pokračovat k odeslání“ se schová, když je vidět samotný souhrn.
+  const hasLines = cart.lines.length > 0
+  useEffect(() => {
+    const el = summaryRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const io = new IntersectionObserver(([e]) => setSummaryVisible(e.isIntersecting), { threshold: 0.05 })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [ready, hasLines, success])
   useEffect(() => {
     if (success) doneRef.current?.focus()
   }, [success])
@@ -161,14 +177,12 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
   if (success) {
     return (
       <div className="mx-auto max-w-web-prose py-6 text-center motion-safe:animate-rise">
-        <h1 ref={doneRef} tabIndex={-1} className="md-caps text-h1 text-cocoa outline-none">
-          {labels.confirmationHeading}
-        </h1>
+        <h1 ref={doneRef} tabIndex={-1} className="md-caps text-h1 text-cocoa outline-none"><AccentTitle title={labels.confirmationHeading} /></h1>
         <p className="md-pretty mt-6 text-lead text-cocoa">
           {fill(labels.confirmationText, { číslo: success.orderNumber, 'e-mail': success.email, datum: formatDate(success.bakeDate) })}
         </p>
         {success.payment.method === 'prevod' ? (
-          <p className="md-pretty mt-5 rounded-soft bg-vanilla p-5 text-copy text-cocoa">
+          <p className="md-pretty mt-5 rounded-soft bg-vanilla p-5 text-copy text-cocoa ring-2 ring-inset ring-cocoa">
             <PlaceholderText
               text={fill(labels.transferText, { částka: formatNumber(success.payment.amount), číslo: success.payment.variableSymbol })}
             />
@@ -180,7 +194,7 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
           <SummaryRow label={labels.total} value={formatCzk(success.total)} strong />
         </dl>
         <p className="mt-10">
-          <Link href={labels.upsell.href} className="md-link font-semibold">
+          <Link href={labels.upsell.href} className="md-link font-bold">
             {labels.upsell.label}
           </Link>
         </p>
@@ -190,9 +204,7 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
 
   const header = (
     <div className="mb-10 max-w-3xl motion-safe:animate-lift sm:mb-12">
-      <h1 id="kosik-title" className="md-caps text-h1 text-cocoa">
-        {labels.heading}
-      </h1>
+      <h1 id="kosik-title" className="md-caps text-h1 text-cocoa"><AccentTitle title={labels.heading} /></h1>
       {ready && cart.lines.length ? <p className="md-pretty mt-5 text-lead text-cocoa-soft">{labels.lead}</p> : null}
     </div>
   )
@@ -202,7 +214,7 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
     return (
       <div aria-busy="true">
         {header}
-        <div className="h-48 rounded-soft bg-paper/60 ring-1 ring-inset ring-hairline motion-safe:animate-pulse" />
+        <div className="h-48 rounded-soft bg-paper/60 ring-2 ring-inset ring-cocoa motion-safe:animate-pulse" />
       </div>
     )
   }
@@ -212,7 +224,7 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
     return (
       <div>
         {header}
-        <div className="flex flex-col items-start gap-6 rounded-soft bg-blush-soft p-6 sm:p-10">
+        <div className="flex flex-col items-start gap-6 rounded-soft bg-blush-soft p-6 sm:p-10 ring-2 ring-inset ring-cocoa">
           <p className="md-pretty text-lead text-cocoa">{labels.empty}</p>
           <Button href={labels.emptyCta.href} variant="primary" size="lg" arrow>
             {labels.emptyCta.label}
@@ -235,7 +247,7 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
           {/* 1. Položky */}
           <section aria-label={labels.heading}>
             <div id={ID.items} tabIndex={-1} className="outline-none">
-              <ul role="list" className="divide-y divide-hairline rounded-soft bg-paper px-4 ring-1 ring-inset ring-hairline sm:px-6">
+              <ul role="list" className="divide-y divide-hairline rounded-soft bg-paper px-4 ring-2 ring-inset ring-cocoa sm:px-6">
                 {cart.lines.map((line, i) => (
                   <CartLineRow
                     key={line.id}
@@ -248,12 +260,12 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
                   />
                 ))}
               </ul>
-              {err('items') ? <p className="mt-3 font-copy text-small font-semibold text-danger">{err('items')}</p> : null}
+              {err('items') ? <p className="mt-3 font-copy text-small font-bold text-danger">{err('items')}</p> : null}
             </div>
           </section>
 
           {/* 2. Doručení */}
-          <section aria-labelledby="kosik-krok-doruceni" className="rounded-soft bg-sage-soft p-5 sm:p-8">
+          <section aria-labelledby="kosik-krok-doruceni" className="rounded-soft bg-sage-soft p-5 sm:p-8 ring-2 ring-inset ring-cocoa">
             <StepHeading id="kosik-krok-doruceni" number={1} title={labels.deliveryHeading} body={labels.deliveryBody} />
             <ChoiceGroup id={ID.method} legend={labels.deliveryLegend} error={err('fulfillment.method')}>
               <div className="grid gap-3 sm:grid-cols-2">
@@ -271,7 +283,7 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
                       className={RADIO_CLASS}
                     />
                     <span className="font-copy text-copy text-cocoa">
-                      <span className="block font-semibold">{d.label}</span>
+                      <span className="block font-bold">{d.label}</span>
                       {d.note ? (
                         <span className="mt-1 block text-small text-cocoa-soft">
                           <PlaceholderText text={d.note} />
@@ -322,10 +334,11 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
           </section>
 
           {/* 3. Kontakt a fakturace */}
-          <section aria-labelledby="kosik-krok-kontakt" className="rounded-soft bg-vanilla-soft p-5 sm:p-8">
+          <section aria-labelledby="kosik-krok-kontakt" className="rounded-soft bg-vanilla-soft p-5 sm:p-8 ring-2 ring-inset ring-cocoa">
             <StepHeading id="kosik-krok-kontakt" number={2} title={labels.contactHeading} body={labels.contactBody} />
+            <p className="-mt-2 mb-5 font-copy text-small text-cocoa-soft">{REQUIRED_NOTE}</p>
             <div className="grid gap-6 sm:grid-cols-2">
-              <Field id={ID.name} label={labels.name} error={err('customer.name')} className="sm:col-span-2">
+              <Field id={ID.name} label={labels.name} required error={err('customer.name')} className="sm:col-span-2">
                 <input
                   id={ID.name}
                   name="jmeno"
@@ -341,7 +354,7 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
                   className={FIELD_CLASS}
                 />
               </Field>
-              <Field id={ID.email} label={labels.email} error={err('customer.email')}>
+              <Field id={ID.email} label={labels.email} required error={err('customer.email')}>
                 <input
                   id={ID.email}
                   name="email"
@@ -358,7 +371,7 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
                   className={FIELD_CLASS}
                 />
               </Field>
-              <Field id={ID.phone} label={labels.phone} hint={labels.phoneHint} error={err('customer.phone')}>
+              <Field id={ID.phone} label={labels.phone} required hint={labels.phoneHint} error={err('customer.phone')}>
                 <input
                   id={ID.phone}
                   name="telefon"
@@ -376,7 +389,7 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
                 />
               </Field>
               <div className="sm:col-span-2">
-                <label htmlFor={ID.company} className="inline-flex min-h-11 cursor-pointer items-center gap-3 font-copy text-copy font-semibold text-cocoa">
+                <label htmlFor={ID.company} className="inline-flex min-h-11 cursor-pointer items-center gap-3 font-copy text-copy font-bold text-cocoa">
                   <input
                     id={ID.company}
                     name="firma"
@@ -433,7 +446,7 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
           </section>
 
           {/* 4. Platba */}
-          <section aria-labelledby="kosik-krok-platba" className="rounded-soft bg-blush-soft p-5 sm:p-8">
+          <section aria-labelledby="kosik-krok-platba" className="rounded-soft bg-blush-soft p-5 sm:p-8 ring-2 ring-inset ring-cocoa">
             <StepHeading id="kosik-krok-platba" number={3} title={labels.paymentHeading} body={labels.paymentBody} />
             <ChoiceGroup id={ID.payment} legend={labels.paymentLegend} error={err('payment')}>
               <div className="grid gap-3 sm:grid-cols-2">
@@ -450,7 +463,7 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
                       }}
                       className={RADIO_CLASS}
                     />
-                    <span className="font-copy text-copy font-semibold text-cocoa">{p.label}</span>
+                    <span className="font-copy text-copy font-bold text-cocoa">{p.label}</span>
                   </label>
                 ))}
               </div>
@@ -460,13 +473,11 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
 
         {/* Shrnutí, souhlas, odeslání */}
         <aside aria-labelledby="kosik-krok-souhlas" className="lg:sticky lg:top-[calc(theme(spacing.header)+1.5rem)] lg:self-start">
-          <div className="rounded-soft bg-paper p-5 shadow-float ring-1 ring-inset ring-hairline sm:p-7">
+          <div ref={summaryRef} className="rounded-soft bg-paper p-5 shadow-float ring-2 ring-inset ring-cocoa sm:p-7">
             <dl className="grid gap-2 font-copy text-copy text-cocoa">
               <SummaryRow label={labels.subtotal} value={formatCzk(totals.subtotal)} />
               <SummaryRow label={labels.delivery} value={delivery ? formatCzk(delivery.price) : '—'} />
-              <div className="mt-2 border-t border-hairline pt-3">
-                <SummaryRow label={labels.total} value={formatCzk(totals.total)} strong />
-              </div>
+              <SummaryRow label={labels.total} value={formatCzk(totals.total)} strong className="mt-2 border-t border-hairline pt-3" />
             </dl>
 
             <div className="mt-6 border-t border-hairline pt-6">
@@ -492,7 +503,7 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
                   <span>{labels.consent}</span>
                 </label>
                 {err('consent') ? (
-                  <p id={`${ID.consent}-chyba`} className="mt-2 font-copy text-small font-semibold text-danger">
+                  <p id={`${ID.consent}-chyba`} className="mt-2 font-copy text-small font-bold text-danger">
                     {err('consent')}
                   </p>
                 ) : null}
@@ -512,7 +523,7 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
               {sending ? labels.sending : labels.submit}
             </Button>
             <div role="alert" className="empty:hidden">
-              {failure ? <p className="mt-4 font-copy text-small font-semibold text-danger">{failure}</p> : null}
+              {failure ? <p className="mt-4 font-copy text-small font-bold text-danger">{failure}</p> : null}
             </div>
           </div>
           <p className="mt-6 text-small text-cocoa-soft">
@@ -523,15 +534,32 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
           </p>
         </aside>
       </form>
+      {!summaryVisible ? (
+        <div className="fixed inset-x-0 bottom-0 z-30 border-t-2 border-cocoa bg-paper px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 lg:hidden">
+          <div className="flex items-center justify-between gap-3">
+            <p className="font-copy text-small text-cocoa">
+              {labels.total} <span className="block text-[1.125rem] font-bold tabular-nums text-raspberry-ink">{formatCzk(totals.total)}</span>
+            </p>
+            <Button
+              variant="primary"
+              size="sm"
+              arrow
+              onClick={() => summaryRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' })}
+            >
+              {CONTINUE_TO_SUBMIT}
+            </Button>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }
 
-function SummaryRow({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
+function SummaryRow({ label, value, strong, className }: { label: string; value: string; strong?: boolean; className?: string }) {
   return (
-    <div className="flex items-baseline justify-between gap-4">
-      <dt className={cx(strong ? 'font-semibold text-cocoa' : 'text-cocoa-soft')}>{label}</dt>
-      <dd className={cx('tabular-nums', strong ? 'text-[1.25rem] font-bold text-raspberry-ink' : 'font-semibold text-cocoa')}>{value}</dd>
+    <div className={cx('flex items-baseline justify-between gap-4', className)}>
+      <dt className={cx(strong ? 'font-bold text-cocoa' : 'text-cocoa-soft')}>{label}</dt>
+      <dd className={cx('tabular-nums', strong ? 'text-[1.25rem] font-bold text-raspberry-ink' : 'font-bold text-cocoa')}>{value}</dd>
     </div>
   )
 }
@@ -563,7 +591,7 @@ function CartLineRow({
       <PhotoFrame photo={product.photo} aspect="square" sizes="96px" tone={product.tone} />
       <div className="min-w-0">
         <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
-          <h3 className="font-display text-[1.375rem] font-semibold leading-tight text-cocoa">
+          <h3 className="font-display text-[1.375rem] font-bold leading-tight text-cocoa">
             <Link href={product.href} className="hover:text-raspberry-ink">
               {product.name}
             </Link>
@@ -582,7 +610,7 @@ function CartLineRow({
               .join(', ')}
           </p>
         ) : null}
-        {flavorsError ? <p className="mt-2 font-copy text-small font-semibold text-danger">{flavorsError}</p> : null}
+        {flavorsError ? <p className="mt-2 font-copy text-small font-bold text-danger">{flavorsError}</p> : null}
 
         {allowsInscription(line.slug) ? (
           <Field
@@ -612,7 +640,7 @@ function CartLineRow({
 
         <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <label htmlFor={`${base}-pocet`} className="mb-2 block font-copy text-small font-semibold text-cocoa">
+            <label htmlFor={`${base}-pocet`} className="mb-2 block font-copy text-small font-bold text-cocoa">
               {labels.quantity}
             </label>
             <Stepper
@@ -628,14 +656,14 @@ function CartLineRow({
           <button
             type="button"
             onClick={() => updateCart((s) => removeLine(s, line.id))}
-            className="inline-flex min-h-11 items-center gap-2 rounded-pill px-3 font-copy text-small font-semibold text-cocoa underline decoration-raspberry underline-offset-[0.3em] hover:text-raspberry-ink"
+            className="inline-flex min-h-11 items-center gap-2 rounded-pill px-3 font-copy text-small font-bold text-cocoa underline decoration-raspberry underline-offset-[0.3em] hover:text-raspberry-ink"
           >
             <IconClose size={16} />
             {labels.remove}
             <span className="sr-only">: {product.name}</span>
           </button>
         </div>
-        {lineError ? <p className="mt-2 font-copy text-small font-semibold text-danger">{lineError}</p> : null}
+        {lineError ? <p className="mt-2 font-copy text-small font-bold text-danger">{lineError}</p> : null}
       </div>
     </li>
   )

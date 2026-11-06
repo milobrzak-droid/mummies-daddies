@@ -9,10 +9,13 @@ import { cx } from './cx'
 import { TONE_BG } from './tones'
 
 /**
- * Pastelová karta (srdce mřížky typů akcí, produktů, referencí).
- * Fotka v pastelovém rámu, pod ní titulek verzálkami, popis a `meta` (PriceTag,
- * Badge…). S `href` je klikací celá karta (roztažený odkaz na titulku), bez
- * vnořených odkazů. Bez fotky (`photo` vynechat) = textová karta (pilíře, kroky).
+ * Karta v rámu (web v2 „FrameCell“, stejný jazyk jako buňky na úvodu): papírová karta s 2.5px
+ * ink obrysem a tvrdým stínem; fotka přes celou šířku nahoře (bez vnitřního rámu), oddělená
+ * linkou; tón (blush = Mummy, sage = Daddy, vanilla = máslová) je jen pruh nahoře / pod fotkou.
+ * Na hover se karta zvedne (stín 6px). Pod fotkou titulek verzálkami, popis a `meta`
+ * (PriceTag, Badge…). S `href` je klikací celá karta (roztažený odkaz na titulku).
+ * Bez fotky (`photo` vynechat) NEBO s chybějící fotkou (zástupce) = textová karta s barevným
+ * pruhem: ikona zástupce se nikdy neukazuje přes celou kartu vedle skutečných fotek.
  *
  * Střídání tónů v mřížce: tone={toneAt(i)} z lib/web/tokens.
  */
@@ -50,27 +53,30 @@ export function PastelCard({
   className?: string
   children?: ReactNode
 }) {
+  const hasPhoto = !!photo && !photo.placeholder && !!photo.src
   return (
     <article
       className={cx(
-        'group relative flex h-full flex-col rounded-frame p-3 sm:p-4',
-        TONE_BG[tone],
-        href && 'transition-shadow duration-base ease-md-out hover:shadow-lift focus-within:shadow-lift',
+        'group relative flex h-full flex-col overflow-hidden border-[2.5px] border-cocoa bg-paper shadow-hard',
+        href &&
+          'motion-safe:transition-[transform,box-shadow] motion-safe:duration-quick hover:shadow-lift focus-within:shadow-lift motion-safe:hover:-translate-x-0.5 motion-safe:hover:-translate-y-0.5',
         className,
       )}
     >
-      {photo !== undefined ? (
-        <PhotoFrame photo={photo} aspect={aspect} className={photoClassName} sizes={sizes} tone={tone} zoomOnHover={!!href} />
-      ) : null}
-      <div className={cx('flex flex-1 flex-col px-2 pb-3 sm:px-3', photo !== undefined ? 'pt-5' : 'pt-4')}>
+      {hasPhoto ? (
+        <PhotoFrame photo={photo} aspect={aspect} rounded={false} className={cx('border-b-[2.5px] border-cocoa', photoClassName)} sizes={sizes} tone={tone} zoomOnHover={!!href} />
+      ) : (
+        <span aria-hidden="true" className={cx('block h-3 border-b-[2.5px] border-cocoa', TONE_BG[tone])} />
+      )}
+      <div className="flex flex-1 flex-col px-5 pb-5 pt-5 sm:px-6 sm:pb-6">
         {eyebrow ? (
-          <p className="mb-2 font-copy text-eyebrow uppercase text-cocoa-soft">
+          <p className="mb-2 font-copy text-eyebrow uppercase text-cocoa">
             <PlaceholderText text={eyebrow} />
           </p>
         ) : null}
         <H className="md-caps text-h3 text-cocoa">
           {href ? (
-            <Link href={href} className="outline-none after:absolute after:inset-0 after:rounded-frame after:content-[''] focus-visible:after:outline focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-raspberry-ink">
+            <Link href={href} className="outline-none after:absolute after:inset-0 after:content-[''] focus-visible:after:outline focus-visible:after:outline-[3px] focus-visible:after:outline-offset-4 focus-visible:after:outline-daddy-ink">
               {title}
             </Link>
           ) : (
@@ -78,7 +84,7 @@ export function PastelCard({
           )}
         </H>
         {description ? (
-          <p className="md-pretty mt-3 text-copy text-cocoa-soft">
+          <p className="md-pretty mt-3 text-copy text-cocoa-soft first-letter:uppercase">
             <PlaceholderText text={description} />
           </p>
         ) : null}
@@ -89,7 +95,7 @@ export function PastelCard({
             {href ? (
               <span aria-hidden="true" className="inline-flex shrink-0 items-center gap-2 font-copy text-small font-semibold text-cocoa">
                 {linkLabel}
-                <span className="grid h-10 w-10 place-items-center rounded-pill bg-paper text-cocoa transition-colors duration-quick group-hover:bg-raspberry-ink group-hover:text-paper">
+                <span className="grid h-11 w-11 place-items-center rounded-pill border-2 border-cocoa bg-paper text-cocoa transition-colors duration-quick group-hover:bg-raspberry-ink group-hover:text-cream">
                   <IconArrowRight size={18} />
                 </span>
               </span>

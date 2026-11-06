@@ -3,6 +3,7 @@ import type { SectionCopy } from '@/lib/web/content'
 import { Breadcrumbs } from '../Breadcrumbs'
 import { Section } from '../Section'
 import { LegalText } from './LegalText'
+import { AccentTitle } from '@/components/web/AccentTitle'
 
 /**
  * Šablona právní stránky (obchodní podmínky, ochrana údajů, cookies):
@@ -24,9 +25,7 @@ export function LegalPage({
     <>
       <Section tone="pistachio" soft spacing="none" labelledBy="pravni-title" width="prose" className="pb-10 pt-8 sm:pb-14 sm:pt-12">
         <Breadcrumbs items={[{ label: 'Úvod', href: '/' }, { label: title }]} className="mb-8" />
-        <h1 id="pravni-title" className="md-caps text-h1 text-cocoa">
-          {title}
-        </h1>
+        <h1 id="pravni-title" className="md-caps text-h1 text-cocoa"><AccentTitle title={title} /></h1>
         {lead ? (
           <p className="md-pretty mt-5 text-lead text-cocoa">
             <LegalText text={lead} />

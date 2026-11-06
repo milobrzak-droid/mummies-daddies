@@ -1,4 +1,7 @@
-import { Button, Faq, Hero, Section, SectionHeading } from '@/components/web'
+import { Button, Faq, Section, SectionHeading } from '@/components/web'
+import { BigMarquee } from '@/components/web/v2/BigMarquee'
+import { FormatsSection } from '@/components/web/v2/FormatsSection'
+import { HomeHero } from '@/components/web/v2/HomeHero'
 import {
   CheesecakeTeaser,
   EventTypeGrid,
@@ -13,12 +16,15 @@ import {
 } from '@/components/web/uvod'
 import { pageMetadata } from '@/lib/web/content'
 import {
+  cheesecakeExplorerData,
   cheesecakeProductsLd,
   cheesecakesData,
-  eventGridData,
+  homeEventGridData,
   faqData,
   finalInquiryData,
+  formatsData,
   heroData,
+  marqueeData,
   howItWorksData,
   kitchenData,
   quickStartData,
@@ -29,10 +35,11 @@ import {
 } from '@/lib/web/uvod/home'
 
 /**
- * Úvodní stránka přesně podle strategy.homepage:
- * hero (vlastní raut) → rychlý start → mřížka typů akcí → proč my → reference
- * → z naší kuchyně → jak to funguje → prostory → cheesecaky (doplněk) → tým
- * → FAQ → závěrečná poptávka. Horní lištu, header a patičku kreslí layout.
+ * Úvodní stránka web v2 (docs/web-v2-design.md §6), catering-first:
+ * hero s levitujícími výřezy → rychlý start → typy akcí (mřížka) → formáty (seznam + produkt)
+ * → obří pruh CATERING • CHEESECAKY → proč my → reference → z naší kuchyně → jak to funguje
+ * → cheesecaky Mummy & Daddy → prostory → tým → FAQ → závěrečná poptávka.
+ * Horní lištu, header a patičku kreslí layout. Texty doslova z copy (lib/web/uvod/home).
  */
 export const metadata = pageMetadata('/')
 
@@ -43,24 +50,27 @@ export default function HomePage() {
 
   return (
     <>
-      <Hero {...heroData()} tone="blush" size="home" />
+      <HomeHero {...heroData()} badge="Catering · Praha i celá ČR" />
       <QuickStartCard {...quickStartData()} source="/" />
-      <EventTypeGrid {...eventGridData()} />
+      <EventTypeGrid {...homeEventGridData()} />
+      <FormatsSection {...formatsData()} />
+      <BigMarquee {...marqueeData()} />
       <WhyUs {...whyUsData()} />
       <References {...referencesData()} />
       <Kitchen {...kitchenData()} />
       <HowItWorks {...howItWorksData()} />
+      <CheesecakeTeaser {...cheesecakes} flavors={cheesecakeExplorerData()} />
       <Venues {...venuesData()} />
-      <CheesecakeTeaser {...cheesecakes} />
       <Team {...teamData()} />
 
-      <Section id="faq" tone="cream" labelledBy="faq-title">
+      <Section id="faq" tone="cream" width="wide" labelledBy="faq-title">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-16">
           <SectionHeading
             id="faq-title"
             title={faq.heading}
             lead={faq.lead}
-            action={faq.cta ? <Button href={faq.cta.href} variant="ghost">{faq.cta.label}</Button> : undefined}
+            accent="otázky"
+            action={faq.cta ? <Button href={faq.cta.href} variant="outline" arrow>{faq.cta.label}</Button> : undefined}
             className="md:!flex-col md:!items-start md:!justify-start"
           />
           <Faq items={faq.items} />

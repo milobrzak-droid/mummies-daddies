@@ -17,6 +17,12 @@ export const UI_TEXT = {
   summary: 'Souhrn',
   /** Tlačítko u řádku souhrnu. */
   edit: 'Upravit',
+  /** Podtitulek volby „Vyplnit krátký formulář“ (stejná struktura jako u asistenta). */
+  formHint: 'Krok za krokem, zhruba dvě minuty',
+  /** Krok Formát servisu nemá povinná pole. */
+  optionalStep: 'Nepovinné – můžete přeskočit.',
+  skip: 'Přeskočit',
+  switchToConsultation: 'Přepnout na Konzultaci nebo ochutnávku',
   /** Nevyplněná hodnota v souhrnu. */
   empty: '—',
   /** Časové pole „od“ / „do“ (skryté popisky). */

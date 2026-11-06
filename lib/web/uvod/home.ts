@@ -20,7 +20,11 @@ import {
 } from '@/components/web/uvod'
 import { faqFromItems } from '@/components/web/Faq'
 import { COMPANY, getSection, getSectionParsed, microcopy, parseCta, splitDots, type ParsedItem } from '@/lib/web/content'
+import { withResponseClaim } from '@/lib/web/claims'
+import { CHEESECAKE_CUTOUT, cutout } from '@/lib/web/cutouts'
+import { formatCzk } from '@/lib/web/format'
 import { inquiryHref } from '@/lib/web/inquiry-link'
+import { CATERING_MENU } from '@/lib/web/navigation'
 import { CHEESECAKES, QUICK_START_EVENT_TYPES } from '@/lib/web/options'
 import { getPhoto } from '@/lib/web/photos'
 
@@ -55,7 +59,10 @@ export function heroData() {
     mobilePhoto: getPhoto('home.hero.mobile'),
     primaryCta: s.parsedCta ? { label: s.parsedCta.label, href: HOME_INQUIRY_HREF } : null,
     secondaryCta: secondary?.href ? { label: secondary.text, href: secondary.href } : null,
-    trust: trust?.text ?? null,
+    // Mikrodůvěra hned pod CTA: segment se zástupcem ([DOPLNÍ KLIENT: …]) se tu nezobrazuje,
+    // dokud klient číslo nedodá (zástupce zůstává viditelný v pásu čísel u referencí).
+    trust: trust?.text ? splitDots(trust.text).filter((t) => !/\[DOPLNÍ/.test(t)).join(' · ') || null : null,
+    plates: [getPhoto('home.kitchen.1'), getPhoto('home.kitchen.4')],
   }
 }
 
@@ -99,6 +106,19 @@ export function eventGridData() {
     lead: s.body,
     cards,
     assistant: s.cta ? { label: parseCta(s.cta).label, href: inquiryHref({ typ: 'nevim', zdroj: HOME }) } : null,
+  }
+}
+
+/** Klíčové typy akcí pro řadu kategorií na úvodu (ostatní nese výběr formátů a /catering). */
+const HOME_FEATURED_TYPES = ['/catering/firemni', '/catering/svatby', '/catering/oslavy-a-piknik']
+
+export function homeEventGridData() {
+  const all = eventGridData()
+  const cards = HOME_FEATURED_TYPES.flatMap((href) => all.cards.filter((c) => c.href === href))
+  return {
+    ...all,
+    cards,
+    all: { label: `Všechny typy akcí (${all.cards.length})`, href: '/catering' },
   }
 }
 
@@ -165,7 +185,8 @@ export function howItWorksData() {
     heading: s.heading,
     lead: s.body,
     steps: s.parsedItems.map((i) => ({ title: splitStepNumber(i.title ?? i.text).title, text: i.title ? i.text : '' })),
-    cta: s.parsedCta ? { label: s.parsedCta.label, href: HOME_INQUIRY_HREF } : null,
+    // Jednotné primární CTA webu („Chci nabídku“) místo obecného „Začít“ z copy.
+    cta: s.parsedCta ? { label: 'Chci nabídku', href: HOME_INQUIRY_HREF } : null,
   }
 }
 
@@ -278,4 +299,92 @@ export function finalInquiryData() {
     phone: phone && phone.kind === 'phone' ? { text: phone.text, href: phone.href } : null,
     email: email && email.kind === 'email' ? { text: email.text, href: email.href } : null,
   }
+}
+
+// ── web v2: formáty (FormatExplorer), marquee, cheesecaky (CheesecakeExplorer) ─────────────
+// Štítky jsou JEN fakta z lib/web/data/facts.json a lib/web/navigation.ts (docs/web-v2-design.md §5.8),
+// popisy doslova z CATERING_MENU (= karty typů akcí v copy). Co fakta nemají, je zástupce.
+
+export interface FormatEntry {
+  id: string
+  label: string
+  photoSlot: string
+  tags: string[]
+  /** Popis z CATERING_MENU podle cesty (nebo vlastní věta z copy pro Svatbu). */
+  menuHref: string
+  href: string
+}
+
+const FORMATS: FormatEntry[] = [
+  { id: 'snidane', label: 'Snídaně', photoSlot: 'home.grid.snidane', tags: ['Snídaňový bufet od 15 osob', 'Americká snídaně od 10 osob', 'Zdravá snídaně od 2 osob'], menuHref: '/catering/snidane', href: '/catering/snidane' },
+  { id: 'coffee-break', label: 'Coffee break', photoSlot: 'catering.coffee-break.gallery', tags: ['Od 15 osob', '15–45 minut', 'Mini dezerty a minisendviče', 'I s rolováním sushi'], menuHref: '/catering/coffee-break', href: '/catering/coffee-break' },
+  { id: 'obed', label: 'Oběd', photoSlot: 'catering.obedy.hero', tags: ['Bufet nebo Šéfkuchařovo menu', 'Dovezeme až na místo', 'Firemní obědy od 4 osob'], menuHref: '/catering/obedy', href: '/catering/obedy' },
+  { id: 'raut', label: 'Raut', photoSlot: 'catering.formats.raut', tags: ['Studený i teplý', 'Profesionální obsluha', '[DOPLNÍ KLIENT: minimum osob pro raut]'], menuHref: '/catering/spolecenske-akce', href: '/catering/spolecenske-akce' },
+  { id: 'finger-food', label: 'Jednohubky', photoSlot: 'catering.formats.finger-food', tags: ['Jednohubky a chuťovky do ruky', 'Na otevření i setkání', 'Od 15 osob'], menuHref: '/catering/spolecenske-akce', href: '/catering/spolecenske-akce' },
+  { id: 'bbq', label: 'Gril a vaření před hosty', photoSlot: 'catering.formats.bbq-live-cooking', tags: ['Vaříme přímo na místě', 'Teambuilding od 8 osob'], menuHref: '/catering/teambuilding', href: '/catering/teambuilding' },
+  { id: 'svatba', label: 'Svatba', photoSlot: 'catering.svatby.hero', tags: ['Svatební hostina', 'Sladký bar a dort', 'Konzultace zdarma'], menuHref: '/catering/svatby', href: '/catering/svatby' },
+]
+
+/** Popis svatby = karta „Svatby“ v copy (typy akcí na úvodu). */
+const SVATBA_DESCRIPTION = 'Svatební hostina podle vašeho příběhu. Konzultace zdarma.'
+
+export function formatsData() {
+  return {
+    heading: 'Vyberte si formát',
+    lead: 'Od snídaně po svatební hostinu. Ke každému formátu najdete ukázková menu a minimum osob.',
+    items: FORMATS.map((f) => ({
+      id: f.id,
+      label: f.label,
+      photo: getPhoto(f.photoSlot),
+      tags: f.tags,
+      description: CATERING_MENU.find((m) => m.href === f.menuHref)?.description ?? (f.id === 'svatba' ? SVATBA_DESCRIPTION : null),
+      links: [
+        { label: 'Více o formátu', href: f.href },
+        { label: 'Chci nabídku', href: inquiryHref({ zdroj: HOME }), primary: true },
+      ],
+    })),
+  }
+}
+
+/** Obří typografický pruh přes fotku: slova a štítky jen z faktů. */
+export function marqueeData() {
+  return {
+    words: ['Catering', 'Cheesecaky'],
+    label: 'Catering a cheesecaky',
+    photo: getPhoto('catering.formats.raut'),
+    tags: [
+      { text: withResponseClaim('Nabídka do pár minut'), tone: 'vanilla' as const },
+      { text: 'Praha i celá ČR', tone: 'paper' as const },
+      { text: `Vaříme od roku ${COMPANY.founded}`, tone: 'blush' as const },
+      { text: 'Cheesecaky podle amerického receptu', tone: 'sage' as const },
+    ],
+  }
+}
+
+/** Štítky ingrediencí odvozené JEN z názvu příchuti (docs §5.9). */
+const INGREDIENTS: Record<string, string[]> = {
+  'daddy-vanilkovy': ['Vanilka', 'Máslové sušenky'],
+  'daddy-pistaciovo-malinovy': ['Pistácie', 'Maliny'],
+  'daddy-cokoladovo-liskooriskovy': ['Čokoláda', 'Lískové oříšky'],
+  'daddy-vanilkovo-karamelovy': ['Vanilka', 'Karamel'],
+  'mummy-vanilkovo-ovocny': ['Vanilka', 'Ovoce'],
+  'mummy-vanilkovo-pomerancovy-vanocni': ['Vanilka', 'Pomeranč', 'Sezónní'],
+  'mini-cheesecaky-10-ks': ['10 ks', 'Mix příchutí'],
+}
+
+export function cheesecakeExplorerData() {
+  return CHEESECAKES.filter((c) => !c.seasonal).map((c) => {
+    const cut = CHEESECAKE_CUTOUT[c.slug]
+    return {
+      id: c.slug,
+      label: c.name,
+      tone: (c.line === 'daddy' ? 'blue' : c.line === 'mummy' ? 'raspberry' : 'butter') as 'blue' | 'raspberry' | 'butter',
+      kicker: c.line === 'daddy' ? 'Řada Daddy' : c.line === 'mummy' ? 'Řada Mummy' : 'Mini',
+      photo: getPhoto(`cheesecaky.${c.slug}.main`),
+      cutout: cut ? cutout(cut) : null,
+      tags: INGREDIENTS[c.slug] ?? [],
+      price: c.priceConfirmed ? formatCzk(c.price) : `${formatCzk(c.price)} [DOPLNÍ KLIENT: potvrdit cenu]`,
+      href: `/cheesecaky/${c.slug}`,
+    }
+  })
 }

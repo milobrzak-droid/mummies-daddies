@@ -311,7 +311,7 @@
     "file": "/web/photos/home-team.jpg",
     "width": 1920,
     "height": 2400,
-    "alt": "Členka týmu Mummies and Daddies s kuchařem v kuchyni",
+    "alt": "Monika Jožková se šéfkuchařem v kuchyni Mummies and Daddies",
     "provisional": true,
     "file1200": "/web/photos/home-team-1200.jpg",
     "width1200": 960,
@@ -808,7 +808,8 @@
     "file1200": "/web/photos/o-nas-rudolf-1200.jpg",
     "width1200": 960,
     "height1200": 1200,
-    "source": "7692a3_9ba6a726f3854fa9a716772be193a06b~mv2.jpg"
+    "source": "7692a3_9ba6a726f3854fa9a716772be193a06b~mv2.jpg",
+    "position": "50% 15%"
   },
   "o-nas.monika": {
     "file": "/web/photos/o-nas-monika.jpg",
@@ -819,7 +820,8 @@
     "file1200": "/web/photos/o-nas-monika-1200.jpg",
     "width1200": 960,
     "height1200": 1200,
-    "source": "7692a3_79bbb07140b348cf9d4df6662c58e7da~mv2.jpg"
+    "source": "7692a3_79bbb07140b348cf9d4df6662c58e7da~mv2.jpg",
+    "position": "50% 12%"
   },
   "o-nas.team.1": {
     "file": "/web/photos/o-nas-team-1.jpg",

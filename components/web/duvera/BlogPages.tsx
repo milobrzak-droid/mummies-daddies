@@ -27,6 +27,7 @@ import { Section } from '../Section'
 import { SectionHeading } from '../SectionHeading'
 import { ArticleBody } from './ArticleBody'
 import { FilterGrid, type FilterItem } from './FilterGrid'
+import { AccentTitle } from '@/components/web/AccentTitle'
 
 const LIST_PATH = '/blog'
 const ARTICLE_TEMPLATE = '/blog/[slug]'
@@ -96,9 +97,7 @@ export function BlogListPage() {
       <Section tone="blush" soft labelledBy="blog-title" className="pb-section-sm pt-10 sm:pt-14">
         <Breadcrumbs items={[{ label: 'Úvod', href: '/' }, { label: blogLabel() }]} className="mb-8" />
         <div className="max-w-3xl motion-safe:animate-lift">
-          <h1 id="blog-title" className="md-caps text-h1 text-cocoa">
-            {uvod.heading}
-          </h1>
+          <h1 id="blog-title" className="md-caps text-h1 text-cocoa"><AccentTitle title={uvod.heading} /></h1>
           <p className="md-pretty mt-5 text-lead text-cocoa">
             <PlaceholderText text={uvod.body} />
           </p>
@@ -194,9 +193,7 @@ export function BlogArticlePage({ slug }: { slug: string }) {
                 <Badge tone="paper">{a.tag}</Badge>
                 <ArticleMeta article={a} />
               </p>
-              <h1 id="clanek-title" className="md-caps text-h1 text-cocoa">
-                {a.title}
-              </h1>
+              <h1 id="clanek-title" className="md-caps text-h1 text-cocoa"><AccentTitle title={a.title} /></h1>
               <p className="md-pretty mt-5 text-lead text-cocoa-soft">{a.excerpt}</p>
             </div>
           </Container>
@@ -208,7 +205,7 @@ export function BlogArticlePage({ slug }: { slug: string }) {
           <ArticleBody blocks={a.blocks} />
 
           <aside aria-labelledby="autor-title" className="mt-12 flex items-center gap-4 border-t border-hairline pt-8">
-            <span aria-hidden="true" className="grid h-14 w-14 shrink-0 place-items-center rounded-pill bg-sage font-display text-[1.5rem] font-semibold text-cocoa">
+            <span aria-hidden="true" className="grid h-14 w-14 shrink-0 place-items-center rounded-pill bg-sage font-display text-[1.5rem] font-bold text-cocoa">
               {a.author.name.replace(/^Bc\.\s*/, '').charAt(0)}
             </span>
             <div>
@@ -216,7 +213,7 @@ export function BlogArticlePage({ slug }: { slug: string }) {
                 {autor.heading}
               </h2>
               <p className="mt-1 text-copy text-cocoa">
-                <span className="font-semibold">{a.author.name}</span>, <PlaceholderText text={a.author.role} />
+                <span className="font-bold">{a.author.name}</span>, <PlaceholderText text={a.author.role} />
               </p>
             </div>
           </aside>
@@ -224,7 +221,7 @@ export function BlogArticlePage({ slug }: { slug: string }) {
       </article>
 
       <Section tone="vanilla" soft spacing="sm" width="prose" labelledBy="sluzba-title">
-        <div className="rounded-frame bg-paper p-6 ring-1 ring-hairline sm:p-8">
+        <div className="rounded-frame bg-paper p-6 ring-2 ring-cocoa sm:p-8">
           <h2 id="sluzba-title" className="font-copy text-eyebrow uppercase text-cocoa-soft">
             {sluzba.heading}
           </h2>

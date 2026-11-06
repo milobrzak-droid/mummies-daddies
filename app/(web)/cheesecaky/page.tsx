@@ -3,6 +3,12 @@ import { ProductCard, TermList } from '@/components/web/eshop'
 import { pageMetadata } from '@/lib/web/content'
 import { catalogPageData } from '@/lib/web/eshop/copy'
 import { isMini } from '@/lib/web/eshop/catalog'
+import { AccentTitle } from '@/components/web/AccentTitle'
+import { FloatingCutout } from '@/components/web/v2/FloatingCutout'
+
+/** Mini mix nejde přidat jedním klikem (příchutě se vybírají na detailu): jasná výzva místo názvu. */
+const MINI_CTA = 'Vybrat příchutě'
+const MINI_SECTION_CTA = 'Vybrat 10 příchutí'
 
 /**
  * /cheesecaky – doplňkový e-shop (strategy.sitemap): úvod → produkty (karty
@@ -26,14 +32,15 @@ export default function CheesecakesPage() {
         tone="blush"
         size="page"
         primaryCta={{ label: d.produkty.heading, href: '#produkty' }}
+        art={<CheesecakeArt />}
       />
 
       <Section id="produkty" tone="cream" labelledBy="produkty-title">
-        <SectionHeading id="produkty-title" title={d.produkty.heading} lead={d.produkty.body} />
+        <SectionHeading id="produkty-title" title={d.produkty.heading} lead={d.produkty.body} accent={false} />
         <ul role="list" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
           {d.products.map((p) => (
             <li key={p.slug}>
-              <ProductCard product={p} description={p.description} quickAdd={isMini(p.slug) ? null : quickAdd} />
+              <ProductCard product={p} description={p.description} quickAdd={isMini(p.slug) ? null : quickAdd} linkLabel={isMini(p.slug) ? MINI_CTA : undefined} />
             </li>
           ))}
         </ul>
@@ -53,7 +60,7 @@ export default function CheesecakesPage() {
             <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
               <PriceTag text={d.mini.product.priceText} size="lg" />
               <Button href={d.mini.product.href} variant="primary" arrow>
-                {d.mini.product.name}
+                {MINI_SECTION_CTA}
               </Button>
             </div>
           </div>
@@ -62,9 +69,7 @@ export default function CheesecakesPage() {
 
       <Section id="na-prani" tone="cream" spacing="sm" labelledBy="na-prani-title">
         <div className="grid gap-8 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-16">
-          <h2 id="na-prani-title" className="md-caps text-h2 text-cocoa">
-            {d.naPrani.heading}
-          </h2>
+          <h2 id="na-prani-title" className="md-caps text-h2 text-cocoa"><AccentTitle title={d.naPrani.heading} /></h2>
           <p className="md-pretty text-lead text-cocoa">
             <PlaceholderText text={d.naPrani.body} />
           </p>
@@ -99,9 +104,7 @@ export default function CheesecakesPage() {
               <PhotoFrame photo={d.naAkci.photo} aspect="fill" rounded={false} tone="vanilla" sizes="(min-width: 768px) 50vw, 100vw" />
             </div>
             <div className="flex flex-col justify-center px-gutter py-section-sm md:py-section md:pl-[max(theme(spacing.gutter),calc((min(100vw,theme(maxWidth.web-wide))-theme(maxWidth.web))/2+theme(spacing.gutter)))] md:pr-12">
-              <h2 id="na-akci-title" className="md-caps text-h2 text-cocoa">
-                {d.naAkci.section.heading}
-              </h2>
+              <h2 id="na-akci-title" className="md-caps text-h2 text-cocoa"><AccentTitle title={d.naAkci.section.heading} /></h2>
               <p className="md-pretty mt-5 max-w-xl text-lead text-cocoa-soft">
                 <PlaceholderText text={d.naAkci.section.body} />
               </p>
@@ -119,9 +122,7 @@ export default function CheesecakesPage() {
         <Section id="poukaz" tone="cream" spacing="sm" labelledBy="poukaz-title">
           <div className="flex flex-col gap-6 rounded-frame bg-pistachio p-6 sm:flex-row sm:items-center sm:justify-between sm:p-10">
             <div>
-              <h2 id="poukaz-title" className="md-caps text-h2 text-cocoa">
-                {d.poukaz.section.heading}
-              </h2>
+              <h2 id="poukaz-title" className="md-caps text-h2 text-cocoa"><AccentTitle title={d.poukaz.section.heading} /></h2>
               <p className="mt-3 text-lead text-cocoa">
                 <PlaceholderText text={d.poukaz.section.body} />
               </p>
@@ -133,5 +134,19 @@ export default function CheesecakesPage() {
         </Section>
       ) : null}
     </>
+  )
+}
+
+/** Hero /cheesecaky: levitující výřezy cheesecaků na kruhových „talířích“ v barvách řad (Daddy modrá, Mummy malina). */
+function CheesecakeArt() {
+  return (
+    <div className="relative mx-auto aspect-square w-full max-w-[34rem]">
+      <div aria-hidden="true" className="absolute inset-[6%] rounded-full border-2 border-cocoa bg-daddy-tint shadow-hard-md" />
+      <div aria-hidden="true" className="absolute -bottom-[2%] -left-[4%] h-[42%] w-[42%] rounded-full border-2 border-cocoa bg-raspberry-tint shadow-hard-sm" />
+      <FloatingCutout slug="cheesecake-pistaciovo-malinovy" preload decorative={false} rotate={8} sizes="(min-width: 1024px) 400px, 70vw" className="absolute left-[14%] top-[10%] w-[66%]" />
+      <FloatingCutout slug="cheesecake-cokoladovo-liskooriskovy" rotate={-10} delay={-2} sizes="(min-width: 1024px) 200px, 34vw" className="absolute -bottom-[1%] left-[0%] w-[38%]" />
+      <FloatingCutout slug="mini-cheesecake-cokoladovy" rotate={6} delay={-3.4} sizes="(min-width: 1024px) 150px, 26vw" className="absolute -right-[2%] bottom-[4%] w-[26%]" />
+      <FloatingCutout slug="mini-cheesecake-kosicek" rotate={-12} delay={-1.1} sizes="120px" className="absolute right-[4%] top-[2%] w-[18%] max-w-[8.5rem]" />
+    </div>
   )
 }

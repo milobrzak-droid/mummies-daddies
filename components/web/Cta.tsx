@@ -1,5 +1,6 @@
 import type { SurfaceTone } from '@/lib/web/tokens'
 import { COMPANY } from '@/lib/web/company'
+import { AccentTitle } from './AccentTitle'
 import { Button } from './Button'
 import { Container } from './Container'
 import { IconPhone } from './icons'
@@ -39,11 +40,11 @@ export function Cta({
 }) {
   const headingId = id ?? 'cta-title'
   return (
-    <section aria-labelledby={headingId} className={cx(TONE_BG[tone], 'py-section-sm', className)}>
+    <section aria-labelledby={headingId} className={cx(TONE_BG[tone], 'border-t-2 border-cocoa py-section-sm', className)}>
       <Container className="grid items-center gap-8 md:grid-cols-[1.4fr_1fr] md:gap-12">
         <div>
           <h2 id={headingId} className="md-caps text-h2 text-cocoa">
-            {title}
+            <AccentTitle title={title} />
           </h2>
           {body ? (
             <p className="md-pretty mt-4 max-w-2xl text-lead text-cocoa-soft">
@@ -61,7 +62,7 @@ export function Cta({
             </Button>
           ) : null}
           {showPhone ? (
-            <a href={COMPANY.phoneHref} className="inline-flex min-h-11 items-center gap-2 font-copy text-small font-semibold text-cocoa hover:underline">
+            <a href={COMPANY.phoneHref} className="inline-flex min-h-11 items-center gap-2 font-copy text-small font-bold text-cocoa underline decoration-raspberry decoration-2 underline-offset-4">
               <IconPhone size={18} /> nebo zavolejte {COMPANY.phone}
             </a>
           ) : null}

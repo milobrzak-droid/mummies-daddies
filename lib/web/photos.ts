@@ -23,6 +23,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import slotsData from './data/photo-slots.json'
 import altsData from './data/photo-alts.json'
+import blurData from './data/photo-blur.json'
 
 export interface Photo {
   /** Místo na webu, např. "home.hero", "catering.svatby.gallery". */
@@ -41,7 +42,11 @@ export interface Photo {
   position?: string
   /** Doporučený ořez z výběru fotek (informativní). */
   crop?: string
+  /** Malý rozmazaný náhled (data URL) pro placeholder="blur" (scripts/web/photo-blur.mjs). */
+  blur?: string
 }
+
+const BLUR: Record<string, string> = blurData as Record<string, string>
 
 interface PickSlot {
   slot: string
@@ -194,12 +199,13 @@ export function getPhoto(slot: string, index = 0): Photo {
       height: entry.height,
       provisional: entry.provisional ?? base.provisional,
       position: entry.position,
+      blur: BLUR[entry.src],
       placeholder: false,
     }
   }
   const conventional = conventionalSrc(slot, index)
   if (publicFileExists(conventional)) {
-    return { ...base, src: conventional, alt: fallbackAlt(pick, slot), placeholder: false }
+    return { ...base, src: conventional, alt: fallbackAlt(pick, slot), blur: BLUR[conventional], placeholder: false }
   }
   return { ...base, src: null, alt: fallbackAlt(pick, slot), placeholder: true }
 }

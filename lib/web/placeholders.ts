@@ -29,3 +29,17 @@ export function stripPlaceholders(text: string): string {
   return text.replace(CLIENT_PLACEHOLDER, '').replace(/\s{2,}/g, ' ').replace(/\s+([.,])/g, '$1').replace(/(·\s*){2,}/g, '· ').trim()
 }
 
+
+/**
+ * České typografické pravidlo: jednopísmenné předložky a spojky (v, s, k, z, u, o, a, i)
+ * nesmí zůstat na konci řádku a číslo se neodtrhne od následujícího slova („do 1 pracovního
+ * dne“). Vloží nezlomitelné mezery (U+00A0). Čtečky i vyhledávače je čtou jako mezeru.
+ */
+export function czechNbsp(text: string): string {
+  if (!text) return text
+  let out = text
+  // Dvakrát kvůli řetězení („a v Praze“, „s i bez“).
+  for (let i = 0; i < 2; i++) out = out.replace(/(^|[\s(„“"'–—/])([vVsSkKzZuUoOaAiI])[ \t]+(?=\S)/g, '$1$2\u00A0')
+  // Rozpětí „300–2 000“ se nezalomí u pomlčky (U+2060 word joiner).
+  return out.replace(/(\d)[ \t]+(?=[\p{L}\d%])/gu, '$1\u00A0').replace(/(\d)–(?=\d)/g, '$1\u2060–\u2060')
+}

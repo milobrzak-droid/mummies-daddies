@@ -26,13 +26,13 @@ export function Breadcrumbs({ items, jsonLd = true, className }: { items: Breadc
   }
   return (
     <nav aria-label="Drobečková navigace" className={cx('font-copy text-small', className)}>
-      <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-cocoa-soft">
+      <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-0 text-cocoa-soft">
         {items.map((it, i) => {
           const last = i === items.length - 1
           return (
             <li key={`${it.label}-${i}`} className="inline-flex items-center gap-1.5">
               {it.href && !last ? (
-                <Link href={it.href} className="underline-offset-4 hover:text-cocoa hover:underline">
+                <Link href={it.href} className="inline-flex min-h-11 items-center underline-offset-4 hover:text-cocoa hover:underline">
                   {it.label}
                 </Link>
               ) : (

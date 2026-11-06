@@ -12,6 +12,7 @@ import { PriceTag } from '../PriceTag'
 import { Section } from '../Section'
 import { SectionHeading } from '../SectionHeading'
 import { PriceText } from './PriceText'
+import { AccentTitle } from '@/components/web/AccentTitle'
 
 const P = '/vanoce'
 const CHECK_TONES: readonly SurfaceTone[] = ['paper', 'vanilla', 'blush']
@@ -45,9 +46,7 @@ export function ChristmasPage() {
       <Section id="vecirek" labelledBy="vecirek-title">
         <div className="grid gap-10 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-center lg:gap-16">
           <div>
-            <h2 id="vecirek-title" className="md-caps text-h2 text-cocoa">
-              {vecirek.heading}
-            </h2>
+            <h2 id="vecirek-title" className="md-caps text-h2 text-cocoa"><AccentTitle title={vecirek.heading} /></h2>
             <p className="md-pretty mt-5 text-lead text-cocoa-soft">
               <PriceText text={vecirek.body} />
             </p>
@@ -83,22 +82,20 @@ export function ChristmasPage() {
         <div className="grid gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:items-center lg:gap-16">
           <PhotoFrame photo={getPhoto('vanoce.gallery', 0)} aspect="landscape" tone="blush" sizes="(min-width: 1280px) 480px, (min-width: 768px) 40vw, 100vw" />
           <div>
-            <h2 id="cukrovi-title" className="md-caps text-h2 text-cocoa">
-              {cukrovi.heading}
-            </h2>
+            <h2 id="cukrovi-title" className="md-caps text-h2 text-cocoa"><AccentTitle title={cukrovi.heading} /></h2>
             <p className="md-pretty mt-5 text-lead text-cocoa-soft">
               <PlaceholderText text={cukrovi.body} />
             </p>
             <ul role="list" className="mt-6 flex flex-wrap gap-2">
               {cookies.map((it, i) => (
-                <li key={it.raw} className={`rounded-pill px-4 py-2 font-copy text-small font-semibold text-cocoa ${['bg-blush', 'bg-sage', 'bg-vanilla'][i % 3]}`}>
+                <li key={it.raw} className={`rounded-pill px-4 py-2 font-copy text-small font-bold text-cocoa ${['bg-blush', 'bg-sage', 'bg-vanilla'][i % 3]}`}>
                   {it.text}
                 </li>
               ))}
             </ul>
             {cookieFacts.map((it) => (
               <p key={it.raw} className="mt-6 flex flex-wrap items-baseline gap-x-2 text-copy text-cocoa">
-                <span className="font-semibold">{it.label}:</span>
+                <span className="font-bold">{it.label}:</span>
                 <PriceTag text={it.text} />
               </p>
             ))}
@@ -109,9 +106,7 @@ export function ChristmasPage() {
       <Section tone="vanilla" soft id="cheesecake" labelledBy="cheesecake-title">
         <div className="grid gap-10 md:grid-cols-2 md:items-center lg:gap-16">
           <div className="md:order-2">
-            <h2 id="cheesecake-title" className="md-caps text-h2 text-cocoa">
-              {cheesecake.heading}
-            </h2>
+            <h2 id="cheesecake-title" className="md-caps text-h2 text-cocoa"><AccentTitle title={cheesecake.heading} /></h2>
             <p className="md-pretty mt-5 text-lead text-cocoa-soft">
               <PriceText text={cheesecake.body} />
             </p>
@@ -133,7 +128,7 @@ export function ChristmasPage() {
       </Section>
 
       <Section spacing="sm" id="uzaverka" labelledBy="uzaverka-title">
-        <div className="rounded-soft bg-paper p-6 shadow-float sm:p-10 md:flex md:items-center md:justify-between md:gap-10">
+        <div className="rounded-soft bg-paper p-6 shadow-float sm:p-10 md:flex md:items-center md:justify-between md:gap-10 ring-2 ring-inset ring-cocoa">
           <h2 id="uzaverka-title" className="md-caps text-h3 text-cocoa">
             {uzaverka.heading}
           </h2>

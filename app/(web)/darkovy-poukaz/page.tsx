@@ -2,6 +2,7 @@ import { Breadcrumbs, PlaceholderText, Section } from '@/components/web'
 import { VoucherForm } from '@/components/web/eshop'
 import { pageMetadata } from '@/lib/web/content'
 import { voucherPageData } from '@/lib/web/eshop/copy'
+import { AccentTitle } from '@/components/web/AccentTitle'
 
 /**
  * /darkovy-poukaz – jedna stránka poukazu (strategy.sitemap): hodnota
@@ -18,9 +19,7 @@ export default function VoucherPage() {
       <Section tone="blush" soft labelledBy="poukaz-title" className="pb-section-sm pt-8 sm:pt-12" spacing="none">
         <Breadcrumbs items={[{ label: 'Úvod', href: '/' }, { label: 'Cheesecaky', href: '/cheesecaky' }, { label: d.labels.previewTitle }]} className="mb-8" />
         <div className="max-w-3xl motion-safe:animate-lift">
-          <h1 id="poukaz-title" className="md-caps text-h1 text-cocoa">
-            {d.uvod.heading}
-          </h1>
+          <h1 id="poukaz-title" className="md-caps text-h1 text-cocoa"><AccentTitle title={d.uvod.heading} /></h1>
           <p className="md-pretty mt-5 text-lead text-cocoa">
             <PlaceholderText text={d.uvod.body} />
           </p>

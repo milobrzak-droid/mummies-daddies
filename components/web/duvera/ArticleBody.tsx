@@ -26,8 +26,8 @@ export function ArticleBody({ blocks }: { blocks: readonly ArticleBlock[] }) {
             return (
               <ol key={i} role="list" className="space-y-4">
                 {b.items.map((s, n) => (
-                  <li key={s.title} className="grid grid-cols-[2.75rem_1fr] gap-4 rounded-frame bg-paper p-5 ring-1 ring-hairline sm:p-6">
-                    <span aria-hidden="true" className="grid h-11 w-11 place-items-center rounded-pill bg-blush font-display text-[1.375rem] font-semibold text-cocoa">
+                  <li key={s.title} className="grid grid-cols-[2.75rem_1fr] gap-4 rounded-frame bg-paper p-5 ring-2 ring-cocoa sm:p-6">
+                    <span aria-hidden="true" className="grid h-11 w-11 place-items-center rounded-pill bg-blush font-display text-[1.375rem] font-bold text-cocoa">
                       {n + 1}
                     </span>
                     <div>

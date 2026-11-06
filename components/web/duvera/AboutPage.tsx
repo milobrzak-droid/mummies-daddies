@@ -11,6 +11,7 @@ import { Section } from '../Section'
 import { SectionHeading } from '../SectionHeading'
 import { PlaceholderPanel } from './PlaceholderPanel'
 import { SplitHero } from './SplitHero'
+import { AccentTitle } from '@/components/web/AccentTitle'
 
 const P = '/o-nas'
 const VALUE_TONES: readonly SurfaceTone[] = ['blush', 'sage', 'pistachio', 'blush']
@@ -96,9 +97,7 @@ export function AboutPage() {
       <Section id="kuchyne" labelledBy="kuchyne-title">
         <div className="grid gap-10 md:grid-cols-2 md:items-center lg:gap-16">
           <div>
-            <h2 id="kuchyne-title" className="md-caps text-h2 text-cocoa">
-              {kuchyne.heading}
-            </h2>
+            <h2 id="kuchyne-title" className="md-caps text-h2 text-cocoa"><AccentTitle title={kuchyne.heading} /></h2>
             <p className="md-pretty mt-5 text-lead text-cocoa-soft">
               <PlaceholderText text={kuchyne.body} />
             </p>

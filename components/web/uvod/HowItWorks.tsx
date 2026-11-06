@@ -1,7 +1,7 @@
 import { Button } from '../Button'
+import { IconArrowRight } from '../icons'
 import { PlaceholderText } from '../PlaceholderText'
-import { Section } from '../Section'
-import { SectionHeading } from '../SectionHeading'
+import { SectionBand } from '../v2/SectionBand'
 
 export interface Step {
   title: string
@@ -9,8 +9,9 @@ export interface Step {
 }
 
 /**
- * „Jak to funguje“: 4 kroky na vodorovné ose (od lg), na mobilu svisle.
- * Číslování dává <ol>; velké číslice jsou jen vizuální (aria-hidden).
+ * „Jak to funguje“ (docs §6, sekce 10): 4 orámované buňky s obřími Anton čísly v malině
+ * a šipkami mezi nimi (od lg), na mobilu svislá osa. Číslování dává <ol>; číslice jsou
+ * jen vizuální (aria-hidden).
  */
 export function HowItWorks({
   heading,
@@ -26,32 +27,37 @@ export function HowItWorks({
   id?: string
 }) {
   return (
-    <Section id={id} tone="vanilla" soft labelledBy={`${id}-title`}>
-      <SectionHeading
+    <section id={id} aria-labelledby={`${id}-title`} className="bg-cream">
+      <SectionBand
         id={`${id}-title`}
         title={heading}
+        accent="funguje"
         lead={lead}
+        tone="cream"
         action={cta ? <Button href={cta.href} variant="primary" size="lg" arrow>{cta.label}</Button> : undefined}
       />
-      <ol role="list" className="relative grid gap-8 lg:grid-cols-4 lg:gap-8">
-        <span aria-hidden="true" className="absolute bottom-6 left-7 top-6 w-px bg-cocoa/20 lg:bottom-auto lg:left-7 lg:right-7 lg:top-7 lg:h-px lg:w-auto" />
-        {steps.map((s, i) => (
-          <li key={s.title} className="relative grid grid-cols-[3.5rem_1fr] gap-5 lg:block">
-            <span
-              aria-hidden="true"
-              className="relative grid h-14 w-14 place-items-center rounded-pill bg-paper font-display text-[1.75rem] font-semibold leading-none text-cocoa ring-1 ring-cocoa/10"
-            >
-              {i + 1}
-            </span>
-            <div className="lg:mt-6 lg:pr-4">
-              <h3 className="md-caps text-h3 text-cocoa">{s.title}</h3>
-              <p className="md-pretty mt-3 text-copy text-cocoa-soft">
-                <PlaceholderText text={s.text} />
-              </p>
-            </div>
-          </li>
-        ))}
-      </ol>
-    </Section>
+      <div className="mx-auto max-w-web-wide">
+        <ol role="list" className="md-grid border-y-0 lg:grid-cols-4 min-[90rem]:border-x-2 min-[90rem]:border-cocoa">
+          {steps.map((s, i) => (
+            <li key={s.title} className="relative grid grid-cols-[4.5rem_minmax(0,1fr)] gap-4 px-gutter py-7 lg:block lg:p-8 xl:p-10">
+              <span aria-hidden="true" className="md-caps block text-[4.5rem] leading-[1.12] text-raspberry lg:text-[6.5rem]">
+                {i + 1}
+              </span>
+              <div className="lg:mt-4">
+                <h3 className="md-caps text-h3 text-cocoa">{s.title}</h3>
+                <p className="md-pretty mt-3 text-copy text-cocoa-soft first-letter:uppercase">
+                  <PlaceholderText text={s.text} />
+                </p>
+              </div>
+              {i < steps.length - 1 ? (
+                <span aria-hidden="true" className="absolute -right-[1.4rem] top-12 z-10 hidden h-11 w-11 place-items-center rounded-pill border-2 border-cocoa bg-butter text-cocoa lg:grid">
+                  <IconArrowRight size={20} />
+                </span>
+              ) : null}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
   )
 }

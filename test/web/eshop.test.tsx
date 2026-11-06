@@ -77,7 +77,11 @@ function expectAccessibleBasics(doc: Document, h1 = 1) {
   for (const el of Array.from(doc.querySelectorAll('[aria-labelledby]'))) {
     expect(doc.getElementById(el.getAttribute('aria-labelledby')!), el.getAttribute('aria-labelledby')!).not.toBeNull()
   }
-  for (const img of Array.from(doc.querySelectorAll('img'))) expect((img.getAttribute('alt') ?? '').length).toBeGreaterThan(0)
+  // alt má každý obrázek; prázdný jen čistě dekorativní výřez uvnitř aria-hidden (web v2)
+  for (const img of Array.from(doc.querySelectorAll('img'))) {
+    if (img.closest('[aria-hidden="true"]')) expect(img.getAttribute('alt')).toBe('')
+    else expect((img.getAttribute('alt') ?? '').length).toBeGreaterThan(0)
+  }
   for (const f of Array.from(doc.querySelectorAll('input:not([type=hidden]):not([type=radio]), select, textarea'))) {
     const wrapped = f.closest('label')
     expect(wrapped || doc.querySelector(`label[for="${f.id}"]`), `pole ${f.getAttribute('name') ?? f.id} bez popisku`).toBeTruthy()
@@ -323,7 +327,7 @@ describe('/cheesecaky', () => {
     // nepotvrzená cena karamelového = viditelný zástupce
     expect(text(cards[3].querySelector('.md-fill'))).toBe('[DOPLNÍ KLIENT: potvrdit cenu]')
     // rychlé přidání jen u produktů bez povinných voleb (mini má příchutě)
-    expect(cards.map((c) => !!Array.from(c.querySelectorAll('button')).find((b) => text(b) === 'Přidat do košíku'))).toEqual([true, true, true, true, true, false])
+    expect(cards.map((c) => !!Array.from(c.querySelectorAll('button')).find((b) => text(b).startsWith('Přidat do košíku')))).toEqual([true, true, true, true, true, false])
   })
 
   it('všechny sekce copy jsou na stránce, doslova', () => {

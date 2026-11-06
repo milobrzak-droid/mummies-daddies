@@ -73,8 +73,11 @@ function expectAccessibleBasics(doc: Document) {
   for (const el of Array.from(doc.querySelectorAll('[aria-labelledby]'))) {
     expect(doc.getElementById(el.getAttribute('aria-labelledby')!), el.getAttribute('aria-labelledby')!).not.toBeNull()
   }
-  // každý obrázek má alt, každé pole formuláře popisek
-  for (const img of Array.from(doc.querySelectorAll('img'))) expect((img.getAttribute('alt') ?? '').length).toBeGreaterThan(0)
+  // každý obrázek má alt (prázdný jen čistě dekorativní výřez uvnitř aria-hidden), každé pole formuláře popisek
+  for (const img of Array.from(doc.querySelectorAll('img'))) {
+    if (img.closest('[aria-hidden="true"]')) expect(img.getAttribute('alt')).toBe('')
+    else expect((img.getAttribute('alt') ?? '').length, img.getAttribute('src') ?? '').toBeGreaterThan(0)
+  }
   for (const f of Array.from(doc.querySelectorAll('input:not([type=hidden]), select, textarea'))) {
     expect(doc.querySelector(`label[for="${f.id}"]`), `pole ${f.getAttribute('name')} bez popisku`).not.toBeNull()
   }
@@ -95,11 +98,14 @@ describe('úvodní stránka', () => {
     expect(body).toContain('Vaříme od roku 2018')
   })
 
-  it('vykreslí sekce ve stejném pořadí jako strategy.homepage a texty doslova z copy', () => {
-    const ids = ['rychly-start', 'typy-akci', 'proc-my', 'reference', 'z-kuchyne', 'jak-to-funguje', 'prostory', 'cheesecaky', 'tym', 'faq', 'zaverecna-poptavka']
+  it('vykreslí sekce v pořadí webu v2 (docs/web-v2-design.md §6) a texty doslova z copy', () => {
+    // v2: za typy akcí přibyly „Formáty“ a obří pruh (bez nadpisu, aria-label), cheesecaky jsou před prostory.
+    const ids = ['rychly-start', 'typy-akci', 'proc-my', 'reference', 'z-kuchyne', 'jak-to-funguje', 'cheesecaky', 'prostory', 'tym', 'faq', 'zaverecna-poptavka']
     const h2 = Array.from(doc.querySelectorAll('h2')).map(text)
     const expected = ids.map((id) => getSection('/', id).heading)
+    expected.splice(2, 0, 'Vyberte si formát')
     expect(h2).toEqual(expected)
+    expect(doc.querySelector('section[aria-label="Catering a cheesecaky"]')).not.toBeNull()
     for (const id of ids) {
       const s = getSection('/', id)
       if (s.body && !s.body.includes('[DOPLNÍ KLIENT')) expect(body).toContain(s.body)
@@ -112,26 +118,23 @@ describe('úvodní stránka', () => {
     const names = Array.from(form.querySelectorAll('[name]')).map((e) => e.getAttribute('name'))
     expect(names).toEqual(['zdroj', 'typ', 'datum', 'osob'])
     const options = Array.from(form.querySelectorAll('select option')).map(text)
-    expect(options).toEqual(['Typ akce', 'Firemní catering', 'Snídaně', 'Coffee break', 'Oběd', 'Večeře a banket', 'Společenská akce', 'Teambuilding', 'Svatba', 'Oslava a piknik', 'Ještě nevím'])
+    expect(options).toEqual(['Vyberte…', 'Firemní catering', 'Snídaně', 'Coffee break', 'Oběd', 'Večeře a banket', 'Společenská akce', 'Teambuilding', 'Svatba', 'Oslava a piknik', 'Ještě nevím'])
     expect(text(form.querySelector('button[type=submit]'))).toBe('Spočítat nabídku')
     const parsed = parseInquiryParams(new URLSearchParams('zdroj=%2F&typ=svatba&datum=2027-06-12&osob=80'))
     expect(parsed).toMatchObject({ eventType: 'svatba', eventDate: '2027-06-12', guests: 80, source: { page: '/' } })
   })
 
-  it('mřížka: 9 klikacích karet typů akcí s fotkou, cenou se zástupcem a minimem osob', () => {
+  it('řada kategorií: 3 klíčové typy akcí s fotkou, cenou se zástupcem a minimem osob + odkaz na všechny', () => {
     const grid = doc.getElementById('typy-akci')!
     const cards = Array.from(grid.querySelectorAll('article'))
-    expect(cards).toHaveLength(9)
-    expect(cards.map((c) => c.querySelector('h3 a')?.getAttribute('href'))).toEqual([
-      '/catering/firemni', '/catering/snidane', '/catering/coffee-break', '/catering/obedy', '/catering/vecere-a-bankety',
-      '/catering/spolecenske-akce', '/catering/svatby', '/catering/oslavy-a-piknik', '/catering/teambuilding',
-    ])
+    expect(cards).toHaveLength(3)
+    expect(cards.map((c) => c.querySelector('h3 a')?.getAttribute('href'))).toEqual(['/catering/firemni', '/catering/svatby', '/catering/oslavy-a-piknik'])
     for (const c of cards) {
       expect(c.querySelector('img, [role=img]')).not.toBeNull()
       expect(c.querySelector('.md-fill'), 'cena bez zástupce').not.toBeNull()
     }
     expect(text(cards[0])).toContain('od 4 osob')
-    expect(text(cards[3])).toContain('minimum podle objednávky')
+    expect(grid.querySelector('a[href="/catering"]')?.textContent).toContain('Všechny typy akcí (9)')
     // žádná vymyšlená cena v mřížce: jediné „Kč“ jsou zástupci „Od [DOPLNÍ KLIENT] Kč/os.“
     expect(text(grid).match(/\d[\d\s]*Kč/g)).toBeNull()
     expect(grid.querySelector('a[href="/poptavka?typ=nevim&zdroj=%2F"]')).not.toBeNull()

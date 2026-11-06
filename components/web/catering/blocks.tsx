@@ -10,6 +10,7 @@ import { cx } from '../cx'
 import { IconCheck, Ornament } from './icons'
 import { splitPriceFacts, splitStepNumber } from './parse'
 import { RichText } from './RichText'
+import { AccentTitle } from '@/components/web/AccentTitle'
 
 /*
  * Stavební bloky stránek cateringu. Všechno jsou serverové komponenty bez stavu;
@@ -54,9 +55,7 @@ export function SectionIntro({
   const center = align === 'center'
   return (
     <div className={cx('mb-10 max-w-3xl sm:mb-12', center && 'mx-auto text-center', className)}>
-      <h2 id={id} className="md-caps text-h2 text-cocoa">
-        {title}
-      </h2>
+      <h2 id={id} className="md-caps text-h2 text-cocoa"><AccentTitle title={title} /></h2>
       {facts?.rest ? (
         <p className={cx('md-pretty mt-5 text-lead text-cocoa-soft', center && 'mx-auto max-w-2xl')}>
           <RichText text={facts.rest} />
@@ -75,7 +74,7 @@ export function ChipList({ items, className }: { items: string[]; className?: st
   return (
     <ul className={cx('flex flex-wrap gap-2.5 sm:gap-3', className)}>
       {items.map((it, i) => (
-        <li key={i} className="rounded-pill bg-paper px-4 py-2.5 font-copy text-copy font-medium leading-snug text-cocoa ring-1 ring-inset ring-hairline sm:px-5">
+        <li key={i} className="rounded-pill bg-paper px-4 py-2.5 font-copy text-copy font-medium leading-snug text-cocoa ring-2 ring-inset ring-cocoa sm:px-5">
           <RichText text={it} />
         </li>
       ))}
@@ -91,11 +90,11 @@ export function CheckList({ items, columns = 1, className }: { items: string[]; 
         const it = parseItem(raw)
         return (
           <li key={i} className="flex items-start gap-3 text-copy text-cocoa">
-            <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-pill bg-sage text-cocoa">
+            <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-pill border-2 border-cocoa bg-butter text-cocoa">
               <IconCheck size={14} />
             </span>
             <span className="md-pretty">
-              {it.label ? <span className="font-semibold">{it.label}: </span> : it.title ? <span className="font-semibold">{it.title} — </span> : null}
+              {it.label ? <span className="font-bold">{it.label}: </span> : it.title ? <span className="font-bold">{it.title} — </span> : null}
               <RichText text={it.label || it.title ? it.text : raw} />
             </span>
           </li>
@@ -109,8 +108,8 @@ export function CheckList({ items, columns = 1, className }: { items: string[]; 
 
 export function MenuCard({ items, fallback, className }: { items: string[]; fallback?: string | null; className?: string }) {
   return (
-    <div className={cx('mx-auto w-full max-w-2xl rounded-frame bg-paper p-2.5 shadow-float sm:p-3', className)}>
-      <div className="rounded-[2px] border border-hairline px-5 py-10 text-center sm:px-12 sm:py-14">
+    <div className={cx('mx-auto w-full max-w-2xl border-[2.5px] border-cocoa bg-paper p-2.5 shadow-hard-lg sm:p-3', className)}>
+      <div className="border-2 border-dashed border-cocoa/40 px-5 py-10 text-center sm:px-12 sm:py-14">
         <Ornament className="mx-auto text-cocoa/40" />
         {items.length ? (
           <ul className="mt-8 space-y-7 sm:space-y-8">
@@ -149,8 +148,8 @@ export function Steps({ items, className }: { items: string[]; className?: strin
         const step = it.title ? splitStepNumber(it.title) : splitStepNumber(raw)
         const n = step.n ?? i + 1
         return (
-          <li key={i} className="grid grid-cols-[3rem_minmax(0,1fr)] gap-x-3 border-t border-cocoa/20 pt-5 sm:block">
-            <span aria-hidden="true" className="row-span-2 block font-display text-[2rem] font-medium leading-none text-cocoa/70 sm:text-[2.75rem]">
+          <li key={i} className="grid grid-cols-[3rem_minmax(0,1fr)] gap-x-3 border-t-2 border-cocoa pt-5 sm:block">
+            <span aria-hidden="true" className="md-caps row-span-2 block text-[2.25rem] leading-[1.1] text-raspberry sm:text-[3rem]">
               {String(n).padStart(2, '0')}
             </span>
             {it.title ? (
@@ -205,7 +204,7 @@ export function PackageGrid({ items, headingLevel = 'h3' }: { items: string[]; h
         <div className="mt-8 space-y-2">
           {notes.map((n, i) => (
             <p key={i} className="text-copy text-cocoa-soft">
-              <span className="font-semibold text-cocoa">{n.label}: </span>
+              <span className="font-bold text-cocoa">{n.label}: </span>
               <RichText text={n.text} />
             </p>
           ))}
@@ -225,7 +224,7 @@ export function PackageCard({ item, tone, headingLevel = 'h3' }: { item: ParsedI
       meta={<FactsRow price={facts.price} guests={facts.guests} />}
     >
       {facts.rest ? (
-        <p className="md-pretty mt-3 text-copy text-cocoa-soft">
+        <p className="md-pretty mt-3 text-copy text-cocoa-soft first-letter:uppercase">
           <RichText text={facts.rest} />
         </p>
       ) : null}
@@ -237,12 +236,12 @@ export function PackageCard({ item, tone, headingLevel = 'h3' }: { item: ParsedI
 export function FormatCard({ id, title, body, tone }: { id: string; title: string; body: string; tone: SurfaceTone }) {
   const facts = splitPriceFacts(body)
   return (
-    <article aria-labelledby={id} className={cx('flex h-full flex-col rounded-frame p-6 sm:p-8', TONE_CARD[tone])}>
+    <article aria-labelledby={id} className={cx('flex h-full flex-col border-[2.5px] border-cocoa p-6 shadow-hard sm:p-8', TONE_CARD[tone])}>
       <h2 id={id} className="md-caps text-h3 text-cocoa">
         {title}
       </h2>
       {facts.rest ? (
-        <p className="md-pretty mt-4 text-copy text-cocoa-soft">
+        <p className="md-pretty mt-4 text-copy text-cocoa-soft first-letter:uppercase">
           <RichText text={facts.rest} />
         </p>
       ) : null}

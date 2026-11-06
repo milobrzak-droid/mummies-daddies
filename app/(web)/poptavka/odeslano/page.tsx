@@ -3,6 +3,7 @@ import { Button, IconPhone, Section } from '@/components/web'
 import { ConfirmationText } from '@/components/web/poptavka'
 import { COMPANY } from '@/lib/web/content'
 import { confirmationCopy, isOutcome } from '@/lib/web/poptavka/copy'
+import { AccentTitle } from '@/components/web/AccentTitle'
 
 /**
  * /poptavka/odeslano – potvrzení po odeslání poptávky. Text podle výsledku
@@ -26,9 +27,7 @@ export default async function InquiryConfirmationPage({ searchParams }: { search
   return (
     <Section tone="sage" soft labelledBy="potvrzeni-title" className="min-h-[60vh]">
       <div className="max-w-3xl motion-safe:animate-rise">
-        <h1 id="potvrzeni-title" className="md-caps text-h1 text-cocoa">
-          {copy.heading}
-        </h1>
+        <h1 id="potvrzeni-title" className="md-caps text-h1 text-cocoa"><AccentTitle title={copy.heading} /></h1>
         {copy.text ? <ConfirmationText template={copy.text} showEstimate={outcome !== 'konzultace'} /> : null}
         <div className="mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
           <Button href="/reference" variant="primary" size="lg" arrow>

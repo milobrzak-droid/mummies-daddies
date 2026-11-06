@@ -1,10 +1,10 @@
 import { Fragment } from 'react'
-import { splitPlaceholders } from '@/lib/web/placeholders'
+import { czechNbsp, splitPlaceholders } from '@/lib/web/placeholders'
 
 /**
  * Vykreslí text z copy.json a zástupce „[DOPLNÍ KLIENT: …]“ zvýrazní
  * (třída .md-fill v web.css), aby byli na webu viditelní, dokud je klient nedodá.
- * Bezpečné pro server i klienta.
+ * Jednopísmenné předložky a čísla váže k dalšímu slovu (czechNbsp). Bezpečné pro server i klienta.
  */
 export function PlaceholderText({ text, as: Tag }: { text: string | null | undefined; as?: 'span' | 'p' }) {
   if (!text) return null
@@ -15,7 +15,7 @@ export function PlaceholderText({ text, as: Tag }: { text: string | null | undef
         {p.text}
       </span>
     ) : (
-      <Fragment key={i}>{p.text}</Fragment>
+      <Fragment key={i}>{czechNbsp(p.text)}</Fragment>
     ),
   )
   return Tag ? <Tag>{content}</Tag> : <>{content}</>
