@@ -9,7 +9,8 @@ import { NextResponse, type NextRequest } from 'next/server'
 // Plánované úlohy (/api/cron/*) mají vlastní CRON_SECRET; brána je nepouští
 // bez hesla také, takže v náhledu crony neběží, což je záměr.
 
-const REALM = 'Mummies and Daddies – náhled'
+// Jen ASCII: hodnota HTTP hlavičky nesmí obsahovat znaky mimo Latin-1 (jinak 500).
+const REALM = 'Mummies and Daddies - nahled'
 
 function timingSafeEqual(a: string, b: string): boolean {
   // Porovnání v konstantním čase (Edge runtime nemá node:crypto).
