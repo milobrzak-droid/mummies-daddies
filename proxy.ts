@@ -1,9 +1,13 @@
 import { type NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
+import { previewGate } from '@/lib/previewGate'
 
 // Next.js 16 renamed the `middleware` file convention to `proxy`. Same behavior:
 // runs on every matched request to refresh the Supabase session and gate auth.
 export async function proxy(request: NextRequest) {
+  // Uzavřený náhled: heslo na celou aplikaci, jen když je PREVIEW_BASIC_AUTH nastavená.
+  const gate = previewGate(request)
+  if (gate) return gate
   return await updateSession(request)
 }
 

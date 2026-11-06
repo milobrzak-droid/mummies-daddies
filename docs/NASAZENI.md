@@ -507,5 +507,6 @@ v oddílu „Původní“ — u M&D se nenastavují.
 | `IDOKLAD_SYNC_ENABLED` | Sync iDokladu (modul finance je vypnutý) | — | ne | vypnuto | základ |
 | `IDOKLAD_CLIENT_ID` | iDoklad API klient | iDoklad → Nastavení → API | při IDOKLAD_SYNC_ENABLED=true | — | základ |
 | `IDOKLAD_CLIENT_SECRET` 🔒 | iDoklad API tajemství | iDoklad → Nastavení → API | při IDOKLAD_SYNC_ENABLED=true | — | základ |
+| `PREVIEW_BASIC_AUTH` | Jen uzavřený náhled: heslo prohlížeče na celou aplikaci ve tvaru uživatel:heslo; v ostrém provozu nenastavovat | Vygenerovat a předat jen lidem s přístupem k náhledu | ne | — | náhled |
 | `TURBOPACK_ROOT` | Jen vývoj: kořen Turbopacku při běhu z git worktree | — | ne | — | P6 |
 | `IDOKLAD_SYNC_DAYS` | Kolik dní zpět číst faktury | — | ne | 90 | základ |

@@ -159,6 +159,8 @@ export const ENV_CATALOG = [
   { name: 'IDOKLAD_SYNC_ENABLED', group: 'Ostatní úlohy', required: 'no', secret: false, def: 'vypnuto', owner: 'základ', purpose: 'Sync iDokladu (modul finance je vypnutý)', where: '—' },
   { name: 'IDOKLAD_CLIENT_ID', group: 'Ostatní úlohy', required: 'if:IDOKLAD_SYNC_ENABLED', secret: false, def: '', owner: 'základ', purpose: 'iDoklad API klient', where: 'iDoklad → Nastavení → API' },
   { name: 'IDOKLAD_CLIENT_SECRET', group: 'Ostatní úlohy', required: 'if:IDOKLAD_SYNC_ENABLED', secret: true, def: '', owner: 'základ', purpose: 'iDoklad API tajemství', where: 'iDoklad → Nastavení → API' },
+  { name: 'PREVIEW_BASIC_AUTH', group: 'Ostatní úlohy', required: 'no', secret: true, def: '', owner: 'náhled',
+    purpose: 'Jen uzavřený náhled: heslo prohlížeče na celou aplikaci ve tvaru uživatel:heslo; v ostrém provozu nenastavovat', where: 'Vygenerovat a předat jen lidem s přístupem k náhledu' },
   { name: 'TURBOPACK_ROOT', group: 'Ostatní úlohy', required: 'no', secret: false, def: '', owner: 'P6',
     purpose: 'Jen vývoj: kořen Turbopacku při běhu z git worktree', where: '—' },
   { name: 'IDOKLAD_SYNC_DAYS', group: 'Ostatní úlohy', required: 'no', secret: false, def: '90', owner: 'základ', purpose: 'Kolik dní zpět číst faktury', where: '—' },
