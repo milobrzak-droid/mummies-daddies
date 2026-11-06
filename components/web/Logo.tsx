@@ -8,7 +8,7 @@ import { cx } from './cx'
  *   tone="dark"  = na krémovém / světlém podkladu (ink obrys a stín),
  *   tone="light" = na tmavém podkladu (krémový obrys a stín, patička).
  *   variant="stacked" = dvouřádková verze (patička, velké plochy).
- * Výška se řídí třídou (h-8 = 32 px v mobilním headeru, h-10 = 40 px na desktopu).
+ * Výška: 22–27 px v mobilním headeru (aby se vešlo CTA „Nabídka“ a menu při 360 px), 36–40 px na desktopu.
  */
 export function Logo({
   tone = 'dark',
@@ -30,9 +30,9 @@ export function Logo({
       className={cx('inline-flex min-h-11 shrink-0 items-center', onDark && 'md-focus-on-dark', className)}
     >
       {variant === 'stacked' ? (
-        <LogoStackedArt onDark={onDark} className="h-auto w-[13.75rem] sm:w-[15.5rem]" />
+        <LogoStackedArt onDark={onDark} className="h-auto w-[15rem] sm:w-[17rem]" />
       ) : (
-        <LogoHorizontalArt onDark={onDark} className="h-8 w-auto sm:h-9 xl:h-10" />
+        <LogoHorizontalArt onDark={onDark} className="h-[1.375rem] w-auto min-[380px]:h-[1.6875rem] sm:h-9 2xl:h-10" />
       )}
     </Link>
   )

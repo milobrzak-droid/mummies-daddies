@@ -160,7 +160,7 @@ export function Header() {
             </ul>
           </nav>
 
-          <div className="flex items-center gap-1.5 sm:gap-2.5 xl:ml-auto">
+          <div className="flex items-center gap-1 min-[380px]:gap-1.5 sm:gap-2.5 xl:ml-auto">
             <a
               href={COMPANY.phoneHref}
               aria-label={`Zavolat ${COMPANY.phone}`}
