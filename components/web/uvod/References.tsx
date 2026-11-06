@@ -2,9 +2,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { Photo } from '@/lib/web/photos'
 import { Button } from '../Button'
-import { IconArrowRight, IconPlate } from '../icons'
+import { IconArrowRight } from '../icons'
 import { PlaceholderText } from '../PlaceholderText'
 import { SectionBand } from '../v2/SectionBand'
+import { cx } from '../cx'
 
 export interface ReferenceCard {
   title: string
@@ -20,9 +21,22 @@ export interface ReferenceNote {
 }
 
 /**
- * Reference (docs/web-v2-design.md §5.10) BEZ vymýšlení: žádné hvězdičky ani fiktivní lidé.
- * Mřížka 3 buněk: velké malinové uvozovky, skutečný popis akce z copy, fotka akce jako kruhový
- * „avatar“ s obrysem (nebo kruh s příborem). Citáty, loga a čísla zatím dodá klient (zástupci).
+ * Položka pásu čísel → velké číslo + popisek pod ním (stejná struktura pro hotové i chybějící):
+ *   "[DOPLNÍ KLIENT: akcí ročně]" → { value: "[DOPLNÍ KLIENT]", label: "akcí ročně" }
+ *   "vaříme od roku 2018"         → { value: "2018", label: "vaříme od roku" }
+ */
+export function statParts(text: string): { value: string; label: string } {
+  const ph = /^\[DOPLNÍ KLIENT:\s*([^\]]+)\]$/.exec(text.trim())
+  if (ph) return { value: '[DOPLNÍ KLIENT]', label: ph[1].trim() }
+  const n = /(\d[\d\s\u00a0]*\d|\d)/.exec(text)
+  if (!n) return { value: text, label: '' }
+  return { value: n[1], label: text.replace(n[1], '').replace(/\s{2,}/g, ' ').trim() }
+}
+
+/**
+ * Reference (docs/web-v2-design.md §5.10) BEZ vymýšlení: žádné hvězdičky, citáty ani fiktivní lidé.
+ * Mřížka 3 buněk: fotka akce 4 : 3 jako natočená „samolepka“ (hlavní prvek karty), název akce,
+ * skutečný popis z copy a „Detail akce →“. Citáty, loga a čísla zatím dodá klient (zástupci).
  */
 export function References({
   heading,
@@ -57,31 +71,28 @@ export function References({
           {cards.map((c, i) => (
             <li key={c.href} className="hover:!bg-raspberry-tint">
               <article className="group relative flex h-full flex-col px-gutter py-8 sm:p-8 xl:p-10">
-                <span aria-hidden="true" className="md-caps block h-[4.5rem] text-[7rem] leading-[1] text-raspberry">
-                  “
-                </span>
+                {c.photo?.src && !c.photo.placeholder ? (
+                  <div className={cx('mb-7 motion-safe:transition-transform motion-safe:duration-base group-hover:rotate-0', i % 2 ? 'rotate-2' : '-rotate-2')}>
+                    <div className="md-sticker relative aspect-[4/3]">
+                      <Image src={c.photo.src}
+                  {...(c.photo.blur ? { placeholder: 'blur' as const, blurDataURL: c.photo.blur } : {})} alt={c.photo.alt} fill sizes="(min-width: 1440px) 420px, (min-width: 768px) 30vw, 92vw" className="object-cover" style={c.photo.position ? { objectPosition: c.photo.position } : undefined} />
+                    </div>
+                  </div>
+                ) : null}
                 <h3 className="md-caps text-h3 text-cocoa">
                   <Link href={c.href} className="outline-none after:absolute after:inset-0 after:content-[''] focus-visible:after:outline focus-visible:after:outline-[3px] focus-visible:after:-outline-offset-4 focus-visible:after:outline-daddy-ink">
                     {c.title}
                   </Link>
                 </h3>
-                <p className="md-pretty mt-3 text-copy text-cocoa-soft">
+                <p className="md-pretty mt-3 text-copy text-cocoa-soft first-letter:uppercase">
                   <PlaceholderText text={c.text} />
                 </p>
-                <div className="mt-auto flex items-center justify-between gap-4 pt-8">
-                  <span className={`relative block h-20 w-20 overflow-hidden rounded-full border-[2.5px] border-cocoa shadow-hard-sm ${i % 2 ? 'bg-daddy-tint' : 'bg-raspberry-tint'}`}>
-                    {c.photo?.src && !c.photo.placeholder ? (
-                      <Image src={c.photo.src} alt={c.photo.alt} fill sizes="80px" className="object-cover" />
-                    ) : (
-                      <span role="img" aria-label="Fotka akce bude doplněna" className="grid h-full place-items-center">
-                        <IconPlate size={30} />
-                      </span>
-                    )}
-                  </span>
-                  <span aria-hidden="true" className="grid h-11 w-11 place-items-center rounded-pill border-2 border-cocoa bg-paper transition-colors group-hover:bg-raspberry-ink group-hover:text-cream">
+                <p aria-hidden="true" className="mt-auto flex items-center gap-2 pt-6 font-copy font-bold text-cocoa">
+                  Detail akce
+                  <span className="grid h-11 w-11 place-items-center rounded-pill border-2 border-cocoa bg-paper transition-colors group-hover:bg-raspberry-ink group-hover:text-cream">
                     <IconArrowRight size={18} />
                   </span>
-                </div>
+                </p>
               </article>
             </li>
           ))}
@@ -97,12 +108,18 @@ export function References({
               </div>
             ))}
             {stats.length ? (
-              <ul role="list" className="grid gap-2 !bg-butter px-gutter py-6 sm:grid-cols-3 sm:p-8 md:col-span-2">
-                {stats.map((s) => (
-                  <li key={s} className="md-caps text-h3 text-cocoa">
-                    <PlaceholderText text={s} />
-                  </li>
-                ))}
+              <ul role="list" className="grid gap-6 !bg-butter px-gutter py-7 text-center sm:grid-cols-3 sm:p-8 md:col-span-2">
+                {stats.map((s) => {
+                  const p = statParts(s)
+                  return (
+                    <li key={s} className="flex flex-col items-center gap-1">
+                      <span className="md-caps text-h2 leading-[1.1] text-cocoa">
+                        <PlaceholderText text={p.value} />
+                      </span>
+                      <span className="font-copy text-small font-bold text-cocoa-soft">{p.label}</span>
+                    </li>
+                  )
+                })}
               </ul>
             ) : null}
           </div>

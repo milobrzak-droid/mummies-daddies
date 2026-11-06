@@ -118,26 +118,23 @@ describe('úvodní stránka', () => {
     const names = Array.from(form.querySelectorAll('[name]')).map((e) => e.getAttribute('name'))
     expect(names).toEqual(['zdroj', 'typ', 'datum', 'osob'])
     const options = Array.from(form.querySelectorAll('select option')).map(text)
-    expect(options).toEqual(['Typ akce', 'Firemní catering', 'Snídaně', 'Coffee break', 'Oběd', 'Večeře a banket', 'Společenská akce', 'Teambuilding', 'Svatba', 'Oslava a piknik', 'Ještě nevím'])
+    expect(options).toEqual(['Vyberte…', 'Firemní catering', 'Snídaně', 'Coffee break', 'Oběd', 'Večeře a banket', 'Společenská akce', 'Teambuilding', 'Svatba', 'Oslava a piknik', 'Ještě nevím'])
     expect(text(form.querySelector('button[type=submit]'))).toBe('Spočítat nabídku')
     const parsed = parseInquiryParams(new URLSearchParams('zdroj=%2F&typ=svatba&datum=2027-06-12&osob=80'))
     expect(parsed).toMatchObject({ eventType: 'svatba', eventDate: '2027-06-12', guests: 80, source: { page: '/' } })
   })
 
-  it('mřížka: 9 klikacích karet typů akcí s fotkou, cenou se zástupcem a minimem osob', () => {
+  it('řada kategorií: 3 klíčové typy akcí s fotkou, cenou se zástupcem a minimem osob + odkaz na všechny', () => {
     const grid = doc.getElementById('typy-akci')!
     const cards = Array.from(grid.querySelectorAll('article'))
-    expect(cards).toHaveLength(9)
-    expect(cards.map((c) => c.querySelector('h3 a')?.getAttribute('href'))).toEqual([
-      '/catering/firemni', '/catering/snidane', '/catering/coffee-break', '/catering/obedy', '/catering/vecere-a-bankety',
-      '/catering/spolecenske-akce', '/catering/svatby', '/catering/oslavy-a-piknik', '/catering/teambuilding',
-    ])
+    expect(cards).toHaveLength(3)
+    expect(cards.map((c) => c.querySelector('h3 a')?.getAttribute('href'))).toEqual(['/catering/firemni', '/catering/svatby', '/catering/oslavy-a-piknik'])
     for (const c of cards) {
       expect(c.querySelector('img, [role=img]')).not.toBeNull()
       expect(c.querySelector('.md-fill'), 'cena bez zástupce').not.toBeNull()
     }
     expect(text(cards[0])).toContain('od 4 osob')
-    expect(text(cards[3])).toContain('minimum podle objednávky')
+    expect(grid.querySelector('a[href="/catering"]')?.textContent).toContain('Všechny typy akcí (9)')
     // žádná vymyšlená cena v mřížce: jediné „Kč“ jsou zástupci „Od [DOPLNÍ KLIENT] Kč/os.“
     expect(text(grid).match(/\d[\d\s]*Kč/g)).toBeNull()
     expect(grid.querySelector('a[href="/poptavka?typ=nevim&zdroj=%2F"]')).not.toBeNull()

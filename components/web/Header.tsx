@@ -4,11 +4,13 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { COMPANY } from '@/lib/web/company'
+import { cartCount } from '@/lib/web/eshop/cart'
 import { CATERING_MENU, HEADER_CTA, MAIN_NAV, isActive } from '@/lib/web/navigation'
 import { Button } from './Button'
 import { Container } from './Container'
 import { IconArrowRight, IconBag, IconChevronDown, IconClose, IconMenu, IconPhone } from './icons'
 import { Logo } from './Logo'
+import { useCart } from './eshop/useCart'
 import { TopBar } from './v2/TopBar'
 import { cx } from './cx'
 
@@ -33,6 +35,9 @@ export function Header() {
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const megaId = useId()
   const mobileId = useId()
+  const { cart, ready } = useCart()
+  const items = ready ? cartCount(cart) : 0
+  const cartLabel = items ? `Košík, ${items} ${items === 1 ? 'kus' : items < 5 ? 'kusy' : 'kusů'}` : 'Košík'
 
   // Zavřít menu po navigaci (bez efektu: porovnání při renderu).
   if (pathname !== lastPath) {
@@ -125,7 +130,7 @@ export function Header() {
         )}
       >
         <Container width="wide" className="flex h-16 items-center gap-2 sm:gap-3 lg:h-20 xl:gap-5">
-          <Logo className="mr-auto xl:mr-2" />
+          <Logo className="mr-auto xl:mr-2" compact={items > 0} />
 
           <nav aria-label="Hlavní navigace" className="hidden xl:block">
             <ul className="flex items-center">
@@ -169,13 +174,23 @@ export function Header() {
               <IconPhone size={19} />
               <span className="hidden 2xl:inline">{COMPANY.phone}</span>
             </a>
+            {/* Košík: od sm vždy; na mobilu jen s obsahem (s odznakem počtu kusů). */}
             <Link
               href="/kosik"
-              aria-label="Košík"
+              aria-label={cartLabel}
               aria-current={isActive('/kosik', pathname) ? 'page' : undefined}
-              className={cx('hidden h-11 w-11 place-items-center rounded-pill border-2 border-cocoa text-cocoa transition-colors hover:bg-butter sm:grid', isActive('/kosik', pathname) ? 'bg-butter' : 'bg-paper')}
+              className={cx(
+                'relative h-11 w-11 shrink-0 place-items-center rounded-pill border-2 border-cocoa text-cocoa transition-colors hover:bg-butter sm:grid',
+                items ? 'grid' : 'hidden',
+                isActive('/kosik', pathname) ? 'bg-butter' : 'bg-paper',
+              )}
             >
               <IconBag size={20} />
+              {items ? (
+                <span aria-hidden="true" className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-pill border-2 border-cocoa bg-raspberry-ink px-1 font-copy text-[0.6875rem] font-bold leading-none text-cream tabular-nums">
+                  {items > 99 ? '99+' : items}
+                </span>
+              ) : null}
             </Link>
             <Button href={HEADER_CTA.href} variant="primary" size="sm" className="xl:hidden">
               {HEADER_CTA.mobileLabel}
@@ -223,7 +238,7 @@ export function Header() {
           </div>
 
           <nav aria-label="Hlavní navigace" className="flex-1 overflow-y-auto overscroll-contain">
-            <Container as="ul" className="divide-y-2 divide-cocoa border-b-2 border-cocoa">
+            <Container as="ul" className="divide-y-2 divide-cocoa">
               {MAIN_NAV.map((item) =>
                 item.children ? (
                   <li key={item.href}>
@@ -281,7 +296,7 @@ export function Header() {
                   {COMPANY.email}
                 </a>
                 <Link href="/kosik" className="flex min-h-11 items-center gap-3 font-bold text-cocoa">
-                  <IconBag size={20} /> Košík
+                  <IconBag size={20} /> Košík{items ? ` (${items})` : ''}
                 </Link>
               </li>
             </Container>

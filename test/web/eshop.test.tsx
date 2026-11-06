@@ -327,7 +327,7 @@ describe('/cheesecaky', () => {
     // nepotvrzená cena karamelového = viditelný zástupce
     expect(text(cards[3].querySelector('.md-fill'))).toBe('[DOPLNÍ KLIENT: potvrdit cenu]')
     // rychlé přidání jen u produktů bez povinných voleb (mini má příchutě)
-    expect(cards.map((c) => !!Array.from(c.querySelectorAll('button')).find((b) => text(b) === 'Přidat do košíku'))).toEqual([true, true, true, true, true, false])
+    expect(cards.map((c) => !!Array.from(c.querySelectorAll('button')).find((b) => text(b).startsWith('Přidat do košíku')))).toEqual([true, true, true, true, true, false])
   })
 
   it('všechny sekce copy jsou na stránce, doslova', () => {

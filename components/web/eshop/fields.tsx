@@ -55,11 +55,14 @@ export function Field({
   label,
   hint,
   error,
+  required,
   className,
   children,
 }: {
   id: string
   label: ReactNode
+  /** Povinné pole: hvězdička za popiskem (stejný vzor jako poptávka). */
+  required?: boolean
   hint?: ReactNode
   error?: string | null
   className?: string
@@ -69,6 +72,11 @@ export function Field({
     <div className={className}>
       <label htmlFor={id} className={LABEL_CLASS}>
         {label}
+        {required ? (
+          <span aria-hidden="true" className="ml-0.5 text-raspberry-ink">
+            *
+          </span>
+        ) : null}
       </label>
       {children}
       <FieldHint id={id} hint={hint} />

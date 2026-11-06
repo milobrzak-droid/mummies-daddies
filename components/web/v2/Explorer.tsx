@@ -51,6 +51,7 @@ const PLATE: Record<NonNullable<ExplorerItem['tone']>, string> = { raspberry: 'b
 
 export function Explorer({ items, label, showDots = false }: { items: ExplorerItem[]; label: string; showDots?: boolean }) {
   const [active, setActive] = useState(0)
+  const [scrolled, setScrolled] = useState(false)
   const base = useId()
   const tabs = useRef<(HTMLButtonElement | null)[]>([])
 
@@ -73,6 +74,8 @@ export function Explorer({ items, label, showDots = false }: { items: ExplorerIt
         role="tablist"
         aria-label={label}
         aria-orientation="vertical"
+        data-scrolled={scrolled}
+        onScroll={(e) => setScrolled(e.currentTarget.scrollLeft > 4)}
         className="md-scroll-fade flex snap-x gap-2 overflow-x-auto px-gutter pb-5 pt-1 lg:mx-0 lg:block lg:snap-none lg:overflow-visible lg:border-r-2 lg:border-cocoa lg:p-0"
       >
         {items.map((it, i) => {
@@ -101,7 +104,7 @@ export function Explorer({ items, label, showDots = false }: { items: ExplorerIt
               )}
             >
               <span className="flex items-center gap-3">
-                {showDots ? <span aria-hidden="true" className={cx('h-3 w-3 shrink-0 rounded-pill border-2 border-cocoa group-aria-selected:border-cream', DOT[tone])} /> : null}
+                {showDots ? <span aria-hidden="true" className={cx('h-3 w-3 shrink-0 rounded-pill border-2 border-cocoa group-aria-selected:border-cream group-aria-selected:bg-cream', DOT[tone])} /> : null}
                 <span className="lg:font-display lg:text-h3 lg:uppercase">{it.label}</span>
               </span>
               <IconArrowRight
@@ -121,7 +124,7 @@ export function Explorer({ items, label, showDots = false }: { items: ExplorerIt
           aria-labelledby={`${base}-tab-${i}`}
           hidden={i !== active}
           tabIndex={0}
-          className="min-w-0 px-gutter pb-10 pt-2 outline-offset-[-3px] motion-safe:animate-fade lg:px-10 lg:py-12 xl:px-14"
+          className="min-w-0 px-gutter pb-10 pt-2 outline-offset-[-3px] motion-safe:animate-fade lg:flex lg:items-center lg:px-10 lg:py-12 xl:pl-14 xl:pr-10 [&[hidden]]:hidden"
         >
           <Panel item={it} />
         </div>
@@ -133,8 +136,8 @@ export function Explorer({ items, label, showDots = false }: { items: ExplorerIt
 function Panel({ item }: { item: ExplorerItem }) {
   const tone = item.tone ?? 'raspberry'
   return (
-    <div className="grid gap-8 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] xl:items-center">
-      <div className="relative mx-auto w-full max-w-[30rem]">
+    <div className="grid w-full gap-8 xl:grid-cols-[minmax(0,55%)_minmax(0,1fr)] xl:items-center xl:gap-12">
+      <div className="relative mx-auto w-full max-w-[30rem] xl:max-w-none">
         {item.cutout ? (
           <div className={cx('relative aspect-square rounded-full border-2 border-cocoa shadow-hard-md', PLATE[tone])}>
             <span className="md-float absolute inset-[7%] block" style={{ '--r': '-6deg' } as CSSProperties}>
@@ -143,10 +146,11 @@ function Panel({ item }: { item: ExplorerItem }) {
           </div>
         ) : (
           <div className="motion-safe:-rotate-2">
-            <div className="md-sticker relative aspect-[4/5] shadow-hard-lg sm:aspect-square">
+            <div className="md-sticker relative aspect-[4/3] shadow-hard-lg sm:aspect-square">
               {item.photo?.src ? (
                 <Image
                   src={item.photo.src}
+                  {...(item.photo.blur ? { placeholder: 'blur' as const, blurDataURL: item.photo.blur } : {})}
                   alt={item.photo.alt}
                   fill
                   sizes="(min-width: 1280px) 440px, (min-width: 1024px) 40vw, 92vw"
@@ -158,10 +162,10 @@ function Panel({ item }: { item: ExplorerItem }) {
           </div>
         )}
         {item.tags.length ? (
-          <ul role="list" className="mt-6 flex flex-wrap gap-2 lg:mt-0 lg:block">
+          <ul role="list" className="mt-6 flex flex-wrap gap-x-2 gap-y-3 lg:mt-0 lg:block">
             {item.tags.slice(0, 4).map((t, i) => (
               <li key={t} className={cx('lg:absolute lg:z-10', TAG_POS[i])}>
-                <FloatingTag tone={TAG_TONES[i % TAG_TONES.length]} rotate={[-5, 4, -3, 5][i]} delay={i * -1.6}>
+                <FloatingTag tone={TAG_TONES[i % TAG_TONES.length]} rotate={[-3, 3, -2, 3][i]} delay={i * -1.6}>
                   {t}
                 </FloatingTag>
               </li>
@@ -171,7 +175,7 @@ function Panel({ item }: { item: ExplorerItem }) {
       </div>
       <div>
         {item.kicker ? <p className="font-copy text-eyebrow uppercase text-cocoa-soft">{item.kicker}</p> : null}
-        <p className="md-caps mt-1 text-[clamp(1.875rem,1.4rem+1.6vw,2.75rem)] leading-[1.15] text-cocoa">{item.label}</p>
+        <p className="md-caps mt-1 text-[clamp(1.875rem,1.4rem+1.6vw,2.75rem)] leading-[1.2] text-cocoa">{item.label}</p>
         {item.description ? (
           <p className="md-pretty mt-3 text-copy text-cocoa-soft">
             <PlaceholderText text={item.description} />

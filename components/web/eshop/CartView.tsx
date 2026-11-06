@@ -71,6 +71,10 @@ function firstErrorId(errors: FieldErrors<OrderField>): string | null {
 
 type Success = Extract<SubmitOrderResult, { ok: true }> & { email: string }
 
+/** Funkční popisky košíku, které copy nemá (KE SCHVÁLENÍ copywriterem). */
+const REQUIRED_NOTE = 'Pole s hvězdičkou jsou povinná.'
+const CONTINUE_TO_SUBMIT = 'Pokračovat k odeslání'
+
 export function CartView({ labels, products }: { labels: CartLabels; products: Record<CheesecakeSlug, ProductSummary> }) {
   const { cart, ready } = useCart()
   const [method, setMethod] = useState<DeliveryMethod | ''>('')
@@ -89,8 +93,19 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
   const [success, setSuccess] = useState<Success | null>(null)
   const [earliest, setEarliest] = useState<string | null>(null)
   const doneRef = useRef<HTMLHeadingElement>(null)
+  const summaryRef = useRef<HTMLDivElement>(null)
+  const [summaryVisible, setSummaryVisible] = useState(true)
 
   useEffect(() => setEarliest(earliestOrderDate()), [])
+  // Mobilní lišta „Celkem · Pokračovat k odeslání“ se schová, když je vidět samotný souhrn.
+  const hasLines = cart.lines.length > 0
+  useEffect(() => {
+    const el = summaryRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const io = new IntersectionObserver(([e]) => setSummaryVisible(e.isIntersecting), { threshold: 0.05 })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [ready, hasLines, success])
   useEffect(() => {
     if (success) doneRef.current?.focus()
   }, [success])
@@ -321,8 +336,9 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
           {/* 3. Kontakt a fakturace */}
           <section aria-labelledby="kosik-krok-kontakt" className="rounded-soft bg-vanilla-soft p-5 sm:p-8 ring-2 ring-inset ring-cocoa">
             <StepHeading id="kosik-krok-kontakt" number={2} title={labels.contactHeading} body={labels.contactBody} />
+            <p className="-mt-2 mb-5 font-copy text-small text-cocoa-soft">{REQUIRED_NOTE}</p>
             <div className="grid gap-6 sm:grid-cols-2">
-              <Field id={ID.name} label={labels.name} error={err('customer.name')} className="sm:col-span-2">
+              <Field id={ID.name} label={labels.name} required error={err('customer.name')} className="sm:col-span-2">
                 <input
                   id={ID.name}
                   name="jmeno"
@@ -338,7 +354,7 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
                   className={FIELD_CLASS}
                 />
               </Field>
-              <Field id={ID.email} label={labels.email} error={err('customer.email')}>
+              <Field id={ID.email} label={labels.email} required error={err('customer.email')}>
                 <input
                   id={ID.email}
                   name="email"
@@ -355,7 +371,7 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
                   className={FIELD_CLASS}
                 />
               </Field>
-              <Field id={ID.phone} label={labels.phone} hint={labels.phoneHint} error={err('customer.phone')}>
+              <Field id={ID.phone} label={labels.phone} required hint={labels.phoneHint} error={err('customer.phone')}>
                 <input
                   id={ID.phone}
                   name="telefon"
@@ -457,13 +473,11 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
 
         {/* Shrnutí, souhlas, odeslání */}
         <aside aria-labelledby="kosik-krok-souhlas" className="lg:sticky lg:top-[calc(theme(spacing.header)+1.5rem)] lg:self-start">
-          <div className="rounded-soft bg-paper p-5 shadow-float ring-2 ring-inset ring-cocoa sm:p-7">
+          <div ref={summaryRef} className="rounded-soft bg-paper p-5 shadow-float ring-2 ring-inset ring-cocoa sm:p-7">
             <dl className="grid gap-2 font-copy text-copy text-cocoa">
               <SummaryRow label={labels.subtotal} value={formatCzk(totals.subtotal)} />
               <SummaryRow label={labels.delivery} value={delivery ? formatCzk(delivery.price) : '—'} />
-              <div className="mt-2 border-t border-hairline pt-3">
-                <SummaryRow label={labels.total} value={formatCzk(totals.total)} strong />
-              </div>
+              <SummaryRow label={labels.total} value={formatCzk(totals.total)} strong className="mt-2 border-t border-hairline pt-3" />
             </dl>
 
             <div className="mt-6 border-t border-hairline pt-6">
@@ -520,13 +534,30 @@ export function CartView({ labels, products }: { labels: CartLabels; products: R
           </p>
         </aside>
       </form>
+      {!summaryVisible ? (
+        <div className="fixed inset-x-0 bottom-0 z-30 border-t-2 border-cocoa bg-paper px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 lg:hidden">
+          <div className="flex items-center justify-between gap-3">
+            <p className="font-copy text-small text-cocoa">
+              {labels.total} <span className="block text-[1.125rem] font-bold tabular-nums text-raspberry-ink">{formatCzk(totals.total)}</span>
+            </p>
+            <Button
+              variant="primary"
+              size="sm"
+              arrow
+              onClick={() => summaryRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' })}
+            >
+              {CONTINUE_TO_SUBMIT}
+            </Button>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }
 
-function SummaryRow({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
+function SummaryRow({ label, value, strong, className }: { label: string; value: string; strong?: boolean; className?: string }) {
   return (
-    <div className="flex items-baseline justify-between gap-4">
+    <div className={cx('flex items-baseline justify-between gap-4', className)}>
       <dt className={cx(strong ? 'font-bold text-cocoa' : 'text-cocoa-soft')}>{label}</dt>
       <dd className={cx('tabular-nums', strong ? 'text-[1.25rem] font-bold text-raspberry-ink' : 'font-bold text-cocoa')}>{value}</dd>
     </div>

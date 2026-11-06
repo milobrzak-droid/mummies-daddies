@@ -1,3 +1,4 @@
+import { czechNbsp } from '@/lib/web/placeholders'
 import { PlaceholderText } from '../PlaceholderText'
 import { SectionBand } from '../v2/SectionBand'
 import { PILLAR_ICONS } from './icons'
@@ -11,7 +12,7 @@ export interface Pillar {
 export function WhyUs({ heading, lead, pillars, id = 'proc-my' }: { heading: string; lead?: string | null; pillars: Pillar[]; id?: string }) {
   return (
     <section id={id} aria-labelledby={`${id}-title`} className="bg-cream">
-      <SectionBand id={`${id}-title`} title={heading} lead={lead} tone="rasp" accent="Daddies" accentTone="blue" />
+      <SectionBand id={`${id}-title`} title={heading} lead={lead} tone="rasp" titleNode={<BrandTitle title={heading} />} />
       <div className="mx-auto max-w-web-wide">
         <ul role="list" className="md-grid border-y-0 sm:grid-cols-2 lg:grid-cols-4 min-[90rem]:border-x-2 min-[90rem]:border-cocoa">
           {pillars.map((p, i) => {
@@ -22,7 +23,7 @@ export function WhyUs({ heading, lead, pillars, id = 'proc-my' }: { heading: str
                   <Icon size={28} />
                 </span>
                 <div>
-                  <h3 className="md-caps text-h3 text-cocoa">{p.title}</h3>
+                  <h3 className="md-caps text-h3 text-cocoa">{czechNbsp(p.title)}</h3>
                   <p className="md-pretty mt-3 text-copy text-cocoa-soft">
                     <PlaceholderText text={p.text} />
                   </p>
@@ -33,5 +34,20 @@ export function WhyUs({ heading, lead, pillars, id = 'proc-my' }: { heading: str
         </ul>
       </div>
     </section>
+  )
+}
+
+/** „Proč Mummies & Daddies“: MUMMIES malinově, DADDIES modře (obě slova značky, ne jen jedno). */
+function BrandTitle({ title }: { title: string }) {
+  const m = /^(.*?)(Mummies)(.*?)(Daddies)(.*)$/i.exec(title)
+  if (!m) return <>{title}</>
+  return (
+    <>
+      {m[1]}
+      <span className="md-accent">{m[2]}</span>
+      {m[3]}
+      <span className="md-accent-blue">{m[4]}</span>
+      {m[5]}
+    </>
   )
 }

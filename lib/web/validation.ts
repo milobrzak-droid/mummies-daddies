@@ -15,6 +15,14 @@ import { formatDate, isoDate } from './format'
 
 export const MESSAGES = {
   required: 'Tohle pole potřebujeme vyplnit.',
+  /** Konkrétní hlášky průvodce poptávkou (co přesně chybí). */
+  eventType: 'Vyberte typ akce.',
+  guests: 'Napište přibližný počet hostů.',
+  address: 'Napište adresu akce, nebo zaškrtněte, že prostor teprve hledáte.',
+  customerKind: 'Vyberte, za koho poptáváte.',
+  name: 'Napište, jak vás máme oslovit.',
+  emailRequired: 'Napište e-mail, kam pošleme nabídku (ve tvaru jmeno@firma.cz).',
+  phoneRequired: 'Napište telefon včetně předvolby, třeba +420 737 000 000.',
   email: 'Tenhle e-mail nevypadá správně. Zkontrolujte ho, prosím.',
   phone: 'Zadejte telefon včetně předvolby, třeba +420 737 000 000.',
   pastDate: 'Tohle datum už proběhlo. Vyberte, prosím, budoucí termín.',
@@ -49,7 +57,8 @@ export function isIco(v: string): boolean {
 /**
  * Validace poptávky. Vrací mapu pole → chybová hláška (prázdná = v pořádku).
  * `today` = YYYY-MM-DD (kvůli testům), výchozí dnešek.
- * Povinné: typ akce, segment, počet osob, kontakt (jméno, e-mail), souhlas.
+ * Povinné: typ akce, segment, počet osob, kontakt (jméno, e-mail), souhlas. Minimum osob formátu
+ * jen upozorňuje (guestsBelowMinimum), poptávku neblokuje.
  * Datum je nepovinné (přibližný termín jde do poznámky), ale nesmí být v minulosti.
  */
 export function validateInquiry(x: Partial<WebInquiry>, today = isoDate()): FieldErrors<InquiryField> {
@@ -57,12 +66,10 @@ export function validateInquiry(x: Partial<WebInquiry>, today = isoDate()): Fiel
   if (!x.eventType || !EVENT_TYPES.some((t) => t.value === x.eventType)) e.eventType = MESSAGES.required
   if (!x.customerKind) e.customerKind = MESSAGES.required
   if (x.eventDate && x.eventDate < today) e.eventDate = MESSAGES.pastDate
+  // Počet pod minimem formátu NENÍ chyba: poptávka se nesmí ztratit (zákazník dostane jen
+  // upozornění, viz guestsBelowMinimum) a agent ji pošle člověku jako akci na míru.
   if (x.eventType !== 'konzultace') {
     if (!x.guests || !Number.isFinite(x.guests) || x.guests < 1) e.guests = MESSAGES.required
-    else if (x.eventType) {
-      const min = minimumGuests(x.eventType)
-      if (min && x.guests < min) e.guests = MESSAGES.belowMinimum(min)
-    }
   }
   if (x.company?.ico && !isIco(x.company.ico)) e['company.ico'] = MESSAGES.ico
   if (!x.contact?.name?.trim()) e['contact.name'] = MESSAGES.required
@@ -71,6 +78,14 @@ export function validateInquiry(x: Partial<WebInquiry>, today = isoDate()): Fiel
   if (x.contact?.phone && x.contact.phone.trim() && !isPhone(x.contact.phone)) e['contact.phone'] = MESSAGES.phone
   if (x.consent !== true) e.consent = MESSAGES.consent
   return e
+}
+
+/** Minimum osob formátu, když je zadaný počet pod ním (jinak null) – pro upozornění, ne chybu. */
+export function guestsBelowMinimum(eventType: string | null | undefined, guests: number | null | undefined): number | null {
+  if (!eventType || eventType === 'konzultace' || !guests || !Number.isFinite(guests) || guests < 1) return null
+  if (!EVENT_TYPES.some((t) => t.value === eventType)) return null
+  const min = minimumGuests(eventType as (typeof EVENT_TYPES)[number]['value'])
+  return min && guests < min ? min : null
 }
 
 // ── objednávka cheesecaků ───────────────────────────────────────────────────

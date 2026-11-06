@@ -8,16 +8,19 @@ import { cx } from './cx'
  *   tone="dark"  = na krémovém / světlém podkladu (ink obrys a stín),
  *   tone="light" = na tmavém podkladu (krémový obrys a stín, patička).
  *   variant="stacked" = dvouřádková verze (patička, velké plochy).
- * Výška: 22–27 px v mobilním headeru (aby se vešlo CTA „Nabídka“ a menu při 360 px), 36–40 px na desktopu.
+ * Výška: 22 px (18 px s košíkem) pod 380 px, 28 px do sm, 44–48 px na desktopu (aby se při 360 px vešel košík, CTA a menu).
  */
 export function Logo({
   tone = 'dark',
   variant = 'horizontal',
+  compact = false,
   className,
   onClick,
 }: {
   tone?: 'dark' | 'light'
   variant?: 'horizontal' | 'stacked'
+  /** Menší logo pod 380 px (když je v mobilní hlavičce i košík). */
+  compact?: boolean
   className?: string
   onClick?: () => void
 }) {
@@ -32,7 +35,10 @@ export function Logo({
       {variant === 'stacked' ? (
         <LogoStackedArt onDark={onDark} className="h-auto w-[15rem] sm:w-[17rem]" />
       ) : (
-        <LogoHorizontalArt onDark={onDark} className="h-[1.375rem] w-auto min-[380px]:h-[1.6875rem] sm:h-9 2xl:h-10" />
+        <LogoHorizontalArt
+          onDark={onDark}
+          className={cx('w-auto min-[380px]:h-[1.75rem] sm:h-9 xl:h-11 2xl:h-12', compact ? 'h-[1.125rem]' : 'h-[1.375rem]')}
+        />
       )}
     </Link>
   )

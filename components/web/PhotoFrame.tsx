@@ -92,6 +92,7 @@ export function PhotoFrame({
         sizes={sizes}
         quality={quality}
         preload={preload}
+        {...(photo.blur ? { placeholder: 'blur' as const, blurDataURL: photo.blur } : {})}
         className={cx(
           'object-cover',
           zoomOnHover && 'motion-safe:transition-transform motion-safe:duration-slow motion-safe:ease-md-out motion-safe:group-hover:scale-[1.035]',

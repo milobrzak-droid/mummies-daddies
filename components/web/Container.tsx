@@ -1,8 +1,10 @@
 import type { ElementType, ReactNode } from 'react'
 import { cx } from './cx'
 
+// Jedna mřížka pro celý web (web v2): header, hero i obsah sekcí začínají na stejné svislé
+// hraně (px-gutter v max-w-web-wide). `default` je proto stejně široký jako `wide`.
 const WIDTH = {
-  default: 'max-w-web',
+  default: 'max-w-web-wide',
   wide: 'max-w-web-wide',
   prose: 'max-w-web-prose',
 } as const

@@ -15,12 +15,15 @@ import { cx } from '../cx'
  */
 export function QuickAddButton({
   slug,
+  name,
   label,
   added,
   cart,
   className,
 }: {
   slug: CheesecakeSlug
+  /** Název produktu pro čtečky (6 tlačítek „Přidat do košíku“ by jinak znělo stejně). */
+  name?: string
   label: string
   /** „Přidáno do košíku. Dobrá volba!“ */
   added: string
@@ -41,6 +44,7 @@ export function QuickAddButton({
         }}
       >
         {label}
+        {name ? <span className="sr-only">: {name}</span> : null}
       </Button>
       {/* Prázdný stav bez okraje: jinak by mt-3 posunul tlačítko nad šipkou karty
           a obě by neseděla na jedné lince. */}

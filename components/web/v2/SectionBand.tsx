@@ -8,7 +8,7 @@ import { cx } from '../cx'
  * Pruh nadpisu sekce (docs/web-v2-design.md §5.6): buňka přes celou šířku v tintu
  * (blue = světle modrá Daddy jako pruh v referenci, rasp = růžová Mummy, cream),
  * 2px ink linky nahoře i dole. Vlevo obří Anton h2 s jedním akcentovým slovem,
- * vpravo perex a/nebo akce. Na mobilu vše pod sebou.
+ * vpravo perex (zarovnaný vlevo, spodní řádek na účaří nadpisu) a pod ním akce. Na mobilu vše pod sebou.
  */
 export type BandTone = 'blue' | 'rasp' | 'cream' | 'paper'
 
@@ -51,9 +51,9 @@ export function SectionBand({
           {titleNode ?? <AccentTitle title={title} accent={accent} tone={accentTone} />}
         </Tag>
         {lead || action ? (
-          <div className="flex flex-col items-start gap-5 lg:items-end lg:text-right">
+          <div className="flex flex-col items-start gap-5 lg:pb-[0.35em]">
             {lead ? (
-              <p className="md-pretty max-w-[38ch] text-lead text-cocoa-soft max-lg:max-w-[46ch]">
+              <p className="md-pretty max-w-[40ch] text-lead text-cocoa-soft max-lg:max-w-[46ch]">
                 <PlaceholderText text={lead} />
               </p>
             ) : null}

@@ -17,6 +17,7 @@ export function ProductCard({
   badge,
   quickAdd,
   headingLevel = 'h3',
+  linkLabel,
   sizes = '(min-width: 1280px) 400px, (min-width: 1024px) 31vw, (min-width: 640px) 46vw, 92vw',
   className,
 }: {
@@ -25,6 +26,8 @@ export function ProductCard({
   badge?: string | null
   quickAdd?: { label: string; added: string; cart: { label: string; href: string } } | null
   headingLevel?: 'h2' | 'h3' | 'h4'
+  /** Text výzvy u šipky karty (např. „Vybrat příchutě“ u mini mixu). */
+  linkLabel?: string
   sizes?: string
   className?: string
 }) {
@@ -39,6 +42,7 @@ export function ProductCard({
       photoClassName="max-sm:aspect-square"
       sizes={sizes}
       headingLevel={headingLevel}
+      linkLabel={linkLabel}
       className={cx('h-full', className)}
       meta={
         <span className="flex flex-col items-start gap-2">
@@ -49,7 +53,7 @@ export function ProductCard({
           ) : null}
           <PriceTag text={product.priceText || null} amount={product.priceText ? null : product.price} size="md" />
           {/* Tlačítko dole u ceny: v řadě karet tak sedí na stejné lince bez ohledu na délku popisu. */}
-          {quickAdd ? <QuickAddButton slug={product.slug} label={quickAdd.label} added={quickAdd.added} cart={quickAdd.cart} className="mt-2" /> : null}
+          {quickAdd ? <QuickAddButton slug={product.slug} name={product.name} label={quickAdd.label} added={quickAdd.added} cart={quickAdd.cart} className="mt-2" /> : null}
         </span>
       }
     />

@@ -12,7 +12,7 @@ pak ruční dočištění (odstranění ostrůvků, u některých ořez elipsou/
 | `cupcake-malina-boruvka.webp` (486×900) | Cupcake s krémem, malinou, borůvkou a zápichem „dobrou chuť“ | `home-kitchen-6.jpg` (přední kus) | Karta Oslavy / sweet bar; plovoucí prvek v hero (natočit cca −8°) |
 | `svatebni-dort-patrovy.webp` (467×900) | Třípatrový bílý svatební dort s růžemi (bez podložky) | `catering-svatby-hero.jpg` | Karta Svatby, sekce svateb |
 | `mini-cheesecake-kosicek.webp` (280×264) | Mini cheesecake v papírovém košíčku s meruňkou | `catering-coffee-break-gallery.jpg` | Jen MALÝ dekor (max. ~140 px na šířku, zdroj má nízké rozlišení) – coffee breaky, rozházené „konfety“ |
-| `avokado-plnene.webp` (824×900) | Půlka avokáda plněná tatarem, cottage a výhonky | `catering-snidane-gallery-1.jpg` | Karta Snídaně / firemní catering. Pozn.: horní pravá hrana dořezána ručně (sousední avokádo) – použít spíš do 400 px |
+| `avokado-plnene.webp` (824×900) | Půlka avokáda plněná tatarem, cottage a výhonky | `catering-snidane-gallery-1.jpg` | Karta Snídaně / firemní catering. Pozn.: horní pravá hrana dořezána ručně (sousední avokádo) – použít spíš do 400 px. Obrys vyhlazený (rozmazání alfy + práh, eroze ~3 px), okrajové pixely bez bílého lemu. |
 | `lesni-ovoce-okraj.webp` (900×636) | Hromádka malin a borůvek (vrch dortu) | `cheesecaky-mummy-vanilkovo-ovocny-main.jpg` | POUZE u okraje panelu: levý a pravý bok jsou rovně useknuté rámem fotky – umístit tak, aby boky přesahovaly ven z rámu (overflow hidden) |
 
 ## Co nevyšlo (vyřazeno)

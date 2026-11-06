@@ -50,9 +50,9 @@ export function FinalInquiry({
 }) {
   return (
     <section id={id} aria-labelledby={`${id}-title`} className="border-t-2 border-cocoa bg-raspberry-tint">
-      <Container width="wide" className="grid gap-10 py-section lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:items-center lg:gap-16">
+      <Container width="wide" className="grid gap-10 py-section lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:items-start lg:gap-16">
         <div>
-          <h2 id={`${id}-title`} className="md-caps text-h1 text-cocoa">
+          <h2 id={`${id}-title`} className="md-caps max-w-[18ch] text-h2 text-cocoa">
             <AccentTitle title={heading} accent="nabídku" />
           </h2>
           {body ? (
@@ -62,7 +62,14 @@ export function FinalInquiry({
           ) : null}
           <div className="mt-8">
             <Button href={primary.href} variant="primary" size="lg" arrow>
-              {primary.label}
+              {/* Na mobilu jen „Chci nabídku“ (jeden řádek), dovětek o lhůtě od sm. */}
+              {/^Chci nabídku\s/.test(primary.label) ? (
+                <>
+                  Chci nabídku<span className="max-sm:hidden">{primary.label.slice('Chci nabídku'.length)}</span>
+                </>
+              ) : (
+                primary.label
+              )}
             </Button>
           </div>
           {phone || email ? (

@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+import { czechNbsp } from '@/lib/web/placeholders'
 import { PlaceholderText } from './PlaceholderText'
 
 /**
@@ -30,9 +31,9 @@ export function AccentTitle({ title, accent, tone = 'raspberry' }: { title: stri
   const i = accent ? title.toLocaleLowerCase('cs').indexOf(word.toLocaleLowerCase('cs')) : at
   return (
     <Fragment>
-      {title.slice(0, i)}
+      {czechNbsp(title.slice(0, i))}
       <span className={tone === 'blue' ? 'md-accent-blue' : 'md-accent'}>{title.slice(i, i + word.length)}</span>
-      {title.slice(i + word.length)}
+      {czechNbsp(title.slice(i + word.length))}
     </Fragment>
   )
 }

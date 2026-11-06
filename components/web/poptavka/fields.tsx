@@ -41,10 +41,10 @@ export function FieldHint({ id, hint }: { id: string; hint?: ReactNode }) {
   )
 }
 
-export function FieldError({ id, error }: { id: string; error?: string | null }) {
+export function FieldError({ id, error, alert = false, className }: { id: string; error?: string | null; alert?: boolean; className?: string }) {
   if (!error) return null
   return (
-    <p id={errorId(id)} className="mt-2 font-copy text-small font-bold text-danger">
+    <p id={errorId(id)} role={alert ? 'alert' : undefined} className={cx('mt-2 font-copy text-small font-bold text-danger', className)}>
       {error}
     </p>
   )
@@ -129,13 +129,14 @@ export function ChoiceGroup({
       tabIndex={-1}
       aria-describedby={describedBy(id, hint, error)}
       aria-invalid={error ? true : undefined}
-      aria-required={type === 'radio' && required ? true : undefined}
       className={cx('min-w-0 outline-none', className)}
     >
       <legend className={cx(LABEL_CLASS, 'mb-3', legendClassName)}>
         {legend}
         {required ? <RequiredMark /> : null}
       </legend>
+      {/* Chyba hned pod legendou (nad volbami): u dlouhé skupiny by pod ní zůstala mimo obrazovku. */}
+      <FieldError id={id} error={error} alert className="-mt-1 mb-3" />
       <div className={cx('grid gap-2.5', columns === 2 && 'sm:grid-cols-2', columns === 3 && 'sm:grid-cols-2 lg:grid-cols-3')}>
         {options.map((o) => {
           const inputId = `${id}-${o.value}`
@@ -155,6 +156,7 @@ export function ChoiceGroup({
                 type={type}
                 name={name}
                 value={o.value}
+                required={type === 'radio' && required ? true : undefined}
                 checked={isChecked(o.value)}
                 onChange={() => onChange(o.value)}
                 className="mt-1 h-4 w-4 shrink-0 accent-raspberry-ink"
@@ -168,7 +170,6 @@ export function ChoiceGroup({
         })}
       </div>
       <FieldHint id={id} hint={hint} />
-      <FieldError id={id} error={error} />
     </fieldset>
   )
 }

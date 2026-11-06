@@ -33,10 +33,11 @@ export const colors = {
   /**
    * Malina = „Mummy“ a AKCE (primární CTA, ceny, akcentové slovo v nadpisu).
    * DEFAULT (#D23F6B) jen velký text ≥ 24 px a grafika (4,09 : 1 na krému);
-   * `ink` = pozadí primárního tlačítka s krémovým textem a malinový text < 24 px;
+   * `ink` (#A3284F) = pozadí primárního tlačítka s krémovým textem a malinový text < 24 px
+   * (AA ≥ 4,5 : 1 i na tintech karet: blush, sage, pistachio, butter);
    * `deep` = hover/active; `tint` = růžová plocha; `onInk` = malina na tmavé patičce.
    */
-  raspberry: { DEFAULT: '#D23F6B', ink: '#B8305A', deep: '#962248', tint: '#F7D6DF', onInk: '#F48AA8' },
+  raspberry: { DEFAULT: '#D23F6B', ink: '#A3284F', deep: '#962248', tint: '#F7D6DF', onInk: '#F48AA8' },
   /**
    * Modrá = „Daddy“ (původní barva loga M&D, #4669A6). Druhý hlas: akcentové slovo,
    * sekundární tlačítko, fokus. Nikdy primární CTA. `tint` = pruhy nadpisů sekcí.
@@ -72,7 +73,7 @@ export const fonts = {
 
 /**
  * Typografická stupnice (fluidní, 360 px → 1440 px).
- * Titulky (mega, hero, h1, h2, h3) jsou Anton verzálkami (třída `md-caps`); line-height ≥ 1.12,
+ * Titulky (mega, hero, h1, h2, h3) jsou Anton verzálkami (třída `md-caps`); line-height ≥ 1.2,
  * jinak se háčky nad Ř/Ž/Ď srazí s řádkem nad nimi (docs/web-v2-design.md §3.2).
  */
 type FontSizeToken = [size: string, config: { lineHeight: string; letterSpacing?: string; fontWeight?: string }]
@@ -80,11 +81,11 @@ type FontSizeToken = [size: string, config: { lineHeight: string; letterSpacing?
 // Klíče bez Record<…> v uvozovkách: test/deal-stage-migration hlídá staré
 // klíče fází obchodu (mj. „lead“) jako řetězcové literály v celém kódu.
 export const fontSize = {
-  mega: ['clamp(3.25rem, 1.4rem + 7vw, 8rem)', { lineHeight: '1.12', letterSpacing: '0.005em', fontWeight: '400' }],
-  hero: ['clamp(2.75rem, 1.2rem + 6.4vw, 7rem)', { lineHeight: '1.12', letterSpacing: '0.005em', fontWeight: '400' }],
-  h1: ['clamp(2.5rem, 1.4rem + 4.8vw, 5.5rem)', { lineHeight: '1.15', letterSpacing: '0.005em', fontWeight: '400' }],
-  h2: ['clamp(2rem, 1.3rem + 3vw, 4rem)', { lineHeight: '1.15', letterSpacing: '0.005em', fontWeight: '400' }],
-  h3: ['clamp(1.375rem, 1.15rem + 1vw, 1.875rem)', { lineHeight: '1.2', letterSpacing: '0.005em', fontWeight: '400' }],
+  mega: ['clamp(3.25rem, 1.4rem + 7vw, 8rem)', { lineHeight: '1.2', letterSpacing: '0.005em', fontWeight: '400' }],
+  hero: ['clamp(2.75rem, 1.2rem + 6.4vw, 7rem)', { lineHeight: '1.2', letterSpacing: '0.005em', fontWeight: '400' }],
+  h1: ['clamp(2.5rem, 1.4rem + 4.8vw, 5.5rem)', { lineHeight: '1.2', letterSpacing: '0.005em', fontWeight: '400' }],
+  h2: ['clamp(2rem, 1.3rem + 3vw, 4rem)', { lineHeight: '1.2', letterSpacing: '0.005em', fontWeight: '400' }],
+  h3: ['clamp(1.375rem, 1.15rem + 1vw, 1.875rem)', { lineHeight: '1.22', letterSpacing: '0.005em', fontWeight: '400' }],
   lead: ['clamp(1.0625rem, 1rem + 0.35vw, 1.3125rem)', { lineHeight: '1.55' }],
   copy: ['1rem', { lineHeight: '1.65' }],
   small: ['0.875rem', { lineHeight: '1.5' }],

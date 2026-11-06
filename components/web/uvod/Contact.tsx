@@ -11,7 +11,7 @@ export function ContactPersonCard({ name, lines, tone = 'sage' }: { name: string
   const texts = lines.filter((l) => l.kind === 'text')
   const links = lines.filter((l): l is Exclude<ContactLine, { kind: 'text' }> => l.kind !== 'text')
   return (
-    <article className={cx('flex h-full flex-col rounded-frame p-6 sm:p-8', TONE_BG[tone])}>
+    <article className={cx('flex h-full flex-col border-[2.5px] border-cocoa p-6 shadow-hard sm:p-8', TONE_BG[tone])}>
       <h3 className="md-caps text-h3 text-cocoa">{name}</h3>
       {texts.length ? (
         <ul role="list" className="mt-3 space-y-1 text-copy text-cocoa-soft">

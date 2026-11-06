@@ -19,7 +19,7 @@ import {
   cheesecakeExplorerData,
   cheesecakeProductsLd,
   cheesecakesData,
-  eventGridData,
+  homeEventGridData,
   faqData,
   finalInquiryData,
   formatsData,
@@ -52,7 +52,7 @@ export default function HomePage() {
     <>
       <HomeHero {...heroData()} badge="Catering · Praha i celá ČR" />
       <QuickStartCard {...quickStartData()} source="/" />
-      <EventTypeGrid {...eventGridData()} />
+      <EventTypeGrid {...homeEventGridData()} />
       <FormatsSection {...formatsData()} />
       <BigMarquee {...marqueeData()} />
       <WhyUs {...whyUsData()} />

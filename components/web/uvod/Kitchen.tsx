@@ -56,11 +56,12 @@ export function Kitchen({
             </p>
           ) : null}
         </div>
-        <ul role="list" className="grid grid-cols-2 content-start gap-5 sm:gap-7 md:grid-cols-3 md:pb-8">
+        {/* Mobil: vodorovný karusel se snapem (stránka se nezdlouží o 3 řádky fotek); od md mřížka 3 × 2. */}
+        <ul role="list" tabIndex={0} aria-label="Fotky z naší kuchyně" className="-mx-gutter flex snap-x snap-mandatory content-start gap-5 overflow-x-auto px-gutter py-3 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:gap-7 md:overflow-visible md:px-0 md:pb-8 md:pt-0">
           {photos.map((p, i) => (
-            <li key={`${p.slot}-${i}`} className={cx(i % 3 === 1 && 'md:translate-y-10')}>
+            <li key={`${p.slot}-${i}`} className={cx('w-[58vw] max-w-[15rem] shrink-0 snap-start md:w-auto md:max-w-none', i % 3 === 1 && 'md:translate-y-10')}>
               <figure className={cx('motion-safe:transition-transform motion-safe:duration-base hover:rotate-0', TILT[i % TILT.length])}>
-                <PhotoFrame photo={p} aspect="square" sticker sizes="(min-width: 1440px) 260px, (min-width: 768px) 20vw, 44vw" tone={i % 2 ? 'blush' : 'vanilla'} />
+                <PhotoFrame photo={p} aspect="square" sticker sizes="(min-width: 1440px) 320px, (min-width: 768px) 24vw, 48vw" tone={i % 2 ? 'blush' : 'vanilla'} />
                 {paired && dishes[i] ? <figcaption className="mt-3 text-small font-bold text-cocoa">{dishes[i]}</figcaption> : null}
               </figure>
             </li>

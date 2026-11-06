@@ -31,9 +31,23 @@
   color: theme('colors.cocoa.DEFAULT');
 }
 
-/* Kotvy nemají zajet pod sticky header. */
+/* Výška sticky headeru vč. 2px linky (mobil h-16, od lg h-20). */
+.md-web {
+  --md-header: 66px;
+}
+@media (min-width: 1024px) {
+  .md-web {
+    --md-header: 82px;
+  }
+}
+
+/* Kotvy nemají zajet pod sticky header (pole formuláře, nadpisy: s odstupem 16 px). */
 .md-web [id] {
-  scroll-margin-top: calc(theme('spacing.header') + 1rem);
+  scroll-margin-top: calc(var(--md-header) + 1rem);
+}
+/* Sekce začínají 2px linkou: zajedou o 2 px pod linku headeru → jedna linka, ne dvojitá. */
+.md-web section[id] {
+  scroll-margin-top: calc(var(--md-header) - 2px);
 }
 
 /*
@@ -191,6 +205,15 @@
   display: flex;
   width: max-content;
 }
+/* Ruční zastavení pohybu (WCAG 2.2.2): tlačítko v pruhu přepne .md-paused na .md-web. */
+.md-web.md-paused .md-marquee-track,
+.md-web.md-paused .md-float {
+  animation-play-state: paused !important;
+}
+.md-web.md-paused .md-marquee-track {
+  animation: none !important;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .md-marquee-track {
     animation: md-marquee 28s linear infinite;
@@ -232,17 +255,25 @@
   }
 }
 
-/* Vodorovný pás pilulek (mobilní seznam formátů/příchutí): fade na okrajích. */
+/*
+ * Vodorovný pás pilulek (mobilní seznam formátů/příchutí): fade jen vpravo; levý fade až po
+ * odrolování (data-scrolled nastaví JS), aby první (aktivní) pilulka nebyla vybledlá.
+ */
 .md-scroll-fade {
+  -webkit-mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 24px), transparent 100%);
+  mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 24px), transparent 100%);
+  scrollbar-width: none;
+}
+.md-scroll-fade[data-scrolled='true'] {
   -webkit-mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 24px), transparent 100%);
   mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 24px), transparent 100%);
-  scrollbar-width: none;
 }
 .md-scroll-fade::-webkit-scrollbar {
   display: none;
 }
 @media (min-width: 1024px) {
-  .md-scroll-fade {
+  .md-scroll-fade,
+  .md-scroll-fade[data-scrolled='true'] {
     -webkit-mask-image: none;
     mask-image: none;
   }
@@ -270,12 +301,11 @@
   .md-web .md-marquee-track {
     animation: none !important;
   }
-  .md-web .md-marquee-track {
-    width: auto;
-    flex-wrap: wrap;
-  }
-  .md-web .md-marquee-copy {
+  .md-web .md-marquee-run {
     display: none;
+  }
+  .md-web .md-marquee-static {
+    display: block;
   }
 }
 

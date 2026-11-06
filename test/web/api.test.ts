@@ -3,7 +3,7 @@ import { installWebApiFake } from '../helpers/webApiFake'
 import { estimatePrice, submitInquiry, submitOrder, type CheesecakeOrder, type WebInquiry } from '@/lib/web/api'
 import { emptyInquiry, inquiryHref, parseInquiryParams } from '@/lib/web/inquiry-link'
 import { isoDate } from '@/lib/web/format'
-import { computeOrderTotals, earliestOrderDate, validateInquiry } from '@/lib/web/validation'
+import { computeOrderTotals, earliestOrderDate, guestsBelowMinimum, validateInquiry } from '@/lib/web/validation'
 
 const valid = (patch: Partial<WebInquiry> = {}): WebInquiry => ({
   ...emptyInquiry(),
@@ -24,7 +24,10 @@ afterEach(() => { vi.unstubAllGlobals() })
 describe('api – poptávka', () => {
   it('validace: povinná pole, minimum osob, souhlas, IČO', () => {
     const e = validateInquiry({ ...emptyInquiry(), eventType: 'coffee-break', guests: 5, company: { name: 'Firma Alfa', ico: '123' } })
-    expect(e.guests).toContain('od 15 osob')
+    // pod minimem formátu: jen upozornění v průvodci, poptávka se neblokuje (agent ji pošle člověku)
+    expect(e.guests).toBeUndefined()
+    expect(guestsBelowMinimum('coffee-break', 5)).toBe(15)
+    expect(guestsBelowMinimum('coffee-break', 20)).toBeNull()
     expect(e['contact.email']).toBeDefined()
     expect(e.consent).toBeDefined()
     expect(e['company.ico']).toBe('IČO má 8 číslic. Zkontrolujte ho, prosím.')

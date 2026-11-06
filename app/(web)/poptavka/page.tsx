@@ -68,11 +68,15 @@ export default async function InquiryPage({ searchParams }: { searchParams: Sear
 
   return (
     <>
-      <Section tone="blush" soft spacing="none" labelledBy="poptavka-title" className="pb-10 pt-8 sm:pb-12 sm:pt-12">
-        <Breadcrumbs items={[{ label: 'Úvod', href: '/' }, { label: UI_TEXT.breadcrumb }]} className="mb-8" />
+      <Section tone="blush" soft spacing="none" labelledBy="poptavka-title" className="pb-6 pt-2 sm:pb-12 sm:pt-8">
+        <Breadcrumbs items={[{ label: 'Úvod', href: '/' }, { label: UI_TEXT.breadcrumb }]} className="mb-2 sm:mb-6" />
         <div className="max-w-3xl motion-safe:animate-lift">
-          <h1 id="poptavka-title" className="md-caps text-h1 text-cocoa"><AccentTitle title={uvod.heading} /></h1>
-          <p className="md-pretty mt-5 text-lead text-cocoa">
+          <h1 id="poptavka-title" className="md-caps text-[2.25rem] leading-[1.2] text-cocoa sm:text-h1"><AccentTitle title={uvod.heading} /></h1>
+          {/* Mobil: jen věta o nabídce (formulář ať začíná co nejvýš); od sm celý perex. */}
+          <p className="md-pretty mt-3 text-copy text-cocoa sm:hidden">
+            <PlaceholderText text={offerSentence(uvod.body)} />
+          </p>
+          <p className="md-pretty mt-5 text-lead text-cocoa max-sm:hidden">
             <PlaceholderText text={uvod.body} />
           </p>
         </div>
@@ -100,4 +104,10 @@ export default async function InquiryPage({ searchParams }: { searchParams: Sear
       </Section>
     </>
   )
+}
+
+/** Věta perexu, která slibuje nabídku (pro mobil); jinak první věta. */
+function offerSentence(body: string | null | undefined): string {
+  const sentences = (body ?? '').split(/(?<=[.!?])\s+/).filter(Boolean)
+  return sentences.find((t) => /nabídk/i.test(t)) ?? sentences[0] ?? ''
 }

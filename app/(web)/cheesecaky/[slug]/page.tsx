@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { Breadcrumbs, Cta, PastelCard, PhotoFrame, PlaceholderText, PriceTag, Section, SectionHeading, TONE_BG, cx } from '@/components/web'
+import { Breadcrumbs, Cta, PastelCard, PhotoFrame, PlaceholderText, PriceTag, Section, SectionHeading } from '@/components/web'
 import { ProductCard, ProductConfigurator, TermList } from '@/components/web/eshop'
 import { JsonLd, productJsonLd } from '@/components/web/poptavka'
 import { COMPANY } from '@/lib/web/company'
@@ -55,13 +55,16 @@ export default async function CheesecakePage({ params }: { params: Promise<{ slu
         />
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
           <div className="lg:sticky lg:top-[calc(theme(spacing.header)+1.5rem)] lg:self-start">
-            <div className={cx('rounded-frame p-3 sm:p-4', TONE_BG[p.tone])}>
-              <PhotoFrame photo={p.photo} aspect="portrait" tone={p.tone} preload quality={85} sizes="(min-width: 1280px) 600px, (min-width: 1024px) 46vw, 92vw" />
+            {/* Fotka jako natočená „samolepka“ s tvrdým stínem (bez růžového rámu kolem). */}
+            <div className="motion-safe:-rotate-2">
+              <PhotoFrame photo={p.photo} aspect="portrait" sticker tone={p.tone} preload quality={85} className="shadow-hard-lg" sizes="(min-width: 1280px) 600px, (min-width: 1024px) 46vw, 92vw" />
             </div>
           </div>
 
           <div className="motion-safe:animate-lift">
-            <h1 id="produkt-title" className="md-caps text-h1 text-cocoa"><AccentTitle title={d.heading} /></h1>
+            <h1 id="produkt-title" className="md-caps text-[clamp(2.5rem,1.6rem+3.4vw,5rem)] leading-[1.18] text-cocoa">
+              <ProductTitle title={d.heading} />
+            </h1>
             <div className="mt-5">
               <PriceTag text={d.priceText} amount={d.priceText ? null : p.price} size="lg" />
             </div>
@@ -140,3 +143,15 @@ export default async function CheesecakePage({ params }: { params: Promise<{ slu
   )
 }
 
+
+/** „Mummy vanilkovo-ovocný cheesecake“ → název produktu + „cheesecake“ jako akcentový podřádek. */
+function ProductTitle({ title }: { title: string }) {
+  const m = /^(.+?)\s+(cheesecak\S*)$/i.exec(title)
+  if (!m) return <AccentTitle title={title} />
+  return (
+    <>
+      {m[1]}{' '}
+      <span className="md-accent block text-[0.62em]">{m[2]}</span>
+    </>
+  )
+}

@@ -77,7 +77,7 @@ export function QuickStartForm({
       </div>
       <div>
         <label htmlFor={id('datum')} className={LABEL}>
-          {labels.date}
+          {labels.date} <span className="font-normal text-cocoa-soft">(stačí přibližně)</span>
         </label>
         <input id={id('datum')} name="datum" type="date" className={FIELD} />
       </div>

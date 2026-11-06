@@ -44,6 +44,7 @@ export default function ContactPage() {
               ) : null}
             </div>
           </div>
+          <h2 className="sr-only">Kontakty</h2>
           <ul role="list" className="grid gap-5 sm:grid-cols-2">
             {people.people.map((p, i) => (
               <li key={p.name}>

@@ -34,7 +34,7 @@
     {
      "id": "typy-akci",
      "heading": "Na jakou akci vaříme?",
-     "body": "Vyberte typ akce. U každého najdete ukázková menu, orientační cenu a minimální počet osob.",
+     "body": "Vyberte typ akce. U každého najdete ukázková menu a minimální počet osob.",
      "items": [
       "Firemní catering — Obědy do kanceláře, porady, konference i večírky. Od [DOPLNÍ KLIENT] Kč/os. · od 4 osob → /catering/firemni",
       "Snídaně — Snídaňový bufet, plná americká nebo zdravá snídaně. Od [DOPLNÍ KLIENT] Kč/os. · od 2 osob → /catering/snidane",
@@ -54,7 +54,7 @@
      "body": "Vaříme jako v dobré restauraci a staráme se jako doma.",
      "items": [
       "Šéfkuchařská kuchyně — Ruda a Monika léta vařili v top fine dining restauracích a 5* hotelech. Sous-vide, terina z kachních jater i chobotnice v červeném víně jsou u nás běžná práce.",
-      "Nabídka do pár minut — Standardní akci spočítáme hned. U každé služby vidíte cenu od a minimum osob dřív, než nám napíšete.",
+      "Nabídka do pár minut — U každé služby vidíte minimum osob dřív, než nám napíšete. Pak už jen čekáte na nabídku s cenou.",
       "Plný servis — Obsluha, inventář, vybavení, ozvučení, dekorace i pronájem prostor. Domluvíte se s jedním člověkem.",
       "Zážitek navíc — Live cooking, rolování sushi, sladký bar, fresh bar nebo gentlemanský klub s rumy, whisky a doutníky."
      ]
@@ -180,7 +180,7 @@
     {
      "id": "uvod",
      "heading": "Catering na každou akci",
-     "body": "Vyberte formát, který sedí vaší akci. U každého vidíte orientační cenu za osobu a minimální počet hostů. Přesnou nabídku spočítáme do pár minut."
+     "body": "Vyberte formát, který sedí vaší akci. U každého vidíte minimální počet hostů. Přesnou nabídku spočítáme do pár minut."
     },
     {
      "id": "sluzby",
@@ -855,7 +855,7 @@
     {
      "id": "co-bude-dal",
      "heading": "Co bude dál",
-     "body": "Bez čekání na tři dny.",
+     "body": "Hned potvrzení e-mailem, standardní nabídka do pár minut.",
      "items": [
       "Hned — potvrzení na e-mail se shrnutím poptávky",
       "Do pár minut — standardní nabídka s cenou za osobu, tím, co je v ceně, a platností",
@@ -2093,7 +2093,7 @@
   "ASISTENT — výpadek: Teď mi to nejde. Vyplňte prosím krátký formulář, nebo zavolejte na +420 737 818 694.",
   "ASISTENT — placeholder vstupu: Napište zprávu…",
   "RYCHLÝ START — tlačítko: Spočítat nabídku",
-  "RYCHLÝ START — placeholder typ akce: Typ akce",
+  "RYCHLÝ START — placeholder typ akce: Vyberte…",
   "RYCHLÝ START — placeholder počet osob: Počet osob",
   "KOŠÍK — nadpis: Váš košík",
   "KOŠÍK — prázdný: Košík je zatím prázdný. Co takhle cheesecake?",

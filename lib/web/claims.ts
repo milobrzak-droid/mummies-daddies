@@ -15,11 +15,11 @@ export const INSTANT_OFFER_CLAIM = process.env.NEXT_PUBLIC_WEB_INSTANT_OFFER_CLA
 /** Reálná lhůta, dokud agent nabídky sám neposílá. */
 export const REALISTIC_RESPONSE = 'do 1 pracovního dne'
 
-const INSTANT = /do pár minut/g
+const INSTANT = /([Dd])o pár minut/g
 
-/** Text webu se slibem rychlé nabídky podle přepínače. */
+/** Text webu se slibem rychlé nabídky podle přepínače („Do pár minut“ na začátku věty taky). */
 export function withResponseClaim(text: string, instant: boolean = INSTANT_OFFER_CLAIM): string {
-  return instant ? text : text.replace(INSTANT, REALISTIC_RESPONSE)
+  return instant ? text : text.replace(INSTANT, (_, d: string) => `${d}${REALISTIC_RESPONSE.slice(1)}`)
 }
 
 /** Totéž pro celý strom textů (stránky z copy.json). */

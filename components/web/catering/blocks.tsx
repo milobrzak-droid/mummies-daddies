@@ -90,7 +90,7 @@ export function CheckList({ items, columns = 1, className }: { items: string[]; 
         const it = parseItem(raw)
         return (
           <li key={i} className="flex items-start gap-3 text-copy text-cocoa">
-            <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-pill bg-sage text-cocoa">
+            <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-pill border-2 border-cocoa bg-butter text-cocoa">
               <IconCheck size={14} />
             </span>
             <span className="md-pretty">
@@ -108,8 +108,8 @@ export function CheckList({ items, columns = 1, className }: { items: string[]; 
 
 export function MenuCard({ items, fallback, className }: { items: string[]; fallback?: string | null; className?: string }) {
   return (
-    <div className={cx('mx-auto w-full max-w-2xl rounded-frame bg-paper p-2.5 shadow-float sm:p-3', className)}>
-      <div className="rounded-[2px] border border-hairline px-5 py-10 text-center sm:px-12 sm:py-14">
+    <div className={cx('mx-auto w-full max-w-2xl border-[2.5px] border-cocoa bg-paper p-2.5 shadow-hard-lg sm:p-3', className)}>
+      <div className="border-2 border-dashed border-cocoa/40 px-5 py-10 text-center sm:px-12 sm:py-14">
         <Ornament className="mx-auto text-cocoa/40" />
         {items.length ? (
           <ul className="mt-8 space-y-7 sm:space-y-8">
@@ -148,8 +148,8 @@ export function Steps({ items, className }: { items: string[]; className?: strin
         const step = it.title ? splitStepNumber(it.title) : splitStepNumber(raw)
         const n = step.n ?? i + 1
         return (
-          <li key={i} className="grid grid-cols-[3rem_minmax(0,1fr)] gap-x-3 border-t border-cocoa/20 pt-5 sm:block">
-            <span aria-hidden="true" className="row-span-2 block font-display text-[2rem] font-medium leading-none text-cocoa/70 sm:text-[2.75rem]">
+          <li key={i} className="grid grid-cols-[3rem_minmax(0,1fr)] gap-x-3 border-t-2 border-cocoa pt-5 sm:block">
+            <span aria-hidden="true" className="md-caps row-span-2 block text-[2.25rem] leading-[1.1] text-raspberry sm:text-[3rem]">
               {String(n).padStart(2, '0')}
             </span>
             {it.title ? (
@@ -224,7 +224,7 @@ export function PackageCard({ item, tone, headingLevel = 'h3' }: { item: ParsedI
       meta={<FactsRow price={facts.price} guests={facts.guests} />}
     >
       {facts.rest ? (
-        <p className="md-pretty mt-3 text-copy text-cocoa-soft">
+        <p className="md-pretty mt-3 text-copy text-cocoa-soft first-letter:uppercase">
           <RichText text={facts.rest} />
         </p>
       ) : null}
@@ -236,12 +236,12 @@ export function PackageCard({ item, tone, headingLevel = 'h3' }: { item: ParsedI
 export function FormatCard({ id, title, body, tone }: { id: string; title: string; body: string; tone: SurfaceTone }) {
   const facts = splitPriceFacts(body)
   return (
-    <article aria-labelledby={id} className={cx('flex h-full flex-col rounded-frame p-6 sm:p-8', TONE_CARD[tone])}>
+    <article aria-labelledby={id} className={cx('flex h-full flex-col border-[2.5px] border-cocoa p-6 shadow-hard sm:p-8', TONE_CARD[tone])}>
       <h2 id={id} className="md-caps text-h3 text-cocoa">
         {title}
       </h2>
       {facts.rest ? (
-        <p className="md-pretty mt-4 text-copy text-cocoa-soft">
+        <p className="md-pretty mt-4 text-copy text-cocoa-soft first-letter:uppercase">
           <RichText text={facts.rest} />
         </p>
       ) : null}

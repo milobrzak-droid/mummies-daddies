@@ -74,6 +74,12 @@ describe('kontrast palety v2 (Mummy malina + Daddy modrá)', () => {
     large(colors.raspberry.ink, colors.daddy.tint)
   })
 
+  it('malinová cena a nadtitulek (ink) na tintech karet: blush, sage, pistachio, butter', () => {
+    for (const bg of [colors.blush.DEFAULT, colors.sage.DEFAULT, colors.pistachio.DEFAULT, colors.butter, colors.raspberry.tint, colors.daddy.tint]) {
+      text(colors.raspberry.ink, bg)
+    }
+  })
+
   it('patička: krém, malina a modrá na ink', () => {
     expect(contrast(colors.cream, colors.cocoa.DEFAULT)).toBeGreaterThanOrEqual(7)
     text(colors.raspberry.onInk, colors.cocoa.DEFAULT)

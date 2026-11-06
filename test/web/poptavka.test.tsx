@@ -124,13 +124,14 @@ beforeEach(() => { installWebApiFake() })
 afterEach(() => { vi.unstubAllGlobals() })
 
 describe('validace průvodce (zod)', () => {
-  it('prázdný průvodce hlásí povinná pole doslova z mikrotextů', () => {
+  it('prázdný průvodce hlásí konkrétně, co chybí (souhlas doslova z mikrotextů)', () => {
     const e = validateDraft(emptyDraft(), undefined, TODAY)
-    expect(e.eventType).toBe(microcopy('CHYBA — povinné pole'))
-    expect(e.customerKind).toBe(MESSAGES.required)
-    expect(e.guests).toBe(MESSAGES.required)
-    expect(e['venue.address']).toBe(MESSAGES.required)
-    expect(e['contact.email']).toBe(MESSAGES.required)
+    expect(e.eventType).toBe(MESSAGES.eventType)
+    expect(e.customerKind).toBe(MESSAGES.customerKind)
+    expect(e.guests).toBe(MESSAGES.guests)
+    expect(e['venue.address']).toBe(MESSAGES.address)
+    expect(e['contact.name']).toBe(MESSAGES.name)
+    expect(e['contact.email']).toBe(MESSAGES.emailRequired)
     expect(e.consent).toBe(microcopy('CHYBA — souhlas'))
     expect(firstStepWithError(e)).toBe('typ')
   })
@@ -140,9 +141,9 @@ describe('validace průvodce (zod)', () => {
     expect(validateDraft({ ...emptyDraft(), eventType: 'oslava' }, 'typ', TODAY)).toEqual({})
   })
 
-  it('minimum osob podle typu akce (mikrotext s {minimum})', () => {
-    const e = validateDraft({ ...emptyDraft(), eventType: 'coffee-break', guests: '10' }, 'hoste', TODAY)
-    expect(e.guests).toBe(microcopy('CHYBA — počet osob pod minimem', { minimum: 15 }))
+  it('minimum osob podle typu akce jen upozorní (mikrotext s {minimum}), pokračovat jde', () => {
+    expect(validateDraft({ ...emptyDraft(), eventType: 'coffee-break', guests: '10' }, 'hoste', TODAY)).toEqual({})
+    expect(MESSAGES.belowMinimum(15)).toBe(microcopy('CHYBA — počet osob pod minimem', { minimum: 15 }))
     expect(validateDraft({ ...emptyDraft(), eventType: 'coffee-break', guests: '15' }, 'hoste', TODAY)).toEqual({})
   })
 
@@ -202,7 +203,7 @@ describe('/poptavka (server render)', () => {
       if (s.id !== 'volba') expect(t).toContain(norm(s.body))
     }
     for (const raw of page.sections.find((s) => s.id === 'co-bude-dal')!.items!) expect(t).toContain(norm(parseItem(raw).text))
-    expect(doc.querySelector('h1')!.textContent).toBe('Řekněte nám o své akci')
+    expect(doc.querySelector('h1')!.textContent!.replace(/\u00a0/g, ' ')).toBe('Řekněte nám o své akci')
     expect(t).toContain('Máme předvyplněno: Svatba, 80 osob. Můžete to změnit.')
     // začíná krokem 3 (Datum a čas), protože typ a počet osob už známe
     expect(doc.getElementById('pop-krok-datum')).not.toBeNull()
@@ -273,18 +274,21 @@ describe('průvodce poptávkou (interakce)', () => {
 
     // krok 1 bez výběru → chyba u typu akce, fokus zůstává v kroku
     await submitForm()
-    expect(norm($('#pop-typ')?.textContent)).toContain(MESSAGES.required)
+    expect(norm($('#pop-typ')?.textContent)).toContain(MESSAGES.eventType)
+    expect($('#pop-typ-chyba')?.getAttribute('role')).toBe('alert')
     expect($('#pop-typ')!.getAttribute('aria-invalid')).toBe('true')
     await click($('#pop-typ-coffee-break'))
     expect($('#pop-typ')!.getAttribute('aria-invalid')).toBeNull()
     await submitForm()
 
-    // krok 2: pod minimem → hláška s minimem; pak orientační cena s rozpětím
+    // krok 2: pod minimem → upozornění s minimem (role=status, pokračovat jde); pak orientační cena s rozpětím
     expect(heading()).toBe('Počet osob')
     await type($('#pop-osob'), '10')
-    await submitForm()
-    expect(norm($('#pop-osob')?.parentElement?.textContent)).toContain(MESSAGES.belowMinimum(15))
+    const notice = container.querySelector('[role=status]:not(.sr-only)')
+    expect(norm(notice?.textContent)).toContain(MESSAGES.belowMinimum(15))
+    expect(norm(notice?.textContent)).toContain('Přepnout na Konzultaci nebo ochutnávku')
     await type($('#pop-osob'), '20')
+    expect(container.querySelector('[role=status]:not(.sr-only)')).toBeNull()
     await wait(260)
     const estimate = norm(container.querySelector('aside')?.textContent)
     expect(estimate).toContain('Orientačně')
@@ -298,7 +302,7 @@ describe('průvodce poptávkou (interakce)', () => {
     await submitForm()
     expect(heading()).toBe('Místo')
     await submitForm()
-    expect(norm($('#pop-adresa')?.parentElement?.textContent)).toContain(MESSAGES.required)
+    expect(norm($('#pop-adresa')?.parentElement?.textContent)).toContain(MESSAGES.address)
     await click($('#pop-prostor'))
     await submitForm()
 

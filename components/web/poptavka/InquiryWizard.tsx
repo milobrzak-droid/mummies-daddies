@@ -19,6 +19,7 @@ import {
   type StoredConfirmation, type WizardLabels,
 } from '@/lib/web/poptavka/types'
 import { UI_TEXT, fillText } from '@/lib/web/poptavka/ui-text'
+import { MESSAGES, guestsBelowMinimum } from '@/lib/web/validation'
 import { buttonClasses } from '../Button'
 import { IconArrowRight } from '../icons'
 import { cx } from '../cx'
@@ -124,6 +125,15 @@ export function InquiryWizard({
       }
     }
     restored.current = true
+    // Předvyplnění z odkazu (rychlý formulář na úvodu): rovnou ukázat průvodce na kroku,
+    // kde zákazník pokračuje (jinak by zůstal nahoře na úvodu a „nic by se nestalo“).
+    if (prefill.prefilled.length) {
+      requestAnimationFrame(() => {
+        const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+        document.getElementById('pop-formular')?.scrollIntoView?.({ block: 'start', behavior: reduce ? 'auto' : 'smooth' })
+        document.getElementById(`pop-krok-${initialStep(prefill.prefilled)}`)?.focus({ preventScroll: true })
+      })
+    }
     // jen při prvním vykreslení
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -156,7 +166,9 @@ export function InquiryWizard({
     const el = document.getElementById(focusTarget)
     if (el) {
       el.focus({ preventScroll: true })
-      el.scrollIntoView?.({ block: 'center', behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+      // Začátek prvku (nadpis skupiny, legenda i chyba nad volbami), ne střed: vysoká skupina
+      // by jinak schovala chybu pod spodní okraj a nadpis pod sticky hlavičku (scroll-margin-top).
+      el.scrollIntoView?.({ block: 'start', behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
     }
     setFocusTarget(null)
   }, [focusTarget, step])
@@ -258,37 +270,60 @@ export function InquiryWizard({
   const stepLabel = labels.steps[step]
   const stepOf = fillText(UI_TEXT.stepOf, { n: index + 1, total })
   const min = draft.eventType ? minimumGuests(draft.eventType) : null
+  const belowMin = guestsBelowMinimum(draft.eventType, guests)
+  const minNotice = belowMin ? (
+    <div role="status" className="rounded-soft bg-butter px-4 py-3 font-copy text-small text-cocoa ring-2 ring-inset ring-cocoa">
+      <p className="font-bold">{MESSAGES.belowMinimum(belowMin)}</p>
+      <p className="mt-2 flex flex-wrap gap-x-5">
+        <button type="button" onClick={() => update('eventType', 'konzultace')} className="md-link inline-flex min-h-11 items-center font-bold">
+          {UI_TEXT.switchToConsultation}
+        </button>
+        <button type="button" onClick={() => setMode('asistent')} className="md-link inline-flex min-h-11 items-center font-bold">
+          {labels.choice.assistant}
+        </button>
+      </p>
+    </div>
+  ) : null
 
   return (
     <div className={cx('grid gap-10 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-12', className)}>
       <div className="min-w-0">
         {/* Jak chcete začít? */}
-        <section aria-labelledby="pop-volba-title" className="mb-8">
+        <section aria-labelledby="pop-volba-title" className="mb-6 sm:mb-8">
           <h2 id="pop-volba-title" className="md-caps text-h3 text-cocoa">
             {labels.choice.heading}
           </h2>
-          <p className="md-pretty mt-2 text-copy text-cocoa-soft">{labels.choice.body}</p>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+          <p className="md-pretty mt-2 text-copy text-cocoa-soft max-sm:hidden">{labels.choice.body}</p>
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:mt-5 sm:gap-3">
             {(
               [
                 ['asistent', labels.choice.assistant, labels.choice.assistantHint],
-                ['formular', labels.choice.form, null],
+                ['formular', labels.choice.form, UI_TEXT.formHint],
               ] as const
             ).map(([value, title, hint]) => (
               <button
                 key={value}
                 type="button"
                 aria-pressed={mode === value}
-                aria-controls={value === 'asistent' ? 'pop-asistent' : 'pop-formular'}
+                // aria-controls jen na panel, který je v DOM (vykreslený je jen ten vybraný).
+                aria-controls={mode === value ? (value === 'asistent' ? 'pop-asistent' : 'pop-formular') : undefined}
                 onClick={() => setMode(value)}
                 className={cx(
-                  'flex min-h-14 flex-col items-start justify-center rounded-soft px-5 py-4 text-left ring-2 ring-inset',
+                  'flex min-h-12 items-center gap-3 rounded-soft px-4 py-3 text-left text-cocoa sm:min-h-14 sm:px-5 sm:py-4',
                   'transition-[background-color,box-shadow] duration-quick ease-md-out focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-daddy-ink',
-                  mode === value ? 'bg-cocoa text-cream ring-cocoa' : 'bg-paper text-cocoa ring-cocoa hover:bg-cream',
+                  mode === value ? 'bg-raspberry-tint shadow-hard-sm ring-[3px] ring-inset ring-cocoa' : 'bg-paper ring-2 ring-inset ring-cocoa hover:bg-cream',
                 )}
               >
-                <span className="font-copy text-copy font-bold">{title}</span>
-                {hint ? <span className={cx('mt-0.5 font-copy text-small', mode === value ? 'text-cream/85' : 'text-cocoa-soft')}>{hint}</span> : null}
+                <span
+                  aria-hidden="true"
+                  className={cx('grid h-6 w-6 shrink-0 place-items-center rounded-pill border-2 border-cocoa text-[0.8125rem] font-bold', mode === value ? 'bg-cocoa text-cream' : 'bg-paper')}
+                >
+                  {mode === value ? '✓' : ''}
+                </span>
+                <span className="flex min-w-0 flex-col">
+                  <span className="font-copy text-small font-bold leading-snug sm:text-copy">{title}</span>
+                  {hint ? <span className="mt-0.5 font-copy text-small text-cocoa-soft max-sm:hidden">{hint}</span> : null}
+                </span>
               </button>
             ))}
           </div>
@@ -332,12 +367,15 @@ export function InquiryWizard({
             {prefilledNotice ? (
               <p className="mb-6 rounded-soft bg-pistachio-soft px-4 py-3 font-copy text-small text-cocoa ring-2 ring-inset ring-cocoa">{prefilledNotice}</p>
             ) : null}
+            {/* Počet pod minimem z odkazu: stejné upozornění jako při ručním zadání (krok Počet osob ho má u pole). */}
+            {minNotice && step !== 'hoste' && step !== 'typ' ? <div className="mb-6">{minNotice}</div> : null}
 
             <form noValidate onSubmit={onSubmit} aria-labelledby={`pop-krok-${step}`}>
               <div key={step} className="motion-safe:animate-fade">
                 <p className="hidden font-copy text-eyebrow uppercase text-cocoa-soft sm:block">{stepOf}</p>
                 <h2 id={`pop-krok-${step}`} tabIndex={-1} className="md-caps mt-2 text-h2 text-cocoa outline-none"><AccentTitle title={stepLabel.title} /></h2>
                 {step !== 'souhrn' && step !== 'styl' ? <p className="mt-2 text-small text-cocoa-soft">{labels.requiredNote}</p> : null}
+                {step === 'styl' ? <p className="mt-2 text-small font-bold text-cocoa-soft">{UI_TEXT.optionalStep}</p> : null}
 
                 <div className="mt-8 space-y-8">
                   {step === 'typ' ? (
@@ -373,11 +411,12 @@ export function InquiryWizard({
                           className={cx(FIELD_CLASS, 'max-w-[12rem]')}
                         />
                       </Field>
-                      {min ? (
-                        <p className="font-copy text-small text-cocoa-soft">
-                          {eventTypeOf(draft.eventType)?.label}: <span className="font-bold text-cocoa">{fillText(UI_TEXT.minGuests, { n: min })}</span>
-                        </p>
-                      ) : null}
+                      {minNotice ??
+                        (min ? (
+                          <p className="font-copy text-small text-cocoa-soft">
+                            {eventTypeOf(draft.eventType)?.label}: <span className="font-bold text-cocoa">{fillText(UI_TEXT.minGuests, { n: min })}</span>
+                          </p>
+                        ) : null)}
                       <EstimateCard estimate={estimate} guests={guests} className="lg:hidden" />
                     </>
                   ) : null}
@@ -605,10 +644,17 @@ export function InquiryWizard({
                 ) : (
                   <span />
                 )}
-                <button type="submit" disabled={sending} aria-busy={sending || undefined} className={buttonClasses({ variant: 'primary', size: 'lg', className: 'group' })}>
-                  <span>{isLast ? (sending ? labels.submitting : labels.submit) : labels.next}</span>
-                  {!sending ? <IconArrowRight size={18} className="motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5" /> : null}
-                </button>
+                <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
+                  {step === 'styl' ? (
+                    <button type="button" onClick={() => goTo(STEP_IDS[index + 1])} className={buttonClasses({ variant: 'ghost', size: 'md', className: 'self-center' })}>
+                      {UI_TEXT.skip}
+                    </button>
+                  ) : null}
+                  <button type="submit" disabled={sending} aria-busy={sending || undefined} className={buttonClasses({ variant: 'primary', size: 'lg', className: 'group' })}>
+                    <span>{isLast ? (sending ? labels.submitting : labels.submit) : labels.next}</span>
+                    {!sending ? <IconArrowRight size={18} className="motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5" /> : null}
+                  </button>
+                </div>
               </div>
             </form>
           </div>
@@ -640,7 +686,13 @@ function Progress({ labels, step, maxStep, onJump, stepOf }: { labels: WizardLab
           const reachable = i <= maxStep && !current
           const inner = (
             <>
-              <span aria-hidden="true" className={cx('grid h-6 w-6 place-items-center rounded-pill text-[0.75rem] font-bold', current ? 'bg-paper text-cocoa' : i < index || reachable ? 'bg-sage text-cocoa' : 'bg-hairline text-cocoa-soft')}>
+              <span
+                aria-hidden="true"
+                className={cx(
+                  'grid h-6 w-6 place-items-center rounded-pill text-[0.75rem] font-bold',
+                  current ? 'bg-cream text-cocoa' : i < index || reachable ? 'bg-daddy-tint text-cocoa ring-2 ring-cocoa' : 'bg-cream text-cocoa ring-2 ring-cocoa',
+                )}
+              >
                 {i + 1}
               </span>
               <span>{labels.steps[id].name}</span>
@@ -648,7 +700,7 @@ function Progress({ labels, step, maxStep, onJump, stepOf }: { labels: WizardLab
           )
           const cls = cx(
             'inline-flex min-h-10 items-center gap-2 rounded-pill px-3 pr-4 font-copy text-small font-bold',
-            current ? 'bg-cocoa text-cream' : reachable ? 'bg-paper text-cocoa ring-2 ring-inset ring-cocoa hover:bg-cream' : 'text-cocoa-soft',
+            current ? 'bg-cocoa text-cream' : reachable ? 'bg-paper text-cocoa ring-2 ring-inset ring-cocoa hover:bg-cream' : 'text-cocoa',
           )
           return (
             <li key={id}>
@@ -703,7 +755,7 @@ function Summary({ labels, draft, onEdit }: { labels: WizardLabels; draft: Inqui
           <dd className="md-pretty break-words font-copy text-copy font-bold text-cocoa">{r.value ?? <span className="font-normal text-cocoa-soft">{UI_TEXT.empty}</span>}</dd>
           {i === 0 || rows[i - 1].step !== r.step ? (
             <dd className="sm:text-right">
-              <button type="button" onClick={() => onEdit(r.step)} className="md-link font-copy text-small font-bold">
+              <button type="button" onClick={() => onEdit(r.step)} className="md-link inline-flex min-h-11 items-center font-copy text-small font-bold">
                 {UI_TEXT.edit}
                 <span className="sr-only">: {labels.steps[r.step].name}</span>
               </button>

@@ -59,7 +59,10 @@ export function heroData() {
     mobilePhoto: getPhoto('home.hero.mobile'),
     primaryCta: s.parsedCta ? { label: s.parsedCta.label, href: HOME_INQUIRY_HREF } : null,
     secondaryCta: secondary?.href ? { label: secondary.text, href: secondary.href } : null,
-    trust: trust?.text ?? null,
+    // Mikrodůvěra hned pod CTA: segment se zástupcem ([DOPLNÍ KLIENT: …]) se tu nezobrazuje,
+    // dokud klient číslo nedodá (zástupce zůstává viditelný v pásu čísel u referencí).
+    trust: trust?.text ? splitDots(trust.text).filter((t) => !/\[DOPLNÍ/.test(t)).join(' · ') || null : null,
+    plates: [getPhoto('home.kitchen.1'), getPhoto('home.kitchen.4')],
   }
 }
 
@@ -103,6 +106,19 @@ export function eventGridData() {
     lead: s.body,
     cards,
     assistant: s.cta ? { label: parseCta(s.cta).label, href: inquiryHref({ typ: 'nevim', zdroj: HOME }) } : null,
+  }
+}
+
+/** Klíčové typy akcí pro řadu kategorií na úvodu (ostatní nese výběr formátů a /catering). */
+const HOME_FEATURED_TYPES = ['/catering/firemni', '/catering/svatby', '/catering/oslavy-a-piknik']
+
+export function homeEventGridData() {
+  const all = eventGridData()
+  const cards = HOME_FEATURED_TYPES.flatMap((href) => all.cards.filter((c) => c.href === href))
+  return {
+    ...all,
+    cards,
+    all: { label: `Všechny typy akcí (${all.cards.length})`, href: '/catering' },
   }
 }
 
@@ -169,7 +185,8 @@ export function howItWorksData() {
     heading: s.heading,
     lead: s.body,
     steps: s.parsedItems.map((i) => ({ title: splitStepNumber(i.title ?? i.text).title, text: i.title ? i.text : '' })),
-    cta: s.parsedCta ? { label: s.parsedCta.label, href: HOME_INQUIRY_HREF } : null,
+    // Jednotné primární CTA webu („Chci nabídku“) místo obecného „Začít“ z copy.
+    cta: s.parsedCta ? { label: 'Chci nabídku', href: HOME_INQUIRY_HREF } : null,
   }
 }
 
@@ -303,8 +320,8 @@ const FORMATS: FormatEntry[] = [
   { id: 'coffee-break', label: 'Coffee break', photoSlot: 'catering.coffee-break.gallery', tags: ['Od 15 osob', '15–45 minut', 'Mini dezerty a minisendviče', 'I s rolováním sushi'], menuHref: '/catering/coffee-break', href: '/catering/coffee-break' },
   { id: 'obed', label: 'Oběd', photoSlot: 'catering.obedy.hero', tags: ['Bufet nebo Šéfkuchařovo menu', 'Dovezeme až na místo', 'Firemní obědy od 4 osob'], menuHref: '/catering/obedy', href: '/catering/obedy' },
   { id: 'raut', label: 'Raut', photoSlot: 'catering.formats.raut', tags: ['Studený i teplý', 'Profesionální obsluha', '[DOPLNÍ KLIENT: minimum osob pro raut]'], menuHref: '/catering/spolecenske-akce', href: '/catering/spolecenske-akce' },
-  { id: 'finger-food', label: 'Finger food', photoSlot: 'catering.formats.finger-food', tags: ['Jednohubky a finger food', 'Na opening i networking', 'Od 15 osob'], menuHref: '/catering/spolecenske-akce', href: '/catering/spolecenske-akce' },
-  { id: 'bbq', label: 'BBQ & live cooking', photoSlot: 'catering.formats.bbq-live-cooking', tags: ['Live cooking na místě', 'Teambuilding od 8 osob'], menuHref: '/catering/teambuilding', href: '/catering/teambuilding' },
+  { id: 'finger-food', label: 'Jednohubky', photoSlot: 'catering.formats.finger-food', tags: ['Jednohubky a chuťovky do ruky', 'Na otevření i setkání', 'Od 15 osob'], menuHref: '/catering/spolecenske-akce', href: '/catering/spolecenske-akce' },
+  { id: 'bbq', label: 'Gril a vaření před hosty', photoSlot: 'catering.formats.bbq-live-cooking', tags: ['Vaříme přímo na místě', 'Teambuilding od 8 osob'], menuHref: '/catering/teambuilding', href: '/catering/teambuilding' },
   { id: 'svatba', label: 'Svatba', photoSlot: 'catering.svatby.hero', tags: ['Svatební hostina', 'Sladký bar a dort', 'Konzultace zdarma'], menuHref: '/catering/svatby', href: '/catering/svatby' },
 ]
 

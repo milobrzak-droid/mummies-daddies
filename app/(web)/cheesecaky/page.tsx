@@ -6,6 +6,10 @@ import { isMini } from '@/lib/web/eshop/catalog'
 import { AccentTitle } from '@/components/web/AccentTitle'
 import { FloatingCutout } from '@/components/web/v2/FloatingCutout'
 
+/** Mini mix nejde přidat jedním klikem (příchutě se vybírají na detailu): jasná výzva místo názvu. */
+const MINI_CTA = 'Vybrat příchutě'
+const MINI_SECTION_CTA = 'Vybrat 10 příchutí'
+
 /**
  * /cheesecaky – doplňkový e-shop (strategy.sitemap): úvod → produkty (karty
  * v barvě příchuti, cena doslova z copy, přidání do košíku) → mini → nápis
@@ -32,11 +36,11 @@ export default function CheesecakesPage() {
       />
 
       <Section id="produkty" tone="cream" labelledBy="produkty-title">
-        <SectionHeading id="produkty-title" title={d.produkty.heading} lead={d.produkty.body} />
+        <SectionHeading id="produkty-title" title={d.produkty.heading} lead={d.produkty.body} accent={false} />
         <ul role="list" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
           {d.products.map((p) => (
             <li key={p.slug}>
-              <ProductCard product={p} description={p.description} quickAdd={isMini(p.slug) ? null : quickAdd} />
+              <ProductCard product={p} description={p.description} quickAdd={isMini(p.slug) ? null : quickAdd} linkLabel={isMini(p.slug) ? MINI_CTA : undefined} />
             </li>
           ))}
         </ul>
@@ -56,7 +60,7 @@ export default function CheesecakesPage() {
             <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
               <PriceTag text={d.mini.product.priceText} size="lg" />
               <Button href={d.mini.product.href} variant="primary" arrow>
-                {d.mini.product.name}
+                {MINI_SECTION_CTA}
               </Button>
             </div>
           </div>

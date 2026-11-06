@@ -45,7 +45,7 @@ export function HowItWorks({
               </span>
               <div className="lg:mt-4">
                 <h3 className="md-caps text-h3 text-cocoa">{s.title}</h3>
-                <p className="md-pretty mt-3 text-copy text-cocoa-soft">
+                <p className="md-pretty mt-3 text-copy text-cocoa-soft first-letter:uppercase">
                   <PlaceholderText text={s.text} />
                 </p>
               </div>

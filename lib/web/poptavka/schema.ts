@@ -1,5 +1,5 @@
 /**
- * Validace průvodce poptávkou (zod). Hlášky jsou doslova z mikrotextů
+ * Validace průvodce poptávkou (zod). Hlášky jsou konkrétní (co chybí) nebo doslova z mikrotextů
  * (CHYBA — …) přes MESSAGES z lib/web/validation.ts, pravidla stejná jako
  * validateInquiry (mock submitInquiry) + to, co copy formuláře značí hvězdičkou
  * navíc: místo (adresa, nebo „Hledám prostor“) a telefon.
@@ -10,32 +10,31 @@
 import { z } from 'zod'
 import type { FieldErrors, InquiryField } from '../api'
 import { isoDate } from '../format'
-import { EVENT_TYPES, minimumGuests, type EventType } from '../options'
+import { EVENT_TYPES, type EventType } from '../options'
 import { isEmail, isIco, isPhone, MESSAGES } from '../validation'
 import { STEP_FIELDS, STEP_IDS, isBusiness, type InquiryDraft, type StepId } from './draft'
 
 const EVENT_VALUES = EVENT_TYPES.map((e) => e.value) as [EventType, ...EventType[]]
 const MAX_GUESTS = 5000
 
-const required = z.string().trim().min(1, MESSAGES.required)
 const optional = z.string().trim()
 
 /**
  * Schéma stavu průvodce. `today` = YYYY-MM-DD (kvůli testům).
  * Dvě části: `fields` (každé pole zvlášť) a `rules` (pravidla mezi poli –
- * minimum osob podle typu akce, místo, nebo „Hledám prostor“). Zod spouští
+ * počet osob, místo, nebo „Hledám prostor“; minimum osob formátu jen upozorňuje). Zod spouští
  * superRefine jen nad bezchybným objektem, proto jsou pravidla ve vlastním
  * schématu nad typy, které nemohou selhat.
  */
 export function inquiryDraftSchema(today = isoDate()) {
   const fields = z.object({
-    eventType: z.enum(EVENT_VALUES, { error: MESSAGES.required }),
+    eventType: z.enum(EVENT_VALUES, { error: MESSAGES.eventType }),
     eventDate: optional.refine((v) => !v || v >= today, MESSAGES.pastDate),
-    customerKind: z.enum(['firma', 'soukrome', 'agentura'], { error: MESSAGES.required }),
+    customerKind: z.enum(['firma', 'soukrome', 'agentura'], { error: MESSAGES.customerKind }),
     companyIco: optional.refine((v) => !v || isIco(v), MESSAGES.ico),
-    name: required,
-    email: required.refine(isEmail, MESSAGES.email),
-    phone: required.refine(isPhone, MESSAGES.phone),
+    name: z.string().trim().min(1, MESSAGES.name),
+    email: z.string().trim().min(1, MESSAGES.emailRequired).refine(isEmail, MESSAGES.email),
+    phone: z.string().trim().min(1, MESSAGES.phoneRequired).refine(isPhone, MESSAGES.phone),
     consent: z.literal(true, { error: MESSAGES.consent }),
   })
   const rules = z
@@ -44,12 +43,10 @@ export function inquiryDraftSchema(today = isoDate()) {
       if (d.eventType === 'konzultace') return
       const n = Number(d.guests.replace(/\s/g, ''))
       if (!d.guests.trim() || !Number.isInteger(n) || n < 1 || n > MAX_GUESTS) {
-        ctx.addIssue({ code: 'custom', path: ['guests'], message: MESSAGES.required })
-      } else if (d.eventType && EVENT_VALUES.includes(d.eventType as EventType)) {
-        const min = minimumGuests(d.eventType as EventType)
-        if (min && n < min) ctx.addIssue({ code: 'custom', path: ['guests'], message: MESSAGES.belowMinimum(min) })
+        ctx.addIssue({ code: 'custom', path: ['guests'], message: MESSAGES.guests })
       }
-      if (!d.address.trim() && !d.needsVenue) ctx.addIssue({ code: 'custom', path: ['address'], message: MESSAGES.required })
+      // Pod minimem formátu jen upozornění v průvodci (guestsBelowMinimum), ne chyba.
+      if (!d.address.trim() && !d.needsVenue) ctx.addIssue({ code: 'custom', path: ['address'], message: MESSAGES.address })
     })
   return { fields, rules }
 }
