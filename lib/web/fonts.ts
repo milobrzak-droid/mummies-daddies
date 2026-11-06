@@ -1,14 +1,17 @@
-import { Cormorant_Garamond, Manrope } from 'next/font/google'
+import { Anton, Manrope } from 'next/font/google'
 
 /**
- * Písma webu (next/font/google = self-hosting při buildu, prohlížeč nic nestahuje z Googlu).
- * latin-ext kvůli češtině. Proměnné se nastavují na obal webu v app/(web)/layout.tsx
- * a Tailwind je čte přes font-display / font-copy (lib/web/tokens.ts).
+ * Písma webu v2 (next/font/google = self-hosting při buildu, prohlížeč nic nestahuje z Googlu,
+ * CSP font-src 'self' platí). latin-ext kvůli češtině. Proměnné se nastavují na obal webu
+ * v app/(web)/layout.tsx a Tailwind je čte přes font-display / font-copy (lib/web/tokens.ts).
+ *
+ * - Anton 400 = nadpisy (velmi tučné úzké verzálky, jako v referenci). Má jen jeden řez:
+ *   nikdy font-bold (falešné tučné), malá písmena Antonem nepsat, line-height ≥ 1.12.
+ * - Manrope = text, UI, tlačítka.
  */
-export const displayFont = Cormorant_Garamond({
+export const displayFont = Anton({
   subsets: ['latin', 'latin-ext'],
-  weight: ['500', '600'],
-  style: ['normal', 'italic'],
+  weight: '400',
   display: 'swap',
   variable: '--font-md-display',
 })

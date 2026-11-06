@@ -1,7 +1,7 @@
 /*
- * Základní styly veřejného webu. Vše je pod třídou .md-web (obal v
- * app/(web)/layout.tsx), aby se web v hlavním systému nepotkal s Cockpitem.
- * Žádné @tailwind / @layer direktivy: ty má kořenové globals.css.
+ * Základní styly veřejného webu v2 („Mummy růžová + Daddy modrá na krémové kuchyňské tabuli“,
+ * docs/web-v2-design.md). Vše je pod třídou .md-web (obal v app/(web)/layout.tsx), aby se web
+ * v hlavním systému nepotkal s Cockpitem. Žádné @tailwind / @layer direktivy: ty má kořenové globals.css.
  */
 
 .md-web {
@@ -17,10 +17,17 @@
   display: flex;
   flex-direction: column;
   color-scheme: light;
+  /* Výřezy přesahující okraj nesmí vyrobit vodorovný scroll (clip, ne hidden: sticky header). */
+  overflow-x: clip;
+}
+@media (min-width: 1024px) {
+  .md-web {
+    font-size: 1.0625rem;
+  }
 }
 
 .md-web ::selection {
-  background: theme('colors.blush.DEFAULT');
+  background: theme('colors.raspberry.tint');
   color: theme('colors.cocoa.DEFAULT');
 }
 
@@ -29,12 +36,33 @@
   scroll-margin-top: calc(theme('spacing.header') + 1rem);
 }
 
-/* Titulky: elegantní serif verzálkami s prostrkáním. */
+/*
+ * Titulky: Anton verzálkami (docs §3.2). Anton má jen řez 400 → nikdy falešné tučné ani kurzíva.
+ * Řádkování ≥ 1.12 drží háčky nad Ř/Ž/Ď mimo řádek nad nimi.
+ */
 .md-caps {
   font-family: theme('fontFamily.display');
+  font-weight: 400;
   text-transform: uppercase;
-  font-feature-settings: 'kern', 'liga', 'lnum';
+  letter-spacing: 0.005em;
+  font-feature-settings: 'kern';
+  font-synthesis: none;
   text-wrap: balance;
+  hyphens: manual;
+  overflow-wrap: break-word;
+}
+.md-web .font-display {
+  font-weight: 400;
+  font-synthesis: none;
+  letter-spacing: 0.005em;
+}
+
+/* Akcentové slovo v nadpisu (jedno na nadpis): Mummy malina / Daddy modrá. */
+.md-accent {
+  color: theme('colors.raspberry.DEFAULT');
+}
+.md-accent-blue {
+  color: theme('colors.daddy.DEFAULT');
 }
 
 .md-balance {
@@ -45,14 +73,14 @@
   text-wrap: pretty;
 }
 
-/* Viditelný fokus pro klávesnici (AA): malinový prstenec s bílým lemem. */
+/* Viditelný fokus pro klávesnici (AA): modrý prstenec (odlišný od malinových CTA). */
 .md-web :focus-visible {
-  outline: 2px solid theme('colors.raspberry.ink');
+  outline: 3px solid theme('colors.daddy.ink');
   outline-offset: 3px;
-  border-radius: 2px;
 }
-.md-web .md-focus-on-dark:focus-visible {
-  outline-color: theme('colors.paper');
+.md-web .md-focus-on-dark:focus-visible,
+.md-web .md-on-dark :focus-visible {
+  outline-color: theme('colors.butter');
 }
 
 /* Odkaz „přeskočit na obsah“. */
@@ -65,48 +93,153 @@
   color: theme('colors.cocoa.DEFAULT');
   padding: 0.75rem 1.25rem;
   border-radius: 9999px;
-  font-weight: 600;
-  box-shadow: theme('boxShadow.float');
+  border: 2.5px solid theme('colors.cocoa.DEFAULT');
+  font-weight: 700;
+  box-shadow: theme('boxShadow.hard');
 }
 .md-skip:focus {
   top: 0.75rem;
 }
 
-/* Textové odkazy v obsahu. */
+/* Textové odkazy v obsahu: ink, podtržení 2px malina. */
 .md-link {
   text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.22em;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
   text-decoration-color: theme('colors.raspberry.DEFAULT');
-  transition: text-decoration-thickness 160ms ease, color 160ms ease;
+  transition: text-decoration-thickness 160ms ease, text-decoration-color 160ms ease;
 }
 .md-link:hover {
-  text-decoration-thickness: 2px;
-  color: theme('colors.raspberry.ink');
+  text-decoration-thickness: 3px;
+  text-decoration-color: theme('colors.raspberry.ink');
 }
 
-/* Zástupce obsahu, který doplní klient ([DOPLNÍ KLIENT: …]). Viditelný záměrně. */
+/* Zástupce obsahu, který doplní klient ([DOPLNÍ KLIENT: …]). Viditelný záměrně, nesmí působit hotově. */
 .md-fill {
   display: inline;
   padding: 0.05em 0.4em;
-  border: 1px dashed theme('colors.raspberry.ink');
+  border: 2px dashed theme('colors.raspberry.ink');
   border-radius: 0.35rem;
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(246, 223, 158, 0.4);
   color: theme('colors.cocoa.DEFAULT');
   font-family: theme('fontFamily.copy');
   font-size: 0.85em;
   font-weight: 600;
   letter-spacing: 0;
+  line-height: 1.5;
   text-transform: none;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
+.md-caps .md-fill {
+  font-size: max(0.3em, 0.875rem);
+  vertical-align: middle;
+}
 
-/* Jemné zrnění na pastelových zástupcích fotek. */
+/* Zástupce fotky: tint plocha s jemným vzorem (žádná šedá). */
 .md-placeholder-pattern {
   background-image:
-    radial-gradient(circle at 20% 25%, rgba(255, 255, 255, 0.55) 0 18%, transparent 19%),
-    radial-gradient(circle at 78% 70%, rgba(255, 255, 255, 0.35) 0 24%, transparent 25%);
+    radial-gradient(circle at 20% 25%, rgba(255, 253, 248, 0.55) 0 18%, transparent 19%),
+    radial-gradient(circle at 78% 70%, rgba(255, 253, 248, 0.35) 0 24%, transparent 25%);
+}
+
+/*
+ * Rámovaná mřížka (docs §4): buňky dělené SDÍLENÝMI 2px linkami.
+ * Grid s gap 2px na ink pozadí + buňky s vlastním pozadím → přesně jednoduché linky.
+ */
+.md-grid {
+  display: grid;
+  gap: 2px;
+  background: theme('colors.cocoa.DEFAULT');
+  border-block: 2px solid theme('colors.cocoa.DEFAULT');
+}
+.md-grid > * {
+  background: theme('colors.cream');
+  min-width: 0;
+}
+
+/* Samolepka: fotka jídla oříznutá do zaobleného čtverce/kruhu, ink obrys a tvrdý stín. */
+.md-sticker {
+  border: 2.5px solid theme('colors.cocoa.DEFAULT');
+  border-radius: theme('borderRadius.sticker');
+  box-shadow: theme('boxShadow.hard-md');
+  overflow: hidden;
+  background: theme('colors.raspberry.tint');
+}
+
+/* Levitace výřezů a plovoucích štítků (každý prvek si nastaví --r a animation-delay). */
+.md-float {
+  transform: rotate(var(--r, 0deg));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .md-float {
+    animation: md-float 6s ease-in-out infinite;
+  }
+}
+@keyframes md-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--r, 0deg));
+  }
+  50% {
+    transform: translateY(-10px) rotate(calc(var(--r, 0deg) + 1.5deg));
+  }
+}
+
+/* Obří běžící pruh (docs §5.11). Obsah je v DOM dvakrát, druhá kopie aria-hidden. */
+.md-marquee-track {
+  display: flex;
+  width: max-content;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .md-marquee-track {
+    animation: md-marquee 28s linear infinite;
+  }
+  .md-marquee:hover .md-marquee-track,
+  .md-marquee:focus-within .md-marquee-track {
+    animation-play-state: paused;
+  }
+}
+@keyframes md-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.md-outline-text {
+  color: transparent;
+  -webkit-text-stroke: 2px theme('colors.cream');
+}
+
+/* Tlačítko se „zamáčkne“ do stínu (docs §4: hover −2px + stín 6px, active +4px + stín 0). */
+@media (prefers-reduced-motion: no-preference) {
+  .md-press {
+    transition:
+      transform 120ms ease,
+      box-shadow 120ms ease,
+      background-color 120ms ease,
+      color 120ms ease;
+  }
+  .md-press:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 theme('colors.cocoa.DEFAULT');
+  }
+  .md-press:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 0 theme('colors.cocoa.DEFAULT');
+  }
+}
+
+/* Vodorovný pás pilulek (mobilní seznam formátů/příchutí): fade na okrajích. */
+.md-scroll-fade {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 24px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 24px), transparent 100%);
+  scrollbar-width: none;
+}
+.md-scroll-fade::-webkit-scrollbar {
+  display: none;
 }
 
 /* Disclosure šipka FAQ. */
@@ -117,7 +250,7 @@
   display: none;
 }
 
-/* Ohleduplnost k nastavení „omezit pohyb“: žádné animace ani plynulé rolování. */
+/* Ohleduplnost k nastavení „omezit pohyb“: nic se nehýbe, marquee je statické a zalomené. */
 @media (prefers-reduced-motion: reduce) {
   .md-web *,
   .md-web *::before,
@@ -126,6 +259,17 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  .md-web .md-float,
+  .md-web .md-marquee-track {
+    animation: none !important;
+  }
+  .md-web .md-marquee-track {
+    width: auto;
+    flex-wrap: wrap;
+  }
+  .md-web .md-marquee-copy {
+    display: none;
   }
 }
 

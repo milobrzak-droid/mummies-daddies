@@ -38,6 +38,7 @@ export function PhotoFrame({
   showProvisional = false,
   placeholderLabel,
   rounded = true,
+  sticker = false,
   className,
   imgClassName,
   children,
@@ -55,14 +56,22 @@ export function PhotoFrame({
   showProvisional?: boolean
   /** Text v zástupci (výchozí žádný, jen ikona). */
   placeholderLabel?: string
+  /** Rám: 2px ink obrys (ostrá buňka mřížky). false = bez rámu (fotka přes celou plochu). */
   rounded?: boolean
+  /** „Samolepka“ (docs §8 B): zaoblení 1.25rem, 2.5px obrys, tvrdý stín 6px. Natočení řeší rodič. */
+  sticker?: boolean
   className?: string
   imgClassName?: string
   /** Překryv (štítky, gradient). */
   children?: ReactNode
 }) {
   // 'fill' je absolute – nesmí ho přebít 'relative' (jinak má rám nulovou výšku).
-  const frame = cx(aspect === 'fill' ? 'overflow-hidden' : 'relative overflow-hidden', ASPECT[aspect], rounded && 'rounded-frame', className)
+  const frame = cx(
+    aspect === 'fill' ? 'overflow-hidden' : 'relative overflow-hidden',
+    ASPECT[aspect],
+    sticker ? 'md-sticker' : rounded && 'border-2 border-cocoa',
+    className,
+  )
   if (!photo || photo.placeholder || !photo.src) {
     return (
       <div role="img" aria-label={photo?.alt ?? placeholderLabel ?? 'Fotka bude doplněna'} className={cx(frame, TONE_BG_DEEP[tone], 'md-placeholder-pattern')}>

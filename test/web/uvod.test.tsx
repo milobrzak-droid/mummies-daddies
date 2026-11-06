@@ -73,8 +73,11 @@ function expectAccessibleBasics(doc: Document) {
   for (const el of Array.from(doc.querySelectorAll('[aria-labelledby]'))) {
     expect(doc.getElementById(el.getAttribute('aria-labelledby')!), el.getAttribute('aria-labelledby')!).not.toBeNull()
   }
-  // každý obrázek má alt, každé pole formuláře popisek
-  for (const img of Array.from(doc.querySelectorAll('img'))) expect((img.getAttribute('alt') ?? '').length).toBeGreaterThan(0)
+  // každý obrázek má alt (prázdný jen čistě dekorativní výřez uvnitř aria-hidden), každé pole formuláře popisek
+  for (const img of Array.from(doc.querySelectorAll('img'))) {
+    if (img.closest('[aria-hidden="true"]')) expect(img.getAttribute('alt')).toBe('')
+    else expect((img.getAttribute('alt') ?? '').length, img.getAttribute('src') ?? '').toBeGreaterThan(0)
+  }
   for (const f of Array.from(doc.querySelectorAll('input:not([type=hidden]), select, textarea'))) {
     expect(doc.querySelector(`label[for="${f.id}"]`), `pole ${f.getAttribute('name')} bez popisku`).not.toBeNull()
   }
@@ -95,11 +98,14 @@ describe('úvodní stránka', () => {
     expect(body).toContain('Vaříme od roku 2018')
   })
 
-  it('vykreslí sekce ve stejném pořadí jako strategy.homepage a texty doslova z copy', () => {
-    const ids = ['rychly-start', 'typy-akci', 'proc-my', 'reference', 'z-kuchyne', 'jak-to-funguje', 'prostory', 'cheesecaky', 'tym', 'faq', 'zaverecna-poptavka']
+  it('vykreslí sekce v pořadí webu v2 (docs/web-v2-design.md §6) a texty doslova z copy', () => {
+    // v2: za typy akcí přibyly „Formáty“ a obří pruh (bez nadpisu, aria-label), cheesecaky jsou před prostory.
+    const ids = ['rychly-start', 'typy-akci', 'proc-my', 'reference', 'z-kuchyne', 'jak-to-funguje', 'cheesecaky', 'prostory', 'tym', 'faq', 'zaverecna-poptavka']
     const h2 = Array.from(doc.querySelectorAll('h2')).map(text)
     const expected = ids.map((id) => getSection('/', id).heading)
+    expected.splice(2, 0, 'Vyberte si formát')
     expect(h2).toEqual(expected)
+    expect(doc.querySelector('section[aria-label="Catering a cheesecaky"]')).not.toBeNull()
     for (const id of ids) {
       const s = getSection('/', id)
       if (s.body && !s.body.includes('[DOPLNÍ KLIENT')) expect(body).toContain(s.body)

@@ -21,15 +21,15 @@ export function Faq({ items, jsonLd = true, headingLevel: H = 'h3', className }:
     mainEntity: ldItems.map((i) => ({ '@type': 'Question', name: i.question, acceptedAnswer: { '@type': 'Answer', text: stripPlaceholders(i.answer) } })),
   }
   return (
-    <div className={cx('divide-y divide-hairline border-y border-hairline', className)}>
+    <div className={cx('divide-y-2 divide-cocoa border-y-2 border-cocoa', className)}>
       {items.map((it, i) => (
         <details key={i} className="group/faq">
-          <summary className="flex cursor-pointer items-start justify-between gap-6 py-5 sm:py-6">
-            <H className="font-copy text-[1.0625rem] font-semibold leading-snug text-cocoa sm:text-[1.125rem]">
+          <summary className="flex cursor-pointer items-start justify-between gap-6 py-5 transition-colors hover:bg-raspberry-tint/50 sm:py-6">
+            <H className="font-copy text-[1.0625rem] font-bold leading-snug text-cocoa sm:text-[1.1875rem]">
               <PlaceholderText text={it.question} />
             </H>
-            <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-pill bg-paper text-cocoa ring-1 ring-hairline motion-safe:transition-transform motion-safe:duration-base group-open/faq:rotate-45">
-              <IconPlus size={16} />
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-pill border-2 border-cocoa bg-paper text-cocoa shadow-hard-sm motion-safe:transition-transform motion-safe:duration-base group-open/faq:rotate-45 group-open/faq:bg-raspberry-ink group-open/faq:text-cream">
+              <IconPlus size={18} />
             </span>
           </summary>
           <div className="md-pretty max-w-web-prose pb-6 pr-12 text-copy text-cocoa-soft">

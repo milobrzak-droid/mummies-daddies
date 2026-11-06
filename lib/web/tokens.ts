@@ -9,33 +9,45 @@
  */
 
 export const colors = {
-  /** Podklad stránky (krémová). */
-  cream: '#FBF6EE',
-  /** Bílá plocha (karty, header, tlačítko na fotce). */
-  paper: '#FFFFFF',
-  /** Hlavní text, nadpisy, ikony. Kakao. */
+  /** Podklad stránky (krémová kuchyňská tabule, web v2). */
+  cream: '#FBF3E6',
+  /** Karty, pole formuláře, buňky mřížky, které mají „vystoupit“. */
+  paper: '#FFFDF8',
+  /** „Ink“: text, nadpisy, VŠECHNY linky (2 px), obrysy a tvrdé offset stíny. Tmavé kakao. */
   cocoa: {
-    DEFAULT: '#3B2418',
-    /** Sekundární text (perexy, popisky). AA i na pastelových plochách. */
-    soft: '#6B5245',
+    DEFAULT: '#2B1810',
+    /** Sekundární text (perexy, popisky). AA na všech tintech. */
+    soft: '#5E4636',
   },
-  /** Linky, rámečky, oddělovače (dekorativní, ne text). */
-  hairline: '#E7DCCF',
-  /** Pastelové plochy karet a sekcí. Text na nich je vždy cocoa / cocoa-soft. */
-  blush: { DEFAULT: '#F2D4D2', soft: '#F8E7E5', deep: '#E9BDBA' },
-  sage: { DEFAULT: '#BCD9D3', soft: '#DDECE8', deep: '#A3CBC3' },
-  vanilla: { DEFAULT: '#F6E7C8', soft: '#FBF2E1', deep: '#EFD9AA' },
-  pistachio: { DEFAULT: '#D5E3C3', soft: '#E9F0DF', deep: '#C2D6A9' },
+  /** Linky mřížky = ink (v2 nemá šedé hairline, vše je 2px kakaová linka). */
+  hairline: '#2B1810',
   /**
-   * Malina = akcent JEN na CTA a ceny.
-   * DEFAULT (#D9466F) je dekorativní (tečky, podtržení, velké číslice ≥ 24 px);
-   * `ink` je pro text a pozadí tlačítka s bílým textem (AA 5,3 : 1);
-   * `deep` je hover/active.
+   * Zpětně kompatibilní jména ploch z v1, namapovaná na paletu v2 (docs/web-v2-design.md §1, §7.1):
+   * blush → rasp-tint (Mummy), sage → blue-tint (Daddy), vanilla → butter, pistachio → původní světle modrá klienta.
+   * Text na nich je vždy cocoa / cocoa-soft.
    */
-  raspberry: { DEFAULT: '#D9466F', ink: '#C23560', deep: '#A82A51' },
-  /** Stav formulářů. */
+  blush: { DEFAULT: '#F7D6DF', soft: '#FBE8ED', deep: '#F0BFCD' },
+  sage: { DEFAULT: '#D3E0F2', soft: '#E7EEF8', deep: '#BBCDE8' },
+  vanilla: { DEFAULT: '#F9E8B9', soft: '#FCF2D6', deep: '#F4DB95' },
+  pistachio: { DEFAULT: '#C9D8ED', soft: '#E2EAF6', deep: '#B5C8E5' },
+  /**
+   * Malina = „Mummy“ a AKCE (primární CTA, ceny, akcentové slovo v nadpisu).
+   * DEFAULT (#D23F6B) jen velký text ≥ 24 px a grafika (4,09 : 1 na krému);
+   * `ink` = pozadí primárního tlačítka s krémovým textem a malinový text < 24 px;
+   * `deep` = hover/active; `tint` = růžová plocha; `onInk` = malina na tmavé patičce.
+   */
+  raspberry: { DEFAULT: '#D23F6B', ink: '#B8305A', deep: '#962248', tint: '#F7D6DF', onInk: '#F48AA8' },
+  /**
+   * Modrá = „Daddy“ (původní barva loga M&D, #4669A6). Druhý hlas: akcentové slovo,
+   * sekundární tlačítko, fokus. Nikdy primární CTA. `tint` = pruhy nadpisů sekcí.
+   */
+  daddy: { DEFAULT: '#4669A6', ink: '#36568F', deep: '#27406E', tint: '#D3E0F2', onInk: '#A9C2EA' },
+  /** Máslová sušenka (korpus cheesecaku): doplňková barva štítků, nikdy velké plochy. */
+  butter: '#F6DF9E',
+  /** Stavy formulářů. */
   danger: '#A3261F',
   success: '#2F6B4F',
+  warning: '#8A5A00',
 } as const
 
 /** Pastelové tóny, ve kterých se střídají karty a sekce. */
@@ -53,27 +65,30 @@ export const fonts = {
   /** CSS proměnné nastavené v app/(web)/layout.tsx přes next/font/google. */
   displayVar: '--font-md-display',
   textVar: '--font-md-text',
-  display: ['var(--font-md-display)', 'Cormorant Garamond', 'Georgia', 'serif'],
+  /** Anton: velmi tučné úzké verzálky (jen 400, jen verzálky, line-height ≥ 1.12). */
+  display: ['var(--font-md-display)', 'Anton', 'Bebas Neue', 'Arial Narrow', 'Impact', 'sans-serif'],
   text: ['var(--font-md-text)', 'Manrope', 'system-ui', 'sans-serif'],
 } as const
 
 /**
  * Typografická stupnice (fluidní, 360 px → 1440 px).
- * Titulky (hero, h1, h2, h3) jsou font-display, verzálky s prostrkáním (třída `md-caps`).
+ * Titulky (mega, hero, h1, h2, h3) jsou Anton verzálkami (třída `md-caps`); line-height ≥ 1.12,
+ * jinak se háčky nad Ř/Ž/Ď srazí s řádkem nad nimi (docs/web-v2-design.md §3.2).
  */
 type FontSizeToken = [size: string, config: { lineHeight: string; letterSpacing?: string; fontWeight?: string }]
 
 // Klíče bez Record<…> v uvozovkách: test/deal-stage-migration hlídá staré
 // klíče fází obchodu (mj. „lead“) jako řetězcové literály v celém kódu.
 export const fontSize = {
-  hero: ['clamp(2.5rem, 1.55rem + 4.2vw, 5.25rem)', { lineHeight: '1.02', letterSpacing: '0.04em', fontWeight: '500' }],
-  h1: ['clamp(2.125rem, 1.6rem + 2.4vw, 3.75rem)', { lineHeight: '1.06', letterSpacing: '0.04em', fontWeight: '500' }],
-  h2: ['clamp(1.75rem, 1.38rem + 1.65vw, 2.875rem)', { lineHeight: '1.1', letterSpacing: '0.035em', fontWeight: '500' }],
-  h3: ['clamp(1.3125rem, 1.18rem + 0.55vw, 1.625rem)', { lineHeight: '1.2', letterSpacing: '0.03em', fontWeight: '600' }],
-  lead: ['clamp(1.0625rem, 1rem + 0.3vw, 1.25rem)', { lineHeight: '1.6' }],
+  mega: ['clamp(3.25rem, 1.2rem + 9vw, 9.5rem)', { lineHeight: '1.12', letterSpacing: '0.005em', fontWeight: '400' }],
+  hero: ['clamp(2.75rem, 1.2rem + 6.4vw, 7rem)', { lineHeight: '1.12', letterSpacing: '0.005em', fontWeight: '400' }],
+  h1: ['clamp(2.5rem, 1.4rem + 4.8vw, 5.5rem)', { lineHeight: '1.15', letterSpacing: '0.005em', fontWeight: '400' }],
+  h2: ['clamp(2rem, 1.3rem + 3vw, 4rem)', { lineHeight: '1.15', letterSpacing: '0.005em', fontWeight: '400' }],
+  h3: ['clamp(1.375rem, 1.15rem + 1vw, 1.875rem)', { lineHeight: '1.2', letterSpacing: '0.005em', fontWeight: '400' }],
+  lead: ['clamp(1.0625rem, 1rem + 0.35vw, 1.3125rem)', { lineHeight: '1.55' }],
   copy: ['1rem', { lineHeight: '1.65' }],
-  small: ['0.875rem', { lineHeight: '1.55' }],
-  eyebrow: ['0.75rem', { lineHeight: '1.3', letterSpacing: '0.18em', fontWeight: '600' }],
+  small: ['0.875rem', { lineHeight: '1.5' }],
+  eyebrow: ['0.8125rem', { lineHeight: '1.2', letterSpacing: '0.08em', fontWeight: '700' }],
 } satisfies Record<string, FontSizeToken>
 
 /** Mezery (Tailwind spacing klíče). */
@@ -93,24 +108,31 @@ export const maxWidth = {
   web: '80rem',
   /** Široký kontejner (mřížky přes celou šířku). */
   'web-wide': '90rem',
-  /** Čitelná šířka textu. */
+  /** Čitelná šířka textu (62ch). */
   'web-prose': '42rem',
 } as const
 
 export const radius = {
   /** Tlačítka, štítky. */
   pill: '9999px',
-  /** Fotky a karty – reference má téměř ostré rohy. */
-  frame: '0.25rem',
-  /** Formulářové a překryvné karty. */
-  soft: '1rem',
+  /** Buňky mřížky a fotky v mřížce: ostré jako v referenci. */
+  frame: '0',
+  /** Pole formuláře, menší karty. */
+  soft: '0.75rem',
+  /** Fotky „samolepky“ a výřezy. */
+  sticker: '1.25rem',
 } as const
 
+/** Tvrdé offset stíny (neo-brutalist), vždy v ink. Žádné rozmazané stíny. */
 export const shadow = {
-  /** Jemné zvednutí karty na hover. */
-  lift: '0 22px 44px -28px rgba(59, 36, 24, 0.38)',
-  /** Plovoucí panely (rychlý start, mega-menu). */
-  float: '0 24px 60px -30px rgba(59, 36, 24, 0.45)',
+  'hard-sm': '3px 3px 0 0 #2B1810',
+  hard: '4px 4px 0 0 #2B1810',
+  'hard-md': '6px 6px 0 0 #2B1810',
+  'hard-lg': '8px 8px 0 0 #2B1810',
+  /** Zpětná kompatibilita v1: karty na hover → hard-md. */
+  lift: '6px 6px 0 0 #2B1810',
+  /** Zpětná kompatibilita v1: plovoucí panely (formulář, mega-menu) → hard-lg. */
+  float: '8px 8px 0 0 #2B1810',
 } as const
 
 export const motion = {
@@ -137,10 +159,18 @@ export const webTailwindExtend = {
     'md-fade': { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
     // Jen posun (bez průhlednosti) – pro obsah nad ohybem, aby se nezdržel LCP.
     'md-lift': { '0%': { transform: 'translateY(12px)' }, '100%': { transform: 'none' } },
+    // Levitace výřezů: každý prvek má vlastní --r (natočení) a zpoždění.
+    'md-float': {
+      '0%, 100%': { transform: 'translateY(0) rotate(var(--r, 0deg))' },
+      '50%': { transform: 'translateY(-10px) rotate(calc(var(--r, 0deg) + 1.5deg))' },
+    },
+    'md-marquee': { '0%': { transform: 'translateX(0)' }, '100%': { transform: 'translateX(-50%)' } },
   },
   animation: {
     rise: 'md-rise 700ms cubic-bezier(.2,.7,.2,1) both',
     fade: 'md-fade 500ms ease-out both',
     lift: 'md-lift 800ms cubic-bezier(.2,.7,.2,1) both',
+    float: 'md-float 6s ease-in-out infinite',
+    marquee: 'md-marquee 28s linear infinite',
   },
 }

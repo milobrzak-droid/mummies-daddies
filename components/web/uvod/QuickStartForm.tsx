@@ -22,10 +22,10 @@ export interface QuickStartLabels {
 }
 
 const FIELD =
-  'block min-h-12 w-full rounded-soft bg-paper px-4 font-copy text-copy text-cocoa ring-1 ring-inset ring-cocoa/25 ' +
-  'transition-shadow duration-quick ease-md-out placeholder:text-cocoa-soft hover:ring-cocoa/50 focus:outline-none focus:ring-2 focus:ring-raspberry-ink'
+  'block min-h-[3.25rem] w-full rounded-soft border-2 border-cocoa bg-cream px-4 font-copy text-copy text-cocoa ' +
+  'transition-[box-shadow,background-color] duration-quick ease-md-out placeholder:text-cocoa-soft hover:bg-paper focus:border-daddy-ink focus:bg-paper focus:shadow-[0_0_0_3px_#36568F] focus:outline-none'
 
-const LABEL = 'mb-2 block font-copy text-small font-semibold text-cocoa'
+const LABEL = 'mb-2 block font-copy text-small font-bold text-cocoa'
 
 export function QuickStartForm({
   labels,

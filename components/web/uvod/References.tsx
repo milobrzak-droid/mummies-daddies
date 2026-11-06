@@ -1,10 +1,10 @@
+import Image from 'next/image'
+import Link from 'next/link'
 import type { Photo } from '@/lib/web/photos'
-import type { PastelTone } from '@/lib/web/tokens'
 import { Button } from '../Button'
-import { PastelCard } from '../PastelCard'
+import { IconArrowRight, IconPlate } from '../icons'
 import { PlaceholderText } from '../PlaceholderText'
-import { Section } from '../Section'
-import { SectionHeading } from '../SectionHeading'
+import { SectionBand } from '../v2/SectionBand'
 
 export interface ReferenceCard {
   title: string
@@ -19,11 +19,10 @@ export interface ReferenceNote {
   text: string
 }
 
-const TONES: PastelTone[] = ['sage', 'blush', 'vanilla']
-
 /**
- * Důvěra a reference: 3 případové studie s velkou fotkou, pod nimi loga,
- * citace a číselný pás. Loga, citace a čísla zatím dodává klient (zástupci).
+ * Reference (docs/web-v2-design.md §5.10) BEZ vymýšlení: žádné hvězdičky ani fiktivní lidé.
+ * Mřížka 3 buněk: velké malinové uvozovky, skutečný popis akce z copy, fotka akce jako kruhový
+ * „avatar“ s obrysem (nebo kruh s příborem). Citáty, loga a čísla zatím dodá klient (zástupci).
  */
 export function References({
   heading,
@@ -44,52 +43,71 @@ export function References({
   id?: string
 }) {
   return (
-    <Section id={id} tone="paper" labelledBy={`${id}-title`}>
-      <SectionHeading
+    <section id={id} aria-labelledby={`${id}-title`} className="bg-cream">
+      <SectionBand
         id={`${id}-title`}
         title={heading}
+        accent="pro"
         lead={lead}
-        action={cta ? <Button href={cta.href} variant="ghost">{cta.label}</Button> : undefined}
+        tone="cream"
+        action={cta ? <Button href={cta.href} variant="outline" arrow>{cta.label}</Button> : undefined}
       />
-      <ul role="list" className="grid gap-6 md:grid-cols-3 lg:gap-8">
-        {cards.map((c, i) => (
-          <li key={c.href}>
-            <PastelCard
-              title={c.title}
-              description={c.text}
-              href={c.href}
-              photo={c.photo}
-              tone={TONES[i % TONES.length]}
-              aspect="tall"
-              photoClassName="max-md:aspect-[4/3]"
-              sizes="(min-width: 1280px) 400px, (min-width: 768px) 31vw, 92vw"
-            />
-          </li>
-        ))}
-      </ul>
-
-      {notes.length ? (
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
-          {notes.map((n) => (
-            <div key={n.label} className="rounded-soft border border-dashed border-cocoa/25 bg-cream p-6">
-              <p className="mb-3 font-copy text-eyebrow uppercase text-cocoa-soft">{n.label}</p>
-              <p className="text-copy text-cocoa">
-                <PlaceholderText text={n.text} />
-              </p>
-            </div>
-          ))}
-        </div>
-      ) : null}
-
-      {stats.length ? (
-        <ul role="list" className="mt-6 grid divide-y divide-hairline rounded-soft bg-vanilla-soft sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-          {stats.map((s) => (
-            <li key={s} className="px-6 py-7 text-center font-display text-h3 font-medium leading-tight text-cocoa">
-              <PlaceholderText text={s} />
+      <div className="mx-auto max-w-web-wide">
+        <ul role="list" className="md-grid border-y-0 md:grid-cols-3 min-[90rem]:border-x-2 min-[90rem]:border-cocoa">
+          {cards.map((c, i) => (
+            <li key={c.href} className="hover:!bg-raspberry-tint">
+              <article className="group relative flex h-full flex-col px-gutter py-8 sm:p-8 xl:p-10">
+                <span aria-hidden="true" className="md-caps -mb-6 text-[6rem] leading-[1.15] text-raspberry">
+                  „
+                </span>
+                <h3 className="md-caps text-h3 text-cocoa">
+                  <Link href={c.href} className="outline-none after:absolute after:inset-0 after:content-[''] focus-visible:after:outline focus-visible:after:outline-[3px] focus-visible:after:-outline-offset-4 focus-visible:after:outline-daddy-ink">
+                    {c.title}
+                  </Link>
+                </h3>
+                <p className="md-pretty mt-3 text-copy text-cocoa-soft">
+                  <PlaceholderText text={c.text} />
+                </p>
+                <div className="mt-auto flex items-center justify-between gap-4 pt-8">
+                  <span className={`relative block h-20 w-20 overflow-hidden rounded-full border-[2.5px] border-cocoa shadow-hard-sm ${i % 2 ? 'bg-daddy-tint' : 'bg-raspberry-tint'}`}>
+                    {c.photo?.src && !c.photo.placeholder ? (
+                      <Image src={c.photo.src} alt={c.photo.alt} fill sizes="80px" className="object-cover" />
+                    ) : (
+                      <span role="img" aria-label="Fotka akce bude doplněna" className="grid h-full place-items-center">
+                        <IconPlate size={30} />
+                      </span>
+                    )}
+                  </span>
+                  <span aria-hidden="true" className="grid h-11 w-11 place-items-center rounded-pill border-2 border-cocoa bg-paper transition-colors group-hover:bg-raspberry-ink group-hover:text-cream">
+                    <IconArrowRight size={18} />
+                  </span>
+                </div>
+              </article>
             </li>
           ))}
         </ul>
-      ) : null}
-    </Section>
+        {notes.length || stats.length ? (
+          <div className="md-grid border-y-0 border-t-2 md:grid-cols-2 min-[90rem]:border-x-2 min-[90rem]:border-cocoa">
+            {notes.map((n) => (
+              <div key={n.label} className="px-gutter py-6 sm:p-8">
+                <p className="mb-3 font-copy text-eyebrow uppercase text-cocoa">{n.label}</p>
+                <p className="text-copy text-cocoa">
+                  <PlaceholderText text={n.text} />
+                </p>
+              </div>
+            ))}
+            {stats.length ? (
+              <ul role="list" className="grid gap-2 !bg-butter px-gutter py-6 sm:grid-cols-3 sm:p-8 md:col-span-2">
+                {stats.map((s) => (
+                  <li key={s} className="md-caps text-h3 text-cocoa">
+                    <PlaceholderText text={s} />
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+    </section>
   )
 }

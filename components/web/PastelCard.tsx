@@ -9,7 +9,9 @@ import { cx } from './cx'
 import { TONE_BG } from './tones'
 
 /**
- * Pastelová karta (srdce mřížky typů akcí, produktů, referencí).
+ * Karta v rámu (web v2 „FrameCell“): plocha v tónu (blush = růžová Mummy, sage = modrá Daddy,
+ * vanilla = máslová), 2.5px ink obrys, ostré rohy, na hover se zvedne s tvrdým stínem.
+ * Srdce mřížky typů akcí, produktů, referencí.
  * Fotka v pastelovém rámu, pod ní titulek verzálkami, popis a `meta` (PriceTag,
  * Badge…). S `href` je klikací celá karta (roztažený odkaz na titulku), bez
  * vnořených odkazů. Bez fotky (`photo` vynechat) = textová karta (pilíře, kroky).
@@ -53,9 +55,10 @@ export function PastelCard({
   return (
     <article
       className={cx(
-        'group relative flex h-full flex-col rounded-frame p-3 sm:p-4',
+        'group relative flex h-full flex-col border-[2.5px] border-cocoa p-3 sm:p-4',
         TONE_BG[tone],
-        href && 'transition-shadow duration-base ease-md-out hover:shadow-lift focus-within:shadow-lift',
+        href &&
+          'motion-safe:transition-[transform,box-shadow] motion-safe:duration-quick hover:shadow-lift focus-within:shadow-lift motion-safe:hover:-translate-x-1 motion-safe:hover:-translate-y-1',
         className,
       )}
     >
@@ -64,13 +67,13 @@ export function PastelCard({
       ) : null}
       <div className={cx('flex flex-1 flex-col px-2 pb-3 sm:px-3', photo !== undefined ? 'pt-5' : 'pt-4')}>
         {eyebrow ? (
-          <p className="mb-2 font-copy text-eyebrow uppercase text-cocoa-soft">
+          <p className="mb-2 font-copy text-eyebrow uppercase text-cocoa">
             <PlaceholderText text={eyebrow} />
           </p>
         ) : null}
         <H className="md-caps text-h3 text-cocoa">
           {href ? (
-            <Link href={href} className="outline-none after:absolute after:inset-0 after:rounded-frame after:content-[''] focus-visible:after:outline focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-raspberry-ink">
+            <Link href={href} className="outline-none after:absolute after:inset-0 after:content-[''] focus-visible:after:outline focus-visible:after:outline-[3px] focus-visible:after:outline-offset-4 focus-visible:after:outline-daddy-ink">
               {title}
             </Link>
           ) : (
@@ -89,7 +92,7 @@ export function PastelCard({
             {href ? (
               <span aria-hidden="true" className="inline-flex shrink-0 items-center gap-2 font-copy text-small font-semibold text-cocoa">
                 {linkLabel}
-                <span className="grid h-10 w-10 place-items-center rounded-pill bg-paper text-cocoa transition-colors duration-quick group-hover:bg-raspberry-ink group-hover:text-paper">
+                <span className="grid h-11 w-11 place-items-center rounded-pill border-2 border-cocoa bg-paper text-cocoa transition-colors duration-quick group-hover:bg-raspberry-ink group-hover:text-cream">
                   <IconArrowRight size={18} />
                 </span>
               </span>

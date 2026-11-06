@@ -31,15 +31,18 @@ doporučujeme Anton přes `next/font/google` (self-hosted při buildu).
 | Token | Hex | Role |
 | --- | --- | --- |
 | Krém (`cream`) | `#FBF3E6` | Podklad stránky a loga, text na malině/modré. |
-| Kakao (`cocoa`) | `#3B2418` | Text, nadpisy, obrysy, linky mřížky, offset stíny. |
-| Malina „Mummy“ (`raspberry`) | `#D9466F` | Pilulka MUMMIES, akcent, CTA plocha, zvýrazněné slovo v nadpisu (≥ 24 px). |
-| Malina text (`raspberry-ink`) | `#C23560` | Malinový text menší než 24 px na krému (AA 4,8 : 1). |
-| Modrá „Daddy“ (`daddy-blue`) | `#3F67B1` | Pilulka DADDIES, druhý akcent, odkazy, štítky (AA 5,0 : 1 na krému). |
-| Nebeská (`sky`) | `#C9D8ED` | Pruhy nadpisů sekcí (jako modrý pruh v referenci); původní světle modrá klienta. |
-| Růžová pastelová (`blush`) | `#F6D3DA` | Plochy karet, aktivní řádky, podklady štítků. |
+| Kakao / ink (`cocoa`) | `#2B1810` | Text, nadpisy, obrysy, linky mřížky, offset stíny. |
+| Malina „Mummy“ (`raspberry`) | `#D23F6B` | Pilulka MUMMIES, akcent, CTA plocha, zvýrazněné slovo v nadpisu (≥ 24 px). |
+| Malina text (`raspberry-ink`) | `#B8305A` | Malinový text menší než 24 px na krému, pozadí CTA (AA 5,3 : 1). |
+| Modrá „Daddy“ (`daddy`) | `#4669A6` | Pilulka DADDIES, druhý akcent – původní modrá loga klienta (AA 5,0 : 1 na krému). |
+| Nebeská (`daddy-tint`) | `#D3E0F2` | Pruhy nadpisů sekcí (jako modrý pruh v referenci); původní světle modrá klienta. |
+| Růžová pastelová (`raspberry-tint`) | `#F7D6DF` | Plochy karet, aktivní řádky, podklady štítků. |
 
-Kontrasty (WCAG): kakao/krém 13,1 · modrá/krém 5,0 · malina-ink/krém 4,8 · malina/krém 3,8
-(jen velký text a plochy) · kakao/nebeská 10,0 · kakao/blush 10,5.
+Kontrasty (WCAG): kakao/krém 15,4 · modrá/krém 5,0 · malina-ink/krém 5,3 · malina/krém 4,1
+(jen velký text a plochy) · kakao/nebeská 12,7 · kakao/růžová 12,6.
+
+Paleta je sjednocená s tokeny webu v2 (`lib/web/tokens.ts`, `docs/web-v2-design.md` §1);
+logo je ve webu vykreslené inline z `components/web/LogoArt.tsx` (vygenerováno z těchto SVG).
 
 ## Pravidla
 
