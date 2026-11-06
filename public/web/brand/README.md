@@ -23,8 +23,21 @@ loga klienta (Wix, `#4669A6`), malina z našeho webu – a stejně se jmenují c
 | `app/(web)/apple-icon.png` | Apple touch icon 512 × 512. |
 
 Text je převedený na křivky (žádné písmo za běhu, CSP-safe). Zdrojová písma pro tvorbu:
-**Anton** (verzálky, OFL) a **Pacifico** (ampersand, OFL). Pro nadpisy webu ve stylu loga
-doporučujeme Anton přes `next/font/google` (self-hosted při buildu).
+
+- **Shrikhand** (Jonny Pinhorn, SIL Open Font License 1.1) – nápisy MUMMIES / DADDIES
+  a písmena monogramu M♥D. Verzálky, kerning podle fontu (HarfBuzz), mírné prostrkání
+  +0,02 em, výška verzálek 62 px v pilulce vysoké 112 px, text opticky vycentrovaný podle
+  obrysu písmen, délka pilulky se řídí šířkou slova.
+- **Pacifico** (OFL) – ručně psaný ampersand v minci (beze změny).
+
+Proč Shrikhand (výměna za Anton, listopad 2026, porovnání 8 písem OFL): tučná kurzíva
+s kapkovitými patkami připomíná ručně malované cedule amerických diners a zmrzlináren –
+retro Amerika, která sedí k cheesecakům, a přitom působí řemeslně, ne dětsky. Sklon písma
+podtrhuje pohyb natočených pilulek, široké tahy drží čitelnost i při 32 px výšky loga.
+Nejbližší alternativy: Fraunces Black (SOFT 100), Bowlby One, Rammetto One.
+
+Pro nadpisy webu ve stylu loga lze Shrikhand načíst přes `next/font/google`
+(self-hosted při buildu) – jen pro krátké display nadpisy, ne pro odstavce.
 
 ## Paleta
 
