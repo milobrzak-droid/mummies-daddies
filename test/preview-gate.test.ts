@@ -29,3 +29,11 @@ describe('previewGate', () => {
     expect(previewGate(req(basic('x:')), 'x:')?.status).toBe(401)
   })
 })
+
+describe('previewGate – hlavička', () => {
+  test('WWW-Authenticate je jen Latin-1 (jinak Vercel vrátí 500)', () => {
+    const res = previewGate(new NextRequest('https://x.test/'), 'a:b')
+    expect(res?.status).toBe(401)
+    expect(/^[\x20-\xff]*$/.test(res?.headers.get('www-authenticate') ?? '')).toBe(true)
+  })
+})
