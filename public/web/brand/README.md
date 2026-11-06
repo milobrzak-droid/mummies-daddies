@@ -24,19 +24,19 @@ loga klienta (Wix, `#4669A6`), malina z našeho webu – a stejně se jmenují c
 
 Text je převedený na křivky (žádné písmo za běhu, CSP-safe). Zdrojová písma pro tvorbu:
 
-- **Shrikhand** (Jonny Pinhorn, SIL Open Font License 1.1) – nápisy MUMMIES / DADDIES
+- **Bowlby One** (Vernon Adams, SIL Open Font License 1.1) – nápisy MUMMIES / DADDIES
   a písmena monogramu M♥D. Verzálky, kerning podle fontu (HarfBuzz), mírné prostrkání
-  +0,02 em, výška verzálek 62 px v pilulce vysoké 112 px, text opticky vycentrovaný podle
+  +0,02 em, výška verzálek 58 px v pilulce vysoké 112 px, text opticky vycentrovaný podle
   obrysu písmen, délka pilulky se řídí šířkou slova.
 - **Pacifico** (OFL) – ručně psaný ampersand v minci (beze změny).
 
-Proč Shrikhand (výměna za Anton, listopad 2026, porovnání 8 písem OFL): tučná kurzíva
-s kapkovitými patkami připomíná ručně malované cedule amerických diners a zmrzlináren –
-retro Amerika, která sedí k cheesecakům, a přitom působí řemeslně, ne dětsky. Sklon písma
-podtrhuje pohyb natočených pilulek, široké tahy drží čitelnost i při 32 px výšky loga.
-Nejbližší alternativy: Fraunces Black (SOFT 100), Bowlby One, Rammetto One.
+Proč Bowlby One (výměna za Anton, listopad 2026): volba klienta ze srovnání 8 písem OFL
+(Bowlby One, Titan One, Lilita One, Chango, Shrikhand, Bagel Fat One, Rammetto One,
+Fraunces Black). Rovný, široký a velmi tučný grotesk s měkce zaoblenými tahy připomíná
+retro americké cedule a obaly. Má víc charakteru než úzký Anton, zůstává klidný a čitelný
+i při 32 px výšky loga a kontrastuje s ručně psaným ampersandem.
 
-Pro nadpisy webu ve stylu loga lze Shrikhand načíst přes `next/font/google`
+Pro nadpisy webu ve stylu loga lze Bowlby One načíst přes `next/font/google`
 (self-hosted při buildu) – jen pro krátké display nadpisy, ne pro odstavce.
 
 ## Paleta
